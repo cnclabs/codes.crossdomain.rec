@@ -4,6 +4,7 @@ import math
 def calculate_Recall(active_watching_log, topk_program):
     unique_played_amount = len(set(active_watching_log))
     hit = 0
+
     for program in topk_program:
         if program in active_watching_log:
             hit += 1

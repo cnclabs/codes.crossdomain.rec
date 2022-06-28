@@ -4,7 +4,7 @@ UTIL_OBJECTS = util random hash file_graph
 SAMPLER_OBJECTS = alias_methods vc_sampler edge_sampler
 MAPPER_OBJECTS = lookup_mapper
 OPTIMIZER_OBJECTS = pair_optimizer triplet_optimizer quadruple_optimizer
-HUB_CLIS = bpr tpr cpr
+HUB_CLIS = bpr tpr cpr pre-train_bpr pre-train_cpr pre-train_changeUpt_cpr
 LIBS= -L ./ -lsmore
 
 all: $(UTIL_OBJECTS) $(SAMPLER_OBJECTS) $(MAPPER_OBJECTS) $(OPTIMIZER_OBJECTS) $(HUB_CLIS)
