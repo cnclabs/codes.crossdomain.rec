@@ -1,2 +1,0 @@
-model_checkpoint_path: "/tmp2/wtchiang/CDR_research_tmp2/EMCDR_tmp2/amazon_csj_hk_lightfm/amazon_csj_hk_lightfm_cold/model/mlp_epoch_1000_using_lightfm_cold/mlp_epoch_1000_using_lightfm_cold"
-all_model_checkpoint_paths: "/tmp2/wtchiang/CDR_research_tmp2/EMCDR_tmp2/amazon_csj_hk_lightfm/amazon_csj_hk_lightfm_cold/model/mlp_epoch_1000_using_lightfm_cold/mlp_epoch_1000_using_lightfm_cold"

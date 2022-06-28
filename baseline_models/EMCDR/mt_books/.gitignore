@@ -1,8 +1,0 @@
-# Ignore everything
-*.pickle
-# Except the followings
-!model
-!model_cold
-!model_log
-!model_log_cold
-!result
