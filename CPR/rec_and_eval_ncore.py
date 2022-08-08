@@ -107,7 +107,8 @@ with open(graph_file, 'r') as f:
         line = line.split('\t')
         prefix = line[0]
         emb=line[1].split()
-        if prefix in testing_users:
+        #if prefix in testing_users:
+        if "user_" in prefix:
             user_emb.update({ prefix: np.array(emb, dtype=np.float32) })
         else:
             item_emb.update({ prefix: np.array(emb, dtype=np.float32) })
