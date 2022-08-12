@@ -1,69 +1,76 @@
 #!/bin/bash
-BASEDIR=$(dirname $(realpath "$0"))
-count=$1
-src=$2
-tar=$3
-ncore=$4
-sample=$5
+sample=4000
+declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
+declare -A ncores
+ncores=(['hk_csjj']=5 "spo_csj"=5 "mt_b"=10)
 
-if [[ -n $count && ! -d ${BASEDIR}/result/$count ]]
+if [[ ! -d ./result ]]
 then
-	mkdir -p ${BASEDIR}/graph/$count
-	mkdir -p ${BASEDIR}/result/$count
+	mkdir -p ./graph
+	mkdir -p ./result
 fi
 
-for i in $(seq 2 2);
-do
-epoch=$((i*100))
+for d in "${datasets[@]}"; do
+	IFS='_'
+	read -a domains <<< "$d"
+	IFS=' '
+	src=${domains[0]}
+	tar=${domains[1]}
+	ncore=${ncores[$d]}
 
-## ================================= Amazon dataset (SRC-TAR) =================================
-if [ $i == 1 ]; then
-	pretrain=""
-else
-	pretrain="-pre-train ${BASEDIR}/graph/$((count))/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch-100))epoch.txt"
-	coldpretrain="-pre-train ${BASEDIR}/graph/$((count))/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch-100))epoch.txt"
-fi
-${BASEDIR}/ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
--train_ut ${BASEDIR}/input_${ncore}core/${tar}_train_input.txt \
--train_us ${BASEDIR}/input_${ncore}core/all_${src}_train_input.txt \
--train_ust ${BASEDIR}/input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
--save ${BASEDIR}/graph/$((count))/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
--dimension 100 -update_times 200 -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
-#$pretrain
+	for i in $(seq 2 2);
+	do
+	epoch=$((i*100))
 
-python3 ${BASEDIR}/rec_and_eval_ncore.py \
---test_users target \
---output_file ./result/$((count))/all_${src}_${tar}_cpr_target_result_$((epoch))epoch.txt \
---graph_file ./graph/$((count))/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
---src ${src} \
---tar ${tar} \
---ncore ${ncore} \
---sample ${sample}
+	## ================================= Amazon dataset (SRC-TAR) =================================
+	if [ $i == 1 ]; then
+		pretrain=""
+	else
+		pretrain="-pre-train ./graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch-100))epoch.txt"
+		coldpretrain="-pre-train ./graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch-100))epoch.txt"
+	fi
+	./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
+	-train_ut ./input_${ncore}core/${tar}_train_input.txt \
+	-train_us ./input_${ncore}core/all_${src}_train_input.txt \
+	-train_ust ./input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
+	-save ./graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	-dimension 100 -update_times 200 -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
+	#$pretrain
 
-python3 ${BASEDIR}/rec_and_eval_ncore.py \
---test_users shared \
---output_file ./result/$((count))/all_${src}_${tar}_cpr_shared_result_$((epoch))epoch.txt \
---graph_file ./graph/$((count))/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
---src ${src} \
---tar ${tar} \
---ncore ${ncore} \
---sample ${sample}
+	python3 ../rec_and_eval_ncore.py \
+	--test_users target \
+	--output_file ./result/all_${src}_${tar}_cpr_target_result_$((epoch))epoch.txt \
+	--graph_file ./graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--src ${src} \
+	--tar ${tar} \
+	--ncore ${ncore} \
+	--sample ${sample}
 
-# cold
-${BASEDIR}/ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
--train_ut ${BASEDIR}/input_${ncore}core/cold_${tar}_train_input.txt \
--train_us ${BASEDIR}/input_${ncore}core/all_${src}_train_input.txt \
--train_ust ${BASEDIR}/input_${ncore}core/cold_cpr_train_u_${src}+${tar}.txt \
--save ${BASEDIR}/graph/$((count))/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
--dimension 100 -update_times 200 -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
-#$coldpretrain
+	python3 ../rec_and_eval_ncore.py \
+	--test_users shared \
+	--output_file ./result/all_${src}_${tar}_cpr_shared_result_$((epoch))epoch.txt \
+	--graph_file ./graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--src ${src} \
+	--tar ${tar} \
+	--ncore ${ncore} \
+	--sample ${sample}
 
-python3 ${BASEDIR}/rec_and_eval_ncore.py \
---test_users cold \
---output_file ./result/$((count))/all_${src}_${tar}_cpr_cold_result_$((epoch))epoch.txt \
---graph_file ./graph/$((count))/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
---src ${src} \
---tar ${tar} \
---ncore ${ncore} \
---sample ${sample}
+	# cold
+	./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
+	-train_ut ./input_${ncore}core/cold_${tar}_train_input.txt \
+	-train_us ./input_${ncore}core/all_${src}_train_input.txt \
+	-train_ust ./input_${ncore}core/cold_cpr_train_u_${src}+${tar}.txt \
+	-save ./graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	-dimension 100 -update_times 200 -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
+	#$coldpretrain
+
+	python3 ../rec_and_eval_ncore.py \
+	--test_users cold \
+	--output_file ./result/all_${src}_${tar}_cpr_cold_result_$((epoch))epoch.txt \
+	--graph_file ./graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--src ${src} \
+	--tar ${tar} \
+	--ncore ${ncore} \
+	--sample ${sample}
+	done
 done

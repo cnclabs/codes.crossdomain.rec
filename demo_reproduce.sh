@@ -19,11 +19,6 @@ python3  LOO_data_0/convert_to_ncore.py \
 --tar ${tar} \
 --cold_sample ${cold_sample}
 
-# Generated input_ncore from LOO_data_ncore & user_ncore
-python3  CPR/preprocess/generate_ncore_input.py \
---ncore ${core} \
---src ${src} \
---tar ${tar}
+# Goto CPR and generated input_ncore from LOO_data_ncore & user_ncore
 
 # Train and eval
-./CPR/run_smore_ncore.sh 0 ${src} ${tar} ${core} ${eval_sample}
