@@ -2,7 +2,7 @@
 sample=4000
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
-ncores=(['hk_csjj']=5 "spo_csj"=5 "mt_b"=10)
+ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
 
 if [[ ! -d ./result ]]
 then
@@ -30,9 +30,9 @@ for d in "${datasets[@]}"; do
 		coldpretrain="-pre-train ./graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch-100))epoch.txt"
 	fi
 	./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
-	-train_ut ./input_${ncore}core/${tar}_train_input.txt \
-	-train_us ./input_${ncore}core/all_${src}_train_input.txt \
-	-train_ust ./input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
+	-train_ut ../input_${ncore}core/${tar}_train_input.txt \
+	-train_us ../input_${ncore}core/all_${src}_train_input.txt \
+	-train_ust ../input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
 	-save ./graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	-dimension 100 -update_times 200 -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
 	#$pretrain
@@ -42,7 +42,6 @@ for d in "${datasets[@]}"; do
 	--output_file ./result/all_${src}_${tar}_cpr_target_result_$((epoch))epoch.txt \
 	--graph_file ./graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
-	--tar ${tar} \
 	--ncore ${ncore} \
 	--sample ${sample}
 
@@ -57,9 +56,9 @@ for d in "${datasets[@]}"; do
 
 	# cold
 	./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
-	-train_ut ./input_${ncore}core/cold_${tar}_train_input.txt \
-	-train_us ./input_${ncore}core/all_${src}_train_input.txt \
-	-train_ust ./input_${ncore}core/cold_cpr_train_u_${src}+${tar}.txt \
+	-train_ut ../input_${ncore}core/cold_${tar}_train_input.txt \
+	-train_us ../input_${ncore}core/all_${src}_train_input.txt \
+	-train_ust ../input_${ncore}core/cold_cpr_train_u_${src}+${tar}.txt \
 	-save ./graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	-dimension 100 -update_times 200 -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
 	#$coldpretrain
