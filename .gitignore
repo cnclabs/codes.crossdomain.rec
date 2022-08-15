@@ -1,3 +1,4 @@
 LOO_data_*
-!LOO_data_0
+!LOO_data_0core
 user_*
+__pycache__
