@@ -39,16 +39,16 @@ for d in "${datasets[@]}"; do
 
 	python3 ../rec_and_eval_ncore.py \
 	--test_users target \
-	--output_file ./result/all_${src}_${tar}_cpr_target_result_$((epoch))epoch.txt \
-	--graph_file ./graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--output_file $(pwd)/result/all_${src}_${tar}_cpr_target_result_$((epoch))epoch.txt \
+	--graph_file $(pwd)/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--ncore ${ncore} \
 	--sample ${sample}
 
 	python3 ../rec_and_eval_ncore.py \
 	--test_users shared \
-	--output_file ./result/all_${src}_${tar}_cpr_shared_result_$((epoch))epoch.txt \
-	--graph_file ./graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--output_file $(pwd)/result/all_${src}_${tar}_cpr_shared_result_$((epoch))epoch.txt \
+	--graph_file $(pwd)/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--tar ${tar} \
 	--ncore ${ncore} \
@@ -65,8 +65,8 @@ for d in "${datasets[@]}"; do
 
 	python3 ../rec_and_eval_ncore.py \
 	--test_users cold \
-	--output_file ./result/all_${src}_${tar}_cpr_cold_result_$((epoch))epoch.txt \
-	--graph_file ./graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--output_file $(pwd)/result/all_${src}_${tar}_cpr_cold_result_$((epoch))epoch.txt \
+	--graph_file $(pwd)/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--tar ${tar} \
 	--ncore ${ncore} \
