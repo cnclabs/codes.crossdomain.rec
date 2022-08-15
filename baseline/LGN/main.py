@@ -29,7 +29,7 @@ if __name__ == "__main__":
     config.gpu_options.per_process_gpu_memory_fraction = conf["gpu_mem"]
     
     for_max = 1
-    dir_path = "./embed"
+    dir_path = "./graph"
     assert os.path.isdir(dir_path)
     for for_count in range(for_max):
 
