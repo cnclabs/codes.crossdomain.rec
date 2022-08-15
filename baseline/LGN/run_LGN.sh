@@ -1,10 +1,12 @@
 #!/bin/bash
 
-datasets=(hk_csjj)
+datasets=(hk_csjj spo_csj mt_b)
 graphs=(big lil)
 tests=(target shared cold)
 
 nowgpu=0
+
+echo "Make sure you've run build_cython & preprocess for LGN."
 
 for dataset in "${datasets[@]}";
 do
@@ -24,7 +26,7 @@ do
 			then
 				fullname=${dataset}_${graph}_${te}
 				python3 edit_properties.py --dataset ${fullname}
-				screen -d -m -S ${fullname} bash -c 'python3 main.py'
+				screen -dm -S ${fullname} bash -c 'python3 main.py; exec sh'
 				#sleep 1s	
 				echo Start training $fullname !
 			fi

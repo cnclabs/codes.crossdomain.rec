@@ -32,7 +32,7 @@ with open('../../../LOO_data_{ncore}core/{tar}_train.pickle'.format(ncore=ncore,
     tar_train = pickle.load(pf)
 tar_train[user_attr] = tar_train[user_attr].apply(lambda x: 'user_'+x)
 
-with open('../LOO_data_{ncore}core/{tar}_test.pickle'.format(ncore=ncore, tar=tar), 'rb') as pf:
+with open('../../../LOO_data_{ncore}core/{tar}_test.pickle'.format(ncore=ncore, tar=tar), 'rb') as pf:
     tar_test_df = pickle.load(pf)
 tar_test_df[user_attr] = tar_test_df[user_attr].apply(lambda x: 'user_'+x)
 

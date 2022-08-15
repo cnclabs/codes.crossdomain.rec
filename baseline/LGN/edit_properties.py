@@ -5,7 +5,7 @@ config_name = "CPR_LightGCN.properties"
 
 parser=argparse.ArgumentParser(description='')
 parser.add_argument('--dataset', type=str, help='name of dataset', default=None)
-parser.add_argument('--gpu', type=int, help='gpu id', default=None)
+parser.add_argument('--gpu', type=str, help='gpu id', default=None)
 args=parser.parse_args()
 #assert args.dataset is not None, "Please enter the dataset name as an argument"
 
