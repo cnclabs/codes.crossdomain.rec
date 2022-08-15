@@ -3,7 +3,7 @@
 ## Preparation
 Since converting raw data to raw LOO data is quite time consuming, you could dowload raw LOO data if you don't plan to add new datasets:  
   
-**CMD** `scp -r ACCOUNT@clip4.cs.nccu.edu.tw:/tmp2/yzliu/store/LOO_data_0`
+**CMD** `scp -r ACCOUNT@clip4.cs.nccu.edu.tw:/tmp2/yzliu/store/LOO_data_0core .`
 
 ## Run
 Set `raw_src`, `raw_tar`, `src`, `tar`, `core`, `cold_sample`, `eval_sample` in `demo_reproduce.sh` then run to make input with ncore filtering.  
