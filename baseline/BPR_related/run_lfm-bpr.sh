@@ -4,6 +4,7 @@ dim=100
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
 ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
+sample=4000
 
 for d in "${datasets[@]}"; do
     IFS='_'
@@ -23,6 +24,23 @@ for d in "${datasets[@]}"; do
     --user_alpha 0.00001
 
     ### eval @tar @shared
+    python3 ../../rec_and_eval_ncore.py \
+	--test_users target \
+	--output_file $(pwd)/lfm_bpr_results/${src}_${tar}_lightfm_bpr_result_${update_times}_target.txt \
+	--graph_file $(pwd)/lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt \
+	--src ${src} \
+	--tar ${tar} \
+	--ncore ${ncore} \
+	--sample ${sample}
+
+    python3 ../../rec_and_eval_ncore.py \
+	--test_users shared \
+	--output_file $(pwd)/lfm_bpr_results/${src}_${tar}_lightfm_bpr_result_${update_times}_shared.txt \
+	--graph_file $(pwd)/lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt \
+	--src ${src} \
+	--tar ${tar} \
+	--ncore ${ncore} \
+	--sample ${sample}
 
     ### src
     python3 ./BPR/lfm-bpr.py \
@@ -56,6 +74,23 @@ for d in "${datasets[@]}"; do
     --user_alpha 0.00001
 
     ### eval @tar @shared
+    python3 ../../rec_and_eval_ncore.py \
+	--test_users target \
+	--output_file $(pwd)/lfm_bpr_results/${src}_${tar}_lightfm_bpr+_result_${update_times}_target.txt \
+	--graph_file $(pwd)/lfm_bpr_graphs/${src}+${tar}_lightfm_bpr_${update_times}_10e-5.txt \
+	--src ${src} \
+	--tar ${tar} \
+	--ncore ${ncore} \
+	--sample ${sample}
+
+    python3 ../../rec_and_eval_ncore.py \
+	--test_users shared \
+	--output_file $(pwd)/lfm_bpr_results/${src}_${tar}_lightfm_bpr+_result_${update_times}_shared.txt \
+	--graph_file $(pwd)/lfm_bpr_graphs/${src}+${tar}_lightfm_bpr_${update_times}_10e-5.txt \
+	--src ${src} \
+	--tar ${tar} \
+	--ncore ${ncore} \
+	--sample ${sample}
 
     # all input (cold)
 
@@ -69,4 +104,12 @@ for d in "${datasets[@]}"; do
     --user_alpha 0.00001
 
     ### eval @cold
+    python3 ../../rec_and_eval_ncore.py \
+	--test_users cold \
+	--output_file $(pwd)/lfm_bpr_results/${src}_${tar}_lightfm_bpr+_result_${update_times}_cold.txt \
+	--graph_file $(pwd)/lfm_bpr_graphs/cold_${src}+${tar}_lightfm_bpr_${update_times}_10e-5.txt \
+	--src ${src} \
+	--tar ${tar} \
+	--ncore ${ncore} \
+	--sample ${sample}
 done
