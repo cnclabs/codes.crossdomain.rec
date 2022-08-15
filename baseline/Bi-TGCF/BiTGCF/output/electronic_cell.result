@@ -1,0 +1,6 @@
+
+ lr=0.0010, layer_fun=gcf,fuse_type_in =la2add,neg_num=4, n_interaction=3,connect_type=concat
+	source result
+Best Iter=[23]@[14497.4]	 hit=['0.5780'], ndcg=['0.3642']
+target result
+Best Iter=[46]@[14497.4]	 hit=['0.6614'], ndcg=['0.4257']
