@@ -13,12 +13,7 @@ eval_sample=4000
 #python3 preprocess/LOO_preprocess.py --raw_data ${raw_src} --dataset_name ${src}
 
 # Filtered LOO_data & user to LOO_data_ncore & user_ncore
-python3  LOO_data_0/convert_to_ncore.py \
---ncore ${core} \
---src ${src} \
---tar ${tar} \
---cold_sample ${cold_sample}
-
-# Goto CPR and generated input_ncore from LOO_data_ncore & user_ncore
+# Goto preprocess dir and generated input_ncore from LOO_data_ncore & user_ncore
+./preprocess/run_gen_input.sh
 
 # Train and eval

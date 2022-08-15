@@ -45,14 +45,14 @@ valid_items = set()
 # tar
 print("== {src}-{tar} ==".format(src=src.upper(), tar=tar.upper()))
 print("Start TARGET / {} & SRC / {} core filtering ...".format(tar.upper(), src.upper()))
-with open('{tar}_train.pickle'.format(tar=tar), 'rb') as f:
+with open('../LOO_data_0core/{tar}_train.pickle'.format(tar=tar), 'rb') as f:
     tar_train = pickle.load(f)
 
 tar_ncore_train = tar_train[(tar_train[user_attr].isin(tar_train[user_attr].value_counts()[tar_train[user_attr].value_counts()>=ncore].index)) & \
         (tar_train[item_attr].isin(tar_train[item_attr].value_counts()[tar_train[item_attr].value_counts()>=ncore].index))]
 
 # src
-with open('{src}_train.pickle'.format(src=src), 'rb') as f:
+with open('../LOO_data_0core/{src}_train.pickle'.format(src=src), 'rb') as f:
     src_train = pickle.load(f)
 
 src_ncore_train = src_train[(src_train[user_attr].isin(src_train[user_attr].value_counts()[src_train[user_attr].value_counts()>=ncore].index)) & \
@@ -74,7 +74,7 @@ print("(TAR / {tar} Train) After {ncore}core:".format(tar=tar.upper(), ncore=nco
 print("(TAR / {tar} Train) Diff:".format(tar=tar.upper()), len(tar_train)-len(tar_ncore_train))
 print("-"*10)
 # tar test
-with open('{tar}_test.pickle'.format(tar=tar), 'rb') as f:
+with open('../LOO_data_0core/{tar}_test.pickle'.format(tar=tar), 'rb') as f:
     tar_test = pickle.load(f)
 tar_ncore_test = tar_test[(tar_test[user_attr].isin(tar_ncore_train.reviewerID.unique())) & (tar_test[item_attr].isin(valid_items))]
 with open(os.path.join(save_dir, '{tar}_test.pickle'.format(tar=tar)), 'wb') as f:
@@ -93,7 +93,7 @@ print("(SRC / {src} Train) After {ncore}core:".format(src=src.upper(), ncore=nco
 print("(SRC / {src} Train) Diff:".format(src=src.upper()), len(src_train)-len(src_ncore_train))
 print("-"*10)
 # src test
-with open('{src}_test.pickle'.format(src=src), 'rb') as f:
+with open('../LOO_data_0core/{src}_test.pickle'.format(src=src), 'rb') as f:
     src_test = pickle.load(f)
 src_ncore_test = src_test[(src_test[user_attr].isin(src_ncore_train.reviewerID.unique())) & (src_test[item_attr].isin(valid_items))]
 with open(os.path.join(save_dir, '{src}_test.pickle'.format(src=src)), 'wb') as f:
