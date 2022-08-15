@@ -10,6 +10,7 @@ google-auth-oauthlib==0.4.6
 google-pasta==0.2.0
 grpcio==1.47.0
 h5py==3.7.0
+faiss-gpu==1.7.2
 idna==3.3
 importlib-metadata==4.12.0
 keras==2.9.0

@@ -247,14 +247,14 @@ if __name__ == '__main__':
                     org_item_id = rev_item_dict[item_index]
                     if "_" in org_item_id:
                         org_item_id = org_item_id[org_item_id.find("_")+1:]
-                    org_item_id = "item_" + org_item_id
+                    #org_item_id = "item_" + org_item_id
                     embeddings = " ".join(item_embed.tolist())
                     fp.write(org_item_id + "\t" + embeddings + "\n")
                 for item_index, item_embed in tqdm(enumerate(item_embeddings_t.astype(str))):
                     org_item_id = rev_item_dict[item_index]
                     if "_" in org_item_id:
                         org_item_id = org_item_id[org_item_id.find("_")+1:]
-                    org_item_id = "item_" + org_item_id
+                    #org_item_id = "item_" + org_item_id
                     embeddings = " ".join(item_embed.tolist())
 
         # user_embeddings_t, item_embeddings_t = model.get_embeddings()

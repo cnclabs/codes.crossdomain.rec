@@ -17,7 +17,7 @@ def parse_args():
                         help='Project path.')
     parser.add_argument('--source_dataset', nargs='?')
     parser.add_argument('--target_dataset', nargs='?')
-    parser.add_argument('--graph_dir', nargs='?', default='./result/',
+    parser.add_argument('--graph_dir', nargs='?', default='./graph/',
                          help='output graph path.')
     # parser.add_argument('--dataset', nargs='?', default='sport_cell',
     #                     help='Choose a dataset')
