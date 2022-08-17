@@ -1,5 +1,13 @@
 # CPR-2022
+We generally divide this project into 3 parts:
+* Pre-preprocess (Raw -> LOO data)
+* Preprocess (LOO data -> N-core filtering -> Input)
+* Training and Evaluation  
 
+We use 3 pairs of datasets **(Source_Target)**:
+* MT_B (Movies_and_TV_5.json + Books_5.json)
+* SPO_CSJ (Sports_and_Outdoors_5.json + Clothing_Shoes_and_Jewelry_5.json)
+* HK_CSJJ (Home_and_Kitchen_5.json + Clothing_Shoes_and_Jewelry_5.json)
 ## Pre-preprocess (Raw -> LOO data)
 ### Using processed data (Recommended)
 Since converting raw data to raw LOO data is quite time consuming, we **recommend** you dowload processed LOO data if you don't plan to add new datasets:  
@@ -25,7 +33,7 @@ Note that:
 $ ./preprocess/run_gen_input.sh 
 ```
 
-## Train models and Evaluation
+## Training and Evaluation
 ### Our model
 #### CPR
 ```
