@@ -94,15 +94,15 @@ print(f'>>>>>DONE Gathering result...')
 
 
 print(f'>>>>>Saving train...')
-with open('../LOO_data_0/{}_train.pickle'.format(dataset_name), 'wb') as pickle_file:
+with open('../LOO_data_0core/{}_train.pickle'.format(dataset_name), 'wb') as pickle_file:
     pickle.dump(dataset_train_df, pickle_file)
 
 print(f'>>>>>Saving test...')
-with open('../LOO_data_0/{}_test.pickle'.format(dataset_name), 'wb') as pickle_file:
+with open('../LOO_data_0core/{}_test.pickle'.format(dataset_name), 'wb') as pickle_file:
     pickle.dump(dataset_test_df, pickle_file)
 
 print(f'>>>>>Saving one log user...')
-with open('../LOO_data_0/{}_one_log_user.pickle'.format(dataset_name), 'wb') as pickle_file:
+with open('../LOO_data_0core/{}_one_log_user.pickle'.format(dataset_name), 'wb') as pickle_file:
     pickle.dump(one_log_user_list, pickle_file)
 
 
