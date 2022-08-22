@@ -11,7 +11,7 @@ for d in "${datasets[@]}"; do
 	tar=${domains[1]}
 	ncore=${ncores[$d]}
 
-    python3  LOO_data_0/convert_to_ncore.py \
+    python3 convert_to_ncore.py \
     --ncore ${ncore} \
     --src ${src} \
     --tar ${tar} \
