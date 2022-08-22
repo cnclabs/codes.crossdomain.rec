@@ -30,7 +30,8 @@ Note that:
 
 ## Preprocess (LOO_data -> N-core filtering -> Input)
 ```
-$ ./preprocess/run_gen_input.sh 
+$ cd preprocess
+$ ./run_gen_input.sh 
 ```
 
 ## Training and Evaluation
