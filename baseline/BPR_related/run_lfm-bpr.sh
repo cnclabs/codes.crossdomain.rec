@@ -15,7 +15,7 @@ for d in "${datasets[@]}"; do
 	ncore=${ncores[$d]}
     ### tar
     python3 ./BPR/lfm-bpr.py \
-    --train ../../input_${ncore}/${tar}_train_input.txt \
+    --train ../../input_${ncore}core/${tar}_train_input.txt \
     --save ./lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt \
     --dim 100 \
     --iter $update_times \
@@ -44,7 +44,7 @@ for d in "${datasets[@]}"; do
 
     ### src
     python3 ./BPR/lfm-bpr.py \
-    --train ../../input_${ncore}/all_${src}_train_input.txt \
+    --train ../../input_${ncore}core/all_${src}_train_input.txt \
     --save ./lfm_bpr_graphs/${src}_lightfm_bpr_${update_times}_10e-5.txt \
     --dim 100 \
     --iter $update_times \
@@ -54,7 +54,7 @@ for d in "${datasets[@]}"; do
 
     ### tar cold
     python3 ./BPR/lfm-bpr.py \
-    --train ../../input_${ncore}/cold_${tar}_train_input.txt \
+    --train ../../input_${ncore}core/cold_${tar}_train_input.txt \
     --save ./lfm_bpr_graphs/cold_${tar}_lightfm_bpr_${update_times}_10e-5.txt \
     --dim 100 \
     --iter $update_times \
@@ -65,7 +65,7 @@ for d in "${datasets[@]}"; do
 
     # all input (target)
     python3 ./BPR/lfm-bpr.py \
-    --train ../../input_${ncore}/all_cpr_train_u_${src}+${tar}.txt \
+    --train ../../input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
     --save ./lfm_bpr_graphs/${src}+${tar}_lightfm_bpr_${update_times}_10e-5.txt \
     --dim 100 \
     --iter $update_times \
@@ -95,7 +95,7 @@ for d in "${datasets[@]}"; do
     # all input (cold)
 
     python3 ./BPR/lfm-bpr.py \
-    --train ../../input_${ncore}/cold_cpr_train_u_${src}+${tar}.txt \
+    --train ../../input_${ncore}core/cold_cpr_train_u_${src}+${tar}.txt \
     --save ./lfm_bpr_graphs/cold_${src}+${tar}_lightfm_bpr_${update_times}_10e-5.txt \
     --dim 100 \
     --iter $update_times \
