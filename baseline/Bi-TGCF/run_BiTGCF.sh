@@ -3,7 +3,7 @@ declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
 ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
 declare -A gpus
-gpus=(['hk_csjj']=0 "spo_csj"=1 "mt_b"=0)
+gpus=(['hk_csjj']=0 ["spo_csj"]=1 ["mt_b"]=0)
 
 for d in "${datasets[@]}"; do
 IFS='_'
