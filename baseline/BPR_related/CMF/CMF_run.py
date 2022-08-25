@@ -32,7 +32,6 @@ ncore = args.ncore
 with open(f'../../../LOO_data_{str(ncore)}core/{target_domain}_train.pickle', 'rb') as pk:
     target_train = pickle.load(pk)
 target_train['reviewerID'] = target_train['reviewerID'].apply(lambda x: 'user_' + x)
-target_train['asin'] = target_train['asin'].apply(lambda x: 'item_' + x)
 
 filtered_target_train = target_train[['reviewerID','asin','overall']]
 target_ratings = filtered_target_train.groupby(['reviewerID', 'asin'])['overall'].mean().reset_index()
