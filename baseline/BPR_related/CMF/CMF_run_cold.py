@@ -29,7 +29,6 @@ ncore = args.ncore
 with open(f'../../../LOO_data_{str(ncore)}core/{target_domain}_train.pickle', 'rb') as pk:
     target_domain_train = pickle.load(pk)
 target_domain_train['reviewerID'] = target_domain_train['reviewerID'].apply(lambda x: 'user_' + x)
-target_domain_train['asin'] = target_domain_train['asin'].apply(lambda x: 'item_' + x)
 
 # open mt books cold start users
 with open(f'../../../user_{str(ncore)}core/{source_domain}_{target_domain}_cold_users.pickle', 'rb') as pf:
@@ -49,7 +48,6 @@ print("Finished generating target_domain_ratings...")
 with open(f'../../../LOO_data_{str(ncore)}core/{source_domain}_train.pickle', 'rb') as pf:
     source_domain_train = pickle.load(pf)
 source_domain_train['reviewerID'] = source_domain_train['reviewerID'].apply(lambda x: 'user_' + x)
-source_domain_train['asin'] = source_domain_train['asin'].apply(lambda x: 'item_' + x)
 overlap_users = set(source_domain_train.reviewerID).intersection(set(filtered_target_domain_train.reviewerID))
 
 overlap_users_emb = {}
