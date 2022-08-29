@@ -93,7 +93,7 @@ print("testing users rec dict generated!")
 # Get emb of testing users 
 
 print("Start getting embedding of testing users...")
-with open('./{}_{}/cold_users_mapped_emb_dict.pickle'.format(source_name, target_name), 'rb') as pf:
+with open('./{}_{}/cold_users_mapped_emb_dict_{}.pickle'.format(source_name, target_name, args.current_epoch), 'rb') as pf:
     cold_start_users_mapped_emb_dict = pickle.load(pf)
 
 user_emb = cold_start_users_mapped_emb_dict
