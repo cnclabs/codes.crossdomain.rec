@@ -13,7 +13,7 @@ source_name = args.dataset_name.split('_')[0]
 target_name = args.dataset_name.split('_')[1]
 ncore = args.ncore
 
-with open('../../user_{}core/'.format(ncore) + args.dataset_name + '_' + 'shared_users.pickle', 'rb') as pf:
+with open('../../../user_{}core/'.format(ncore) + args.dataset_name + '_' + 'shared_users.pickle', 'rb') as pf:
     shared_users = pickle.load(pf)
 shared_users = ["user_"+user for user in shared_users]
 print("shared users: ", shared_users[:10])
