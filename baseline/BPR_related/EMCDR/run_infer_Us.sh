@@ -2,7 +2,7 @@
 
 update_times=1000 
 num_checkpoint=1
-split=$((500/$num_checkpoint))
+split=$((200/$num_checkpoint))
 
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
