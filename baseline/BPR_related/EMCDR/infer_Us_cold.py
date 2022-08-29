@@ -20,7 +20,7 @@ ckpt_path = args.ckpt_path
 ncore = args.ncore
 
 # only infer cold_users
-with open('../../user_{}core/'.format(ncore) + args.dataset_name + '_' + f'cold_users.pickle', 'rb') as pf:
+with open('../../../user_{}core/'.format(ncore) + args.dataset_name + '_' + f'cold_users.pickle', 'rb') as pf:
     cold_users = pickle.load(pf)
 cold_users = ["user_"+user for user in cold_users]
 
