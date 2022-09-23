@@ -8,6 +8,7 @@ import argparse
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 parser=argparse.ArgumentParser(description='Filtered LOO datas with n core.')
+parser.add_argument('--mom_save_dir', type=str, help='',default=None)
 parser.add_argument('--save_dir', type=str, help='where to save LOOs', default=None)
 parser.add_argument('--user_save_dir', type=str, help='where to save users', default=None)
 parser.add_argument('--ncore', type=int, help='core number', default=5)
@@ -27,12 +28,12 @@ item_attr, user_attr = args.item_attr, args.user_attr
 if args.save_dir:
     save_dir = args.save_dir
 else:
-    save_dir = "../LOO_data_{}core".format(ncore)
+    save_dir = "{}/LOO_data_{}core".format(args.mom_save_dir, ncore)
 
 if args.user_save_dir:
     user_save_dir = args.user_save_dir
 else:
-    user_save_dir = "../user_{}core".format(ncore)
+    user_save_dir = "{}/user_{}core".format(args.mom_save_dir, ncore)
 
 if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
@@ -45,14 +46,14 @@ valid_items = set()
 # tar
 print("== {src}-{tar} ==".format(src=src.upper(), tar=tar.upper()))
 print("Start TARGET / {} & SRC / {} core filtering ...".format(tar.upper(), src.upper()))
-with open('../LOO_data_0core/{tar}_train.pickle'.format(tar=tar), 'rb') as f:
+with open('{}/LOO_data_0core/{tar}_train.pickle'.format(args.mom_save_dir, tar=tar), 'rb') as f:
     tar_train = pickle.load(f)
 
 tar_ncore_train = tar_train[(tar_train[user_attr].isin(tar_train[user_attr].value_counts()[tar_train[user_attr].value_counts()>=ncore].index)) & \
         (tar_train[item_attr].isin(tar_train[item_attr].value_counts()[tar_train[item_attr].value_counts()>=ncore].index))]
 
 # src
-with open('../LOO_data_0core/{src}_train.pickle'.format(src=src), 'rb') as f:
+with open('{}/LOO_data_0core/{src}_train.pickle'.format(args.mom_save_dir, src=src), 'rb') as f:
     src_train = pickle.load(f)
 
 src_ncore_train = src_train[(src_train[user_attr].isin(src_train[user_attr].value_counts()[src_train[user_attr].value_counts()>=ncore].index)) & \
@@ -74,7 +75,7 @@ print("(TAR / {tar} Train) After {ncore}core:".format(tar=tar.upper(), ncore=nco
 print("(TAR / {tar} Train) Diff:".format(tar=tar.upper()), len(tar_train)-len(tar_ncore_train))
 print("-"*10)
 # tar test
-with open('../LOO_data_0core/{tar}_test.pickle'.format(tar=tar), 'rb') as f:
+with open('{}/LOO_data_0core/{tar}_test.pickle'.format(args.mom_save_dir, tar=tar), 'rb') as f:
     tar_test = pickle.load(f)
 tar_ncore_test = tar_test[(tar_test[user_attr].isin(tar_ncore_train.reviewerID.unique())) & (tar_test[item_attr].isin(valid_items))]
 with open(os.path.join(save_dir, '{tar}_test.pickle'.format(tar=tar)), 'wb') as f:
@@ -93,7 +94,7 @@ print("(SRC / {src} Train) After {ncore}core:".format(src=src.upper(), ncore=nco
 print("(SRC / {src} Train) Diff:".format(src=src.upper()), len(src_train)-len(src_ncore_train))
 print("-"*10)
 # src test
-with open('../LOO_data_0core/{src}_test.pickle'.format(src=src), 'rb') as f:
+with open('{}/LOO_data_0core/{src}_test.pickle'.format(args.mom_save_dir, src=src), 'rb') as f:
     src_test = pickle.load(f)
 src_ncore_test = src_test[(src_test[user_attr].isin(src_ncore_train.reviewerID.unique())) & (src_test[item_attr].isin(valid_items))]
 with open(os.path.join(save_dir, '{src}_test.pickle'.format(src=src)), 'wb') as f:
