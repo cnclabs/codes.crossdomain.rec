@@ -42,6 +42,7 @@ for d in "${datasets[@]}"; do
 	--output_file $(pwd)/result/all_${src}_${tar}_cpr_target_result_$((epoch))epoch.txt \
 	--graph_file $(pwd)/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
+	--tar ${tar} \
 	--ncore ${ncore} \
 	--sample ${sample}
 
