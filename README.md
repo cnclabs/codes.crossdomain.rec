@@ -38,14 +38,14 @@ $ ./run_gen_input.sh
 ### Our model
 #### CPR
 
-Environment: 
-	docker image: nvcr.io/nvidia/pytorch:22.05-py3	
+Environment  
+docker image: `nvcr.io/nvidia/pytorch:22.05-py3`
 ```
 $ cd CPR 
-(use virtualenv and install requirments.txt)
+(use virtualenv and install ./requirments.txt)
 $ ./run_smore_ncore.sh
 
-the evaluation score will be in ./result
+Find evaluated score in ./result
 
 ```
 ### Baselines
