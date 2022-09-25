@@ -14,7 +14,6 @@ import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend VOD items')
-parser.add_argument('--mom_save_dir', type=str, help='output_file name')
 parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--graph_file', type=str, help='graph_file')
 parser.add_argument('--test_users', type=str, help='{target, shared, cold}')
@@ -40,7 +39,7 @@ user_emb={}
 item_emb={}
 
 # ground truth, csjj is target
-with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
+with open('./LOO_data_{ncore}core/{tar}_test.pickle'.format(ncore=ncore, tar=tar), 'rb') as pf:
     tar_test_df = pickle.load(pf)
 tar_test_df[user_attr] = tar_test_df[user_attr].apply(lambda x: 'user_'+x)
 # csjj_test_df unique reviewerID = 451806
@@ -50,12 +49,12 @@ random.seed(3)
 if args.test_users == 'target':
   testing_users = random.sample(set(tar_test_df.reviewerID), sample_amount)
 if args.test_users == 'shared':
-  with open('{}/user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+  with open('./user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(ncore=ncore, src=src, tar=tar), 'rb') as pf:
     shared_users = pickle.load(pf)
   testing_users = random.sample(set(shared_users), sample_amount)
   testing_users = set(map(lambda x: "user_"+x, testing_users))
 if args.test_users == 'cold':
-  with open('{}/user_{ncore}core/{src}_{tar}_cold_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+  with open('./user_{ncore}core/{src}_{tar}_cold_users.pickle'.format(ncore=ncore, src=src, tar=tar), 'rb') as pf:
     cold_users = pickle.load(pf)
   testing_users = cold_users 
   testing_users = set(map(lambda x: "user_"+x, testing_users))
@@ -63,7 +62,7 @@ if args.test_users == 'cold':
 
 # rec pool
 ## load csjj_train_df
-with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
+with open('./LOO_data_{ncore}core/{tar}_train.pickle'.format(ncore=ncore, tar=tar), 'rb') as pf:
   tar_train_df = pickle.load(pf)
 tar_train_df[user_attr] = tar_train_df[user_attr].apply(lambda x: 'user_'+x)
 total_item_set = set(tar_train_df.asin)
