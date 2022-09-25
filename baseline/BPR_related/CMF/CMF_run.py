@@ -16,6 +16,7 @@ import time
 from tqdm import tqdm
 
 parser=argparse.ArgumentParser(description='CMF')
+parser.add_argument('--mom_save_dir', type=str, help='')
 parser.add_argument('--current_epoch', type=str, help='current_epoch num')
 parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--k', type=int, help='Number of latent factors to use in CMF model')
@@ -29,7 +30,7 @@ source_domain, target_domain = args.dataset.split("_")
 ncore = args.ncore
 
 # target domain train
-with open(f'../../../LOO_data_{str(ncore)}core/{target_domain}_train.pickle', 'rb') as pk:
+with open(f'{args.mom_save_dir}/LOO_data_{str(ncore)}core/{target_domain}_train.pickle', 'rb') as pk:
     target_train = pickle.load(pk)
 target_train['reviewerID'] = target_train['reviewerID'].apply(lambda x: 'user_' + x)
 
@@ -41,7 +42,7 @@ print("Finished generating target_ratings...")
 
 total_item_set = set(target_ratings.ItemId)
 
-with open(f'../../../user_{str(ncore)}core/{source_domain}_{target_domain}_shared_users.pickle', 'rb') as pf:
+with open(f'{args.mom_save_dir}/user_{str(ncore)}core/{source_domain}_{target_domain}_shared_users.pickle', 'rb') as pf:
     shared_users = pickle.load(pf)
 shared_users = ["user_"+user for user in shared_users]
 
@@ -106,7 +107,7 @@ print("It took {} seconds to fit the model.".format(time.time() - start_time))
 
 # rec and eval
 # ground truth 
-with open(f'../../../LOO_data_{str(ncore)}core/{target_domain}_test.pickle', 'rb') as pk:
+with open(f'{args.mom_save_dir}/LOO_data_{str(ncore)}core/{target_domain}_test.pickle', 'rb') as pk:
     target_test_df = pickle.load(pk)
 target_test_df['reviewerID'] = target_test_df['reviewerID'].apply(lambda x: 'user_'+x)
 
