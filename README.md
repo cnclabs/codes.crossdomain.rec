@@ -37,9 +37,16 @@ $ ./run_gen_input.sh
 ## Training and Evaluation
 ### Our model
 #### CPR
+
+Environment  
+docker image: `nvcr.io/nvidia/pytorch:22.05-py3`
 ```
-$ cd CPR
+$ cd CPR 
+(use virtualenv and install ./requirments.txt)
 $ ./run_smore_ncore.sh
+
+Find evaluated score in ./result
+
 ```
 ### Baselines
 Since baselines need different envs, you could manage multiple envs for them. Modules needed are list in `baseline/${MODEL_NAME}/requirements.txt`.  
@@ -57,20 +64,27 @@ $ ./run_LGN.sh
 ```
 #### BPR related models
 Run BPR first and wait for its graphs.
+Docker image: nvcr.io/nvidia/pytorch:22.05-py3
 #### BPR
 ```
 $ cd baseline/BPR_related
+$ pip install faiss-gpu lightfm==1.16
 $ ./run_lfm-bpr.sh
+Result path: /baseline/BPR_related/lfm_bpr_result
+Result embedding: /baseline/BPR_related/lfm_bpr_graphs
 ```
 #### CMF
 ```
 $ cd baseline/BPR_related/CMF
+$ pip install faiss-gpu cmfrec==3.4.3
 $ ./run_CMF.sh
+Result path: baseline/BPR_related/CMF/result
 ```
 #### EMCDR
 ```
 $ cd baseline/BPR_related/EMCDR
 $ ./run_EMCDR.sh
+Still have some enviroment error
 ```
 ## Environment
 Python >=3.7 is needed  
