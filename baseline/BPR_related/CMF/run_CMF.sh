@@ -1,3 +1,4 @@
+mom_save_dir='/TOP/tmp2/cpr/from_yzliu/'
 #!/bin/bash
 set -xe
 
@@ -23,6 +24,7 @@ do
 
     python3 CMF_run.py \
     --current_epoch $current_split \
+    --mom_save_dir ${mom_save_dir} \
     --output_file ./result/new_CMF_${src}+${tar}_${current_split} \
     --k 50 \
     --workers $workers \
@@ -31,6 +33,7 @@ do
 
     python3 CMF_run_cold.py \
     --current_epoch $current_split \
+    --mom_save_dir ${mom_save_dir} \
     --output_file ./result/new_CMF_${src}+${tar}_${current_split}_cold_result.txt \
     --k 50 \
     --workers $workers \
