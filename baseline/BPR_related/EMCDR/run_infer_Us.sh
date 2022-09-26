@@ -1,5 +1,6 @@
 #!/bin/bash
 
+mom_save_dir=/TOP/tmp2/cpr/from_yzliu
 update_times=1000 
 num_checkpoint=1
 split=$((200/$num_checkpoint))
@@ -20,6 +21,7 @@ for d in "${datasets[@]}"; do
         current_split=$(($checkpoint*$split))
 
         python3 infer_Us.py \
+	--mom_save_dir ${mom_save_dir} \
         --meta_path ${d}/model_${current_split}/mlp_epoch_${update_times}/mlp_epoch_${update_times}.meta \
         --ckpt_path ${d}/model_${current_split}/mlp_epoch_${update_times} \
         --dataset_name ${d} \
@@ -28,6 +30,7 @@ for d in "${datasets[@]}"; do
 
         # cold
         python3 infer_Us_cold.py \
+	--mom_save_dir ${mom_save_dir} \
         --meta_path ${d}/model_cold_${current_split}/mlp_epoch_${update_times}/mlp_epoch_${update_times}.meta \
         --ckpt_path ${d}/model_cold_${current_split}/mlp_epoch_${update_times} \
         --dataset_name ${d} \

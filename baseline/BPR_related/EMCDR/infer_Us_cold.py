@@ -7,6 +7,7 @@ import argparse
 import os
 
 parser=argparse.ArgumentParser(description='Infer Us from source domain to target domain')
+parser.add_argument('--mom_save_dir', type=str, help='output_file name')
 parser.add_argument('--meta_path', type=str, help='the meta of the trained model')
 parser.add_argument('--ckpt_path', type=str, help='the ckpt directory of the trained model')
 parser.add_argument('--dataset_name', type=str, help='{tv_vod, csj_hk, mt_books}')
@@ -20,7 +21,7 @@ ckpt_path = args.ckpt_path
 ncore = args.ncore
 
 # only infer cold_users
-with open('../../../user_{}core/'.format(ncore) + args.dataset_name + '_' + f'cold_users.pickle', 'rb') as pf:
+with open('{}/user_{}core/'.format(args.mom_save_dir, ncore) + args.dataset_name + '_' + f'cold_users.pickle', 'rb') as pf:
     cold_users = pickle.load(pf)
 cold_users = ["user_"+user for user in cold_users]
 
