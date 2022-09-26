@@ -29,6 +29,8 @@ Note that:
 * Raw data is from Amazon: http://deepyeti.ucsd.edu/jianmo/amazon/categoryFilesSmall/
 
 ## Preprocess (LOO_data -> N-core filtering -> Input)
+Before running preprocess, requirements for it is under base dir.
+
 ```
 $ cd preprocess
 $ ./run_gen_input.sh 
