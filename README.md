@@ -82,9 +82,21 @@ Result path: baseline/BPR_related/CMF/result
 ```
 #### EMCDR
 ```
+Environment: 
+	docker image: tensorflow/tensorflow:1.14.0-gpu-py3
+		      nvcr.io/nvidia/pytorch:22.05-py3
+
+Change docker image to tensorflow/twnsorflow:1.14.0-gpu-py3
 $ cd baseline/BPR_related/EMCDR
-$ ./run_EMCDR.sh
-Still have some enviroment error
+$ pip install pandas
+$ ./run_preprocess.sh
+$ ./run_train.sh
+Change docker image to nvcr.io/nvidia/pytorch:22.05-py3
+$ cd baseline/BPR_related/EMCDR
+$ pip install faiss-gpu
+$ ./run_rec_and_eval.sh
+Result path /baseline/BPR_related/EMCDR/result
+
 ```
 ## Environment
 Python >=3.7 is needed  

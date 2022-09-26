@@ -4,6 +4,7 @@ import pandas as pd
 import pickle
 
 parser=argparse.ArgumentParser(description='EMCDR cold')
+parser.add_argument('--mom_save_dir', type=str, help='output_file name')
 parser.add_argument('--current_epoch', type=str)
 parser.add_argument('--dataset_name', type=str, help='{tv_vod, vod_tv, csj_hk, mt_books, el_cpa, spo_csj}')
 parser.add_argument('--ncore', type=int, help='core_filter', default=0)
@@ -13,12 +14,12 @@ source_name = args.dataset_name.split('_')[0]
 target_name = args.dataset_name.split('_')[1]
 ncore = args.ncore
 
-with open('../../../user_{}core/'.format(ncore) + args.dataset_name + '_' + 'shared_users.pickle', 'rb') as pf:
+with open('{}/user_{}core/'.format(args.mom_save_dir, ncore) + args.dataset_name + '_' + 'shared_users.pickle', 'rb') as pf:
     shared_users = pickle.load(pf)
 shared_users = ["user_"+user for user in shared_users]
 
 # load cold users
-with open('../../../user_{}core/'.format(ncore) + args.dataset_name + '_' + 'cold_users.pickle', 'rb') as pf:
+with open('{}/user_{}core/'.format(args.mom_save_dir, ncore) + args.dataset_name + '_' + 'cold_users.pickle', 'rb') as pf:
     cold_users = pickle.load(pf)
 cold_users = ["user_" + user for user in cold_users]
 

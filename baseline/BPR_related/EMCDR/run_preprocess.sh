@@ -1,6 +1,7 @@
 #!/bin/bash
 set -xe
 
+mom_save_dir='/TOP/tmp2/cpr/from_yzliu/'
 update_times=200 
 num_checkpoint=1
 split=$(($update_times/$num_checkpoint))
@@ -23,11 +24,13 @@ for d in "${datasets[@]}"; do
         current_split=$(($checkpoint*$split))
         
         python3 preprocess.py \
+	--mom_save_dir ${mom_save_dir} \
         --dataset_name $d \
         --current_epoch $current_split \
         --ncore $ncore
 
         python3 preprocess_cold.py \
+	--mom_save_dir ${mom_save_dir} \
         --current_epoch $current_split \
         --dataset_name $d \
         --ncore $ncore
