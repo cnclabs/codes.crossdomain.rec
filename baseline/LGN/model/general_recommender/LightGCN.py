@@ -185,27 +185,27 @@ class LightGCN(AbstractRecommender):
 
         ###### for get embeddin
         dataset = self.dataset
-        user_ids = dataset.userids
-        item_ids = dataset.itemids
-        try:
-            assert os.path.isdir(os.path.join(dir_path, 'dic'))
-        except:
-            raise Exception("Lack of dictionaries for users !!")
-        if not os.path.isdir(os.path.join(dir_path, str(for_count))):
-            os.mkdir(os.path.join(dir_path, str(for_count)))
-            os.mkdir(os.path.join(dir_path, str(for_count)+'/evaluations'))
+        # user_ids = dataset.userids
+        # item_ids = dataset.itemids
+        # try:
+        #    assert os.path.isdir(os.path.join(dir_path, 'dic'))
+        # except:
+        #    raise Exception("Lack of dictionaries for users !!")
+        # if not os.path.isdir(os.path.join(dir_path, str(for_count))):
+        #    os.mkdir(os.path.join(dir_path, str(for_count)))
+        #    os.mkdir(os.path.join(dir_path, str(for_count)+'/evaluations'))
 
-        dataset_attrs = dataset.dataset_name.split('_')
-        d_name = dataset_attrs[0]
-        d_train = dataset_attrs[1]
-        d_test = dataset_attrs[2]
+        # dataset_attrs = dataset.dataset_name.split('_')
+        # d_name = dataset_attrs[0]
+        # d_train = dataset_attrs[1]
+        # d_test = dataset_attrs[2]
         
-        if d_name == "tvvod" and d_train == "big":
-            user_dic_path = os.path.join(dir_path, "dic/tvvod_user_sampled_dic.pickle")
-            item_dic_path = os.path.join(dir_path, "dic/tvvod_item_sampled_dic.pickle")
-        else:
-            user_dic_path = os.path.join(dir_path, "dic/"+d_name+"_user_dic.pickle")
-            item_dic_path = os.path.join(dir_path, "dic/"+d_name+"_item_dic.pickle")
+        # if d_name == "tvvod" and d_train == "big":
+        #     user_dic_path = os.path.join(dir_path, "dic/tvvod_user_sampled_dic.pickle")
+        #     item_dic_path = os.path.join(dir_path, "dic/tvvod_item_sampled_dic.pickle")
+        # else:
+        #     user_dic_path = os.path.join(dir_path, "dic/"+d_name+"_user_dic.pickle")
+        #     item_dic_path = os.path.join(dir_path, "dic/"+d_name+"_item_dic.pickle")
 
         #with open(user_dic_path, 'rb') as pf:
         #    user_dic = pickle.load(pf)
@@ -233,7 +233,7 @@ class LightGCN(AbstractRecommender):
                     file_name = os.path.join(dir_path, str(for_count)+'/'+dataset.dataset_name+'_'+str(epoch+1)+'epoch.graph')
                 else:
                     file_name = os.path.join(dir_path, dataset.dataset_name+'_'+str(epoch+1)+'epoch.graph')
-                self.writeEmbed(file_name, user_dic, item_dic)
+                self.writeEmbed(file_name)
             ######
 
 
@@ -258,7 +258,7 @@ class LightGCN(AbstractRecommender):
         key_list = list(dic.keys())
         value_list = list(dic.values())
         return key_list[value_list.index(value)]
-    def writeEmbed(self, file_name, user_dic, item_dic):
+    def writeEmbed(self, file_name):
         dataset = self.dataset
         user_embeds, item_embeds = self.get_embeddings([i for i in range(self.dataset.num_users)], [i for i in range(self.dataset.num_items)])
         with open(file_name, 'w') as f:
