@@ -15,6 +15,7 @@ import time
 from tqdm import tqdm
 
 parser=argparse.ArgumentParser(description='CMF')
+parser.add_argument('--mom_save_dir', type=str, help='')
 parser.add_argument('--current_epoch', type=str, help='current_epoch num')
 parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--k', type=int, help='Number of latent factors to use in CMF model')
@@ -26,12 +27,12 @@ args=parser.parse_args()
 source_domain, target_domain = args.dataset.split("_")
 ncore = args.ncore
 
-with open(f'../../../LOO_data_{str(ncore)}core/{target_domain}_train.pickle', 'rb') as pk:
+with open(f'{args.mom_save_dir}/LOO_data_{str(ncore)}core/{target_domain}_train.pickle', 'rb') as pk:
     target_domain_train = pickle.load(pk)
 target_domain_train['reviewerID'] = target_domain_train['reviewerID'].apply(lambda x: 'user_' + x)
 
 # open mt books cold start users
-with open(f'../../../user_{str(ncore)}core/{source_domain}_{target_domain}_cold_users.pickle', 'rb') as pf:
+with open(f'{args.mom_save_dir}/user_{str(ncore)}core/{source_domain}_{target_domain}_cold_users.pickle', 'rb') as pf:
     dataset_cold_start_users = pickle.load(pf)
 dataset_cold_start_users = ["user_"+user for user in dataset_cold_start_users]
 
@@ -45,7 +46,7 @@ print("Finished generating target_domain_ratings...")
 
 ## get user information
 ## extract mt domain embedding of overlap_users as user_info
-with open(f'../../../LOO_data_{str(ncore)}core/{source_domain}_train.pickle', 'rb') as pf:
+with open(f'{args.mom_save_dir}/LOO_data_{str(ncore)}core/{source_domain}_train.pickle', 'rb') as pf:
     source_domain_train = pickle.load(pf)
 source_domain_train['reviewerID'] = source_domain_train['reviewerID'].apply(lambda x: 'user_' + x)
 overlap_users = set(source_domain_train.reviewerID).intersection(set(filtered_target_domain_train.reviewerID))
@@ -111,7 +112,7 @@ print("It took {} seconds to fit the model.".format(time.time() - start_time))
 
 # ================== Rec and Eval ==================
 # ground truth 
-with open(f'../../../LOO_data_{str(ncore)}core/{target_domain}_test.pickle', 'rb') as pk:
+with open(f'{args.mom_save_dir}/LOO_data_{str(ncore)}core/{target_domain}_test.pickle', 'rb') as pk:
     target_domain_test_df = pickle.load(pk)
 target_domain_test_df['reviewerID'] = target_domain_test_df['reviewerID'].apply(lambda x: 'user_'+x)
 
