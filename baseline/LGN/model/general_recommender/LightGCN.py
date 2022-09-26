@@ -175,7 +175,7 @@ class LightGCN(AbstractRecommender):
 
         return mf_loss, emb_loss
 
-    def train_model(self, dir_path, for_count=None):
+    def train_model(self, dir_path, write_ep=100, for_count=None):
 
         data_iter = PairwiseSampler(self.dataset, neg_num=1, batch_size=self.batch_size, shuffle=True)
 
@@ -228,7 +228,7 @@ class LightGCN(AbstractRecommender):
                 with open(os.path.join(dir_path, str(for_count)+'/evaluations/'+dataset.dataset_name+'evaluation.txt'), 'a') as f:
                     f.write("epoch %d:\t%s\n" % (epoch, result))
             ###### write embeds
-            if (epoch+1) % 100 == 0:
+            if (epoch+1) % write_ep == 0:
                 if for_count is not None:
                     file_name = os.path.join(dir_path, str(for_count)+'/'+dataset.dataset_name+'_'+str(epoch+1)+'epoch.graph')
                 else:
@@ -266,7 +266,7 @@ class LightGCN(AbstractRecommender):
             for i in range(dataset.num_users):
                 userid_real = self.findKey(dataset.userids, i)
                 #userid_remap = self.findKey(user_dic, str(userid_real))
-                f.write("user_"+str(userid_real)+'\t')
+                f.write(str(userid_real)+'\t')
                 embed_str = ""
                 for e in user_embeds[i]:
                     embed_str += str(e)+' '
@@ -277,7 +277,7 @@ class LightGCN(AbstractRecommender):
             for i in range(dataset.num_items):
                 itemid_real = self.findKey(dataset.itemids, i)
                 #itemid_remap = self.findKey(item_dic, str(itemid_real))
-                f.write("item_"+str(itemid_real)+'\t')
+                f.write(str(itemid_real)+'\t')
                 embed_str = ""
                 for e in item_embeds[i]:
                     embed_str += str(e)+' '
