@@ -52,8 +52,12 @@ $ cd baseline/Bi-TGCF
 $ ./run_BiTGCF.sh
 ```
 #### LGN (LightGCN)
+We use [NeuRec](https://github.com/wubinzzu/NeuRec) for LGN. Preporcess inputs for NeuRec format first.
 ```
 $ cd baseline/LGN
+$ cd preprocess
+$ ./run_preprocess.sh
+$ cd ..
 $ ./build_cython.sh
 $ ./run_LGN.sh
 ```
