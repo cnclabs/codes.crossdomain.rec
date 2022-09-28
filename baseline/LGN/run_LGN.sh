@@ -36,16 +36,15 @@ do
 			then
 				fullname=${dataset}_${graph}_${te}
 				python3 edit_properties.py --dataset ${fullname}
-				screen -dm -S ${fullname} bash -c \
-				"python3 main.py; python3 ../../rec_and_eval_ncore.py \
+				python3 main.py
+				python3 ../../rec_and_eval_ncore.py \
 				--test_users ${te} \
 				--output_file $(pwd)/result/${src}_${tar}_lightgcn_result_${epoch}_${te}.txt \
 				--graph_file $(pwd)/graph/${fullname}_${epoch}epoch.graph \
 				--src ${src} \
 				--tar ${tar} \
 				--ncore ${ncore} \
-				--sample ${sample};
-				exec sh"
+				--sample ${sample}
 				#sleep 1s	
 				echo Start training $fullname !
 			fi
