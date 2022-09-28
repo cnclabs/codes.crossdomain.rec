@@ -14,6 +14,9 @@ from multiprocessing import Pool
 import time
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend target items')
+parser.add_argument('--mom_save_dir', type=str, help='output_file name')
+parser.add_argument('--src', type=str, help='souce name', default='hk')
+parser.add_argument('--tar', type=str, help='target name', default='csjj')
 parser.add_argument('--current_epoch', type=str)
 parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--test_users', type=str, help='{target, shared}')
@@ -21,31 +24,32 @@ parser.add_argument('--workers', type=int, help='number of multi-processing work
 parser.add_argument('--dataset_name', type=str, help='{tv_vod, csj_hk, mt_books, el_cpa, spo_csj}')
 parser.add_argument('--ncore', type=int, help='core_filter', default=0)
 
-
 args=parser.parse_args()
-source_name = args.dataset_name.split('_')[0]
-target_name = args.dataset_name.split('_')[1]
+source_name = args.src
+target_name = args.tar
+#target_name = dataset_name.split('_')[1]
 ncore = args.ncore
 
 # ground truth
-with open('../../../LOO_data_{}core/{}_test.pickle'.format(ncore, target_name), 'rb') as pf:
+with open('{}/LOO_data_{}core/{}_test.pickle'.format(args.mom_save_dir, ncore, target_name), 'rb') as pf:
     tar_test_df = pickle.load(pf)
 tar_test_df['reviewerID'] = tar_test_df['reviewerID'].apply(lambda x: 'user_'+x)
 
 # sample testing users
 sample_amount = 4000
 random.seed(3)
+print("test_users", args.test_users)
 if args.test_users == 'target':
     testing_users = random.sample(set(tar_test_df.reviewerID), sample_amount)
     # testing_users = ['user_'+user for user in testing_users]
 if args.test_users == 'shared':
-    with open('../../../user_{}core/{}_{}_shared_users.pickle'.format(ncore, source_name, target_name), 'rb') as pf:
+    with open('{}/user_{}core/{}_{}_shared_users.pickle'.format(args.mom_save_dir, ncore, source_name, target_name), 'rb') as pf:
         shared_users = pickle.load(pf)
     testing_users = random.sample(set(shared_users), sample_amount)
     testing_users = ['user_'+user for user in testing_users]
 
 # rec pool
-with open('../../../LOO_data_{}core/{}_train.pickle'.format(ncore, target_name), 'rb') as pf:
+with open('{}/LOO_data_{}core/{}_train.pickle'.format(args.mom_save_dir, ncore, target_name), 'rb') as pf:
     tar_train_df = pickle.load(pf)
 tar_train_df['reviewerID'] = tar_train_df['reviewerID'].apply(lambda x: 'user_'+x)
 total_item_set = set(tar_train_df.asin)

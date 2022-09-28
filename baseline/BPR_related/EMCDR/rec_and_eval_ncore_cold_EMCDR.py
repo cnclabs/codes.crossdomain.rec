@@ -14,6 +14,9 @@ from multiprocessing import Pool
 import time
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend target items')
+parser.add_argument('--mom_save_dir', type=str, help='output_file name')
+parser.add_argument('--src', type=str, help='souce name', default='hk')
+parser.add_argument('--tar', type=str, help='target name', default='csjj')
 parser.add_argument('--current_epoch', type=str)
 parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--workers', type=int, help='number of multi-processing workers')
@@ -22,17 +25,17 @@ parser.add_argument('--ncore', type=int, help='core_filter', default=0)
 
 args=parser.parse_args()
 output_file=args.output_file
-source_name = args.dataset_name.split('_')[0]
-target_name = args.dataset_name.split('_')[1]
+source_name = args.src
+target_name = args.tar
 ncore = args.ncore
 
 # ground truth 
-with open('../../../LOO_data_{}core/{}_test.pickle'.format(ncore, target_name), 'rb') as pf:
+with open('{}/LOO_data_{}core/{}_test.pickle'.format(args.mom_save_dir, ncore, target_name), 'rb') as pf:
     tar_test_df = pickle.load(pf)
 tar_test_df['reviewerID'] = tar_test_df['reviewerID'].apply(lambda x: 'user_'+x)
 
 # testing users : cold-start users
-with open('../../../user_{}core/{}_{}_cold_users.pickle'.format(ncore, source_name, target_name), 'rb') as pf:
+with open('{}/user_{}core/{}_{}_cold_users.pickle'.format(args.mom_save_dir, ncore, source_name, target_name), 'rb') as pf:
     src_tar_cold_start_users = pickle.load(pf)
 testing_users = src_tar_cold_start_users
 testing_users = ['user_'+user for user in testing_users]
@@ -40,7 +43,7 @@ testing_users = ['user_'+user for user in testing_users]
 
 # rec pool
 ## load tar_train_df
-with open('../../../LOO_data_{}core/{}_train.pickle'.format(ncore, target_name), 'rb') as pf:
+with open('{}/LOO_data_{}core/{}_train.pickle'.format(args.mom_save_dir, ncore, target_name), 'rb') as pf:
   tar_train_df = pickle.load(pf)
 tar_train_df['reviewerID'] = tar_train_df['reviewerID'].apply(lambda x: 'user_'+x)
 
