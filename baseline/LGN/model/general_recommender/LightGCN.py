@@ -225,7 +225,10 @@ class LightGCN(AbstractRecommender):
             g_epoch = epoch
             g_result = result
             if (epoch+1) % 10 == 0:
-                with open(os.path.join(dir_path, str(for_count)+'/evaluations/'+dataset.dataset_name+'evaluation.txt'), 'a') as f:
+                _dir = os.path.join(dir_path, str(for_count)+'/evaluations/')
+                if not os.path.exists(_dir):
+                    os.makedirs(_dir)
+                with open(os.path.join(_dir, dataset.dataset_name+'evaluation.txt'), 'a') as f:
                     f.write("epoch %d:\t%s\n" % (epoch, result))
             ###### write embeds
             if (epoch+1) % write_ep == 0:
