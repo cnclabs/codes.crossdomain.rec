@@ -49,15 +49,22 @@ print("Start TARGET / {} & SRC / {} core filtering ...".format(tar.upper(), src.
 with open('{}/LOO_data_0core/{tar}_train.pickle'.format(args.mom_save_dir, tar=tar), 'rb') as f:
     tar_train = pickle.load(f)
 
-tar_ncore_train = tar_train[(tar_train[user_attr].isin(tar_train[user_attr].value_counts()[tar_train[user_attr].value_counts()>=ncore].index)) & \
-        (tar_train[item_attr].isin(tar_train[item_attr].value_counts()[tar_train[item_attr].value_counts()>=ncore].index))]
+def filter(train):
+    ncore_train = train[(train[user_attr].isin(train[user_attr].value_counts()[train[user_attr].value_counts()>=ncore].index)) & \
+            (train[item_attr].isin(train[item_attr].value_counts()[train[item_attr].value_counts()>=ncore].index))]
+    return ncore_train
+
+tar_ncore_train = filter(tar_train)
+while (tar_ncore_train[user_attr].value_counts().min()<ncore) | (tar_ncore_train[item_attr].value_counts().min()<ncore):
+    tar_ncore_train = filter(tar_ncore_train)
 
 # src
 with open('{}/LOO_data_0core/{src}_train.pickle'.format(args.mom_save_dir, src=src), 'rb') as f:
     src_train = pickle.load(f)
 
-src_ncore_train = src_train[(src_train[user_attr].isin(src_train[user_attr].value_counts()[src_train[user_attr].value_counts()>=ncore].index)) & \
-        (src_train[item_attr].isin(src_train[item_attr].value_counts()[src_train[item_attr].value_counts()>=ncore].index))]
+src_ncore_train = filter(src_train)
+while (src_ncore_train[user_attr].value_counts().min()<ncore) | (src_ncore_train[item_attr].value_counts().min()<ncore):
+    src_ncore_train = filter(src_ncore_train)
 
 valid_users.update(list(tar_ncore_train[user_attr].unique())+list(src_ncore_train[user_attr].unique()))
 valid_items.update(list(tar_ncore_train[item_attr].unique())+list(src_ncore_train[item_attr].unique()))
