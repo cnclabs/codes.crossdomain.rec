@@ -1,0 +1,3 @@
+evaluator/__pycache__/
+util/cython/
+evaluator/backend/cpp/
