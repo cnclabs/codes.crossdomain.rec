@@ -11,6 +11,7 @@ import argparse
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 parser=argparse.ArgumentParser(description='Raw data -> LOO data. Please determine the name of the raw data to be processed.')
+parser.add_argument('--mom_save_dir', type=str, help='', default=None)
 parser.add_argument('--raw_data', type=str, help='name of raw data to be processed', default=None)
 parser.add_argument('--dataset_name', type=str, help="name to be represent this dataset in the future", default=None)
 parser.add_argument('--user_attr', type=str, help='(default for amz) attribute represents users\' ids', default='reviewerID')
@@ -25,7 +26,7 @@ assert dataset_name is not None, "dataset name can't be empty"
 time_attr, user_attr = args.time_attr, args.user_attr
 
 print('>>>>>Reading raw data...')
-jf = open(os.path.join('../raw_data', raw_data), 'r')
+jf = open(os.path.join('{}/raw_data'.format(args.mom_save_dir), raw_data), 'r')
 line_list = []
 for line in jf.readlines():
     dic = json.loads(line)
@@ -92,17 +93,20 @@ dataset_train_df = pd.concat(train_data)
 dataset_test_df = pd.concat(test_data)
 print(f'>>>>>DONE Gathering result...')
 
+save_dir = '{}/LOO_data_0core'.format(args.mom_save_dir
+if not os.path.exists(save_dir):
+    os.mkdir(save_dir)        
 
 print(f'>>>>>Saving train...')
-with open('../LOO_data_0core/{}_train.pickle'.format(dataset_name), 'wb') as pickle_file:
+with open('{}/{}_train.pickle'.format(save_dir, dataset_name), 'wb') as pickle_file:
     pickle.dump(dataset_train_df, pickle_file)
 
 print(f'>>>>>Saving test...')
-with open('../LOO_data_0core/{}_test.pickle'.format(dataset_name), 'wb') as pickle_file:
+with open('{}/{}_test.pickle'.format(save_dir, dataset_name), 'wb') as pickle_file:
     pickle.dump(dataset_test_df, pickle_file)
 
 print(f'>>>>>Saving one log user...')
-with open('../LOO_data_0core/{}_one_log_user.pickle'.format(dataset_name), 'wb') as pickle_file:
+with open('{}/{}_one_log_user.pickle'.format(save_dir, dataset_name), 'wb') as pickle_file:
     pickle.dump(one_log_user_list, pickle_file)
 
 
