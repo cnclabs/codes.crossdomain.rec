@@ -17,9 +17,13 @@ ncore=${ncores[$dataset]}
 echo "Make sure you've run build_cython & preprocess for LGN."
 fullname=${dataset}_${graph}_${te}
 
-if [[ ! -d ./result ]]
+if [[ ! -d ./graph ]]
 then
 	mkdir -p ./graph
+fi
+
+if [[ ! -d ./result ]]
+then
 	mkdir -p ./result
 fi
 
