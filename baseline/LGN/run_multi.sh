@@ -18,7 +18,7 @@ gpu_id=$3
 mode=$4
 
 bash single_LGN.sh ${src} ${tar} big target ${mode} ${gpu_id}&
-bash single_LGN.sh ${src} ${tar} big shared ${mode} ${gpu_id}&
-bash single_LGN.sh ${src} ${tar} big cold ${mode} ${gpu_id}&
-bash single_LGN.sh ${src} ${tar} lil target ${mode} ${gpu_id}&
-bash single_LGN.sh ${src} ${tar} lil shared ${mode} ${gpu_id}
+sleep 60s && bash single_LGN.sh ${src} ${tar} big shared ${mode} ${gpu_id}&
+sleep 120s && bash single_LGN.sh ${src} ${tar} big cold ${mode} ${gpu_id}&
+sleep 180s && bash single_LGN.sh ${src} ${tar} lil target ${mode} ${gpu_id}&
+sleep 240s && bash single_LGN.sh ${src} ${tar} lil shared ${mode} ${gpu_id}
