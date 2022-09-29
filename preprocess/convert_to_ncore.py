@@ -71,8 +71,8 @@ valid_items.update(list(tar_ncore_train[item_attr].unique())+list(src_ncore_trai
 
 ####
 
-tar_ncore_train = tar_train[(tar_train[user_attr].isin(valid_users)) & (tar_train[item_attr].isin(valid_items))]
-src_ncore_train = src_train[(src_train[user_attr].isin(valid_users)) & (src_train[item_attr].isin(valid_items))]
+# tar_ncore_train = tar_train[(tar_train[user_attr].isin(valid_users)) & (tar_train[item_attr].isin(valid_items))]
+# src_ncore_train = src_train[(src_train[user_attr].isin(valid_users)) & (src_train[item_attr].isin(valid_items))]
 
 with open(os.path.join(save_dir, '{tar}_train.pickle'.format(tar=tar)), 'wb') as f:
     pickle.dump(tar_ncore_train, f)
