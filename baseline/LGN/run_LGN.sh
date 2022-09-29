@@ -10,6 +10,13 @@ sample=4000
 
 nowgpu=0
 
+
+if [[ ! -d ./result ]]
+then
+	mkdir -p ./graph
+	mkdir -p ./result
+fi
+
 echo "Make sure you've run build_cython & preprocess for LGN."
 
 for dataset in "${datasets[@]}";
