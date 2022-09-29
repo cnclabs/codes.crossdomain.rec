@@ -67,7 +67,7 @@ $ pip install -r requirements.txt
 # Option-1: run sequentially
 $ ./run_LGN.sh
 
-# Option-2: run parallelly -> bash run_multi.sh {src} {tar} {gpu_id} {mode}
+# Option-2: run parallelly 
 $ bash run_all.sh
 ```
 #### BPR related models
