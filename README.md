@@ -52,8 +52,10 @@ Find evaluated score in ./result
 Since baselines need different envs, you could manage multiple envs for them. Modules needed are list in `baseline/${MODEL_NAME}/requirements.txt`.  
 Models under `baseline/BPR_related` shared the same env. 
 #### Bi-TGCF
+docker image: `nvcr.io/nvidia/tensorflow:22.08-tf2-py3`
 ```
 $ cd baseline/Bi-TGCF
+$ pip install -r requirements.txt
 $ ./run_BiTGCF.sh
 ```
 #### LGN (LightGCN)
