@@ -36,10 +36,10 @@ with open('../../../LOO_data_{ncore}core/{tar}_test.pickle'.format(ncore=ncore, 
     tar_test_df = pickle.load(pf)
 tar_test_df[user_attr] = tar_test_df[user_attr].apply(lambda x: 'user_'+x)
 
-tar_train_graph = tar_train.groupby([user_attr, item_attr])#.size().apply(lambda x: log(x+1.))
-_df = pd.concat([tar_train_graph])
-_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_target.train'.format(tar=tar, src=src)), header=False, sep=',')
-_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_shared.train'.format(tar=tar, src=src)), header=False, sep=',')
+tar_train_graph = tar_train.groupby([user_attr, item_attr]).size().reset_index().drop([0], axis=1)
+_df = tar_train_graph
+_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_target.train'.format(tar=tar, src=src)), header=False, index=False, sep=',')
+_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_shared.train'.format(tar=tar, src=src)), header=False, index=False, sep=',')
 
 target_users = random.sample(set(tar_test_df[user_attr]), sample_amount)
 with open('../../../user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(ncore=ncore, src=src, tar=tar), 'rb') as pf:
@@ -51,24 +51,24 @@ with open('../../../user_{ncore}core/{src}_{tar}_cold_users.pickle'.format(ncore
 cold_users = set(map(lambda x: "user_"+x, cold_users))
 
 # make tests
-target_test_df = pd.concat([tar_test_df[tar_test_df[user_attr].isin(target_users)].groupby([user_attr, item_attr])])
-shared_test_df = pd.concat([tar_test_df[tar_test_df[user_attr].isin(shared_users)].groupby([user_attr, item_attr])])
-cold_test_df = pd.concat([tar_test_df[tar_test_df[user_attr].isin(cold_users)].groupby([user_attr, item_attr])])
-target_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_target.test'.format(tar=tar, src=src)), header=False, sep=',')
-shared_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_shared.test'.format(tar=tar, src=src)), header=False, sep=',')
-target_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_big_target.test'.format(tar=tar, src=src)), header=False, sep=',')
-shared_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_big_shared.test'.format(tar=tar, src=src)), header=False, sep=',')
-cold_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_big_cold.test'.format(tar=tar, src=src)), header=False, sep=',')
+target_test_df = tar_test_df[tar_test_df[user_attr].isin(target_users)].groupby([user_attr, item_attr]).size().reset_index().drop([0], axis=1)
+shared_test_df = tar_test_df[tar_test_df[user_attr].isin(shared_users)].groupby([user_attr, item_attr]).size().reset_index().drop([0], axis=1)
+cold_test_df = tar_test_df[tar_test_df[user_attr].isin(cold_users)].groupby([user_attr, item_attr]).size().reset_index().drop([0], axis=1)
+target_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_target.test'.format(tar=tar, src=src)), header=False, index=False, sep=',')
+shared_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_shared.test'.format(tar=tar, src=src)), header=False, index=False, sep=',')
+target_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_big_target.test'.format(tar=tar, src=src)), header=False, index=False, sep=',')
+shared_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_big_shared.test'.format(tar=tar, src=src)), header=False, index=False, sep=',')
+cold_test_df.to_csv(os.path.join(save_dir,'{src}_{tar}_big_cold.test'.format(tar=tar, src=src)), header=False, index=False, sep=',')
 
 # src (source)
 with open('../../../LOO_data_{ncore}core/{src}_train.pickle'.format(ncore=ncore, src=src), 'rb') as pf:
     src_train = pickle.load(pf)
 
 src_train[user_attr] = src_train[user_attr].apply(lambda x: 'user_'+x)
-src_train_graph = src_train.groupby([user_attr, item_attr])#.size().apply(lambda x: log(x+1.))
-#src_train_graph.to_csv(os.path.join(save_dir, 'all_{src}_train_input.txt'.format(src=src)), header=False, sep='\t')
-pd.concat([tar_train_graph, src_train_graph]).to_csv(os.path.join(save_dir, '{src}_{tar}_big_target.train'.format(tar=tar, src=src)), header=False, sep=',')
-pd.concat([tar_train_graph, src_train_graph]).to_csv(os.path.join(save_dir, '{src}_{tar}_big_shared.train'.format(tar=tar, src=src)), header=False, sep=',')
+src_train_graph = src_train.groupby([user_attr, item_attr]).size().reset_index().drop([0], axis=1)
+#src_train_graph.to_csv(os.path.join(save_dir, 'all_{src}_train_input.txt'.format(src=src)), header=False, index=False, sep='\t')
+pd.concat([tar_train_graph, src_train_graph]).to_csv(os.path.join(save_dir, '{src}_{tar}_big_target.train'.format(tar=tar, src=src)), header=False, index=False, sep=',')
+pd.concat([tar_train_graph, src_train_graph]).to_csv(os.path.join(save_dir, '{src}_{tar}_big_shared.train'.format(tar=tar, src=src)), header=False, index=False, sep=',')
 
 # for cold start
 with open('../../../user_{ncore}core/{src}_{tar}_cold_users.pickle'.format(ncore=ncore, tar=tar, src=src), 'rb') as pf:
@@ -78,9 +78,9 @@ with open('../../../LOO_data_{ncore}core/{tar}_train.pickle'.format(ncore=ncore,
 
 cold_tar_train = tar_train[~tar_train[user_attr].isin(src_tar_cold_users)]
 cold_tar_train[user_attr] = cold_tar_train[user_attr].apply(lambda x: 'user_'+x)
-cold_tar_train_graph = cold_tar_train.groupby([user_attr, item_attr])#.size().apply(lambda x: log(x+1.))
-#cold_tar_train_graph.to_csv(os.path.join(save_dir, 'cold_{tar}_train_input.txt'.format(tar=tar)), header=False, sep='\t')
-pd.concat([cold_tar_train_graph, src_train_graph]).to_csv(os.path.join(save_dir, '{src}_{tar}_big_cold.train'.format(tar=tar, src=src)), header=False, sep=',')
+cold_tar_train_graph = cold_tar_train.groupby([user_attr, item_attr]).size().reset_index().drop([0], axis=1)
+#cold_tar_train_graph.to_csv(os.path.join(save_dir, 'cold_{tar}_train_input.txt'.format(tar=tar)), header=False, index=False, sep='\t')
+pd.concat([cold_tar_train_graph, src_train_graph]).to_csv(os.path.join(save_dir, '{src}_{tar}_big_cold.train'.format(tar=tar, src=src)), header=False, index=False, sep=',')
 
 
 
