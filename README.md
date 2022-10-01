@@ -29,6 +29,8 @@ Note that:
 * Raw data is from Amazon: http://deepyeti.ucsd.edu/jianmo/amazon/categoryFilesSmall/
 
 ## Preprocess (LOO_data -> N-core filtering -> Input)
+Before running preprocess, requirements for it is under base dir.
+
 ```
 $ cd preprocess
 $ ./run_gen_input.sh 
@@ -59,8 +61,12 @@ $ pip install -r requirements.txt
 $ ./run_BiTGCF.sh
 ```
 #### LGN (LightGCN)
+We use [NeuRec](https://github.com/wubinzzu/NeuRec) for LGN. Preporcess inputs for NeuRec format first.
 ```
 $ cd baseline/LGN
+$ cd preprocess
+$ ./run_preprocess.sh
+$ cd ..
 $ ./build_cython.sh
 $ ./run_LGN.sh
 ```
