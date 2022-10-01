@@ -175,7 +175,7 @@ class LightGCN(AbstractRecommender):
 
         return mf_loss, emb_loss
 
-    def train_model(self, dir_path, for_count=None):
+    def train_model(self, dir_path, write_ep=100, for_count=None):
 
         data_iter = PairwiseSampler(self.dataset, neg_num=1, batch_size=self.batch_size, shuffle=True)
 
@@ -185,27 +185,27 @@ class LightGCN(AbstractRecommender):
 
         ###### for get embeddin
         dataset = self.dataset
-        user_ids = dataset.userids
-        item_ids = dataset.itemids
-        try:
-            assert os.path.isdir(os.path.join(dir_path, 'dic'))
-        except:
-            raise Exception("Lack of dictionaries for users !!")
-        if not os.path.isdir(os.path.join(dir_path, str(for_count))):
-            os.mkdir(os.path.join(dir_path, str(for_count)))
-            os.mkdir(os.path.join(dir_path, str(for_count)+'/evaluations'))
+        # user_ids = dataset.userids
+        # item_ids = dataset.itemids
+        # try:
+        #    assert os.path.isdir(os.path.join(dir_path, 'dic'))
+        # except:
+        #    raise Exception("Lack of dictionaries for users !!")
+        # if not os.path.isdir(os.path.join(dir_path, str(for_count))):
+        #    os.mkdir(os.path.join(dir_path, str(for_count)))
+        #    os.mkdir(os.path.join(dir_path, str(for_count)+'/evaluations'))
 
-        dataset_attrs = dataset.dataset_name.split('_')
-        d_name = dataset_attrs[0]
-        d_train = dataset_attrs[1]
-        d_test = dataset_attrs[2]
+        # dataset_attrs = dataset.dataset_name.split('_')
+        # d_name = dataset_attrs[0]
+        # d_train = dataset_attrs[1]
+        # d_test = dataset_attrs[2]
         
-        if d_name == "tvvod" and d_train == "big":
-            user_dic_path = os.path.join(dir_path, "dic/tvvod_user_sampled_dic.pickle")
-            item_dic_path = os.path.join(dir_path, "dic/tvvod_item_sampled_dic.pickle")
-        else:
-            user_dic_path = os.path.join(dir_path, "dic/"+d_name+"_user_dic.pickle")
-            item_dic_path = os.path.join(dir_path, "dic/"+d_name+"_item_dic.pickle")
+        # if d_name == "tvvod" and d_train == "big":
+        #     user_dic_path = os.path.join(dir_path, "dic/tvvod_user_sampled_dic.pickle")
+        #     item_dic_path = os.path.join(dir_path, "dic/tvvod_item_sampled_dic.pickle")
+        # else:
+        #     user_dic_path = os.path.join(dir_path, "dic/"+d_name+"_user_dic.pickle")
+        #     item_dic_path = os.path.join(dir_path, "dic/"+d_name+"_item_dic.pickle")
 
         #with open(user_dic_path, 'rb') as pf:
         #    user_dic = pickle.load(pf)
@@ -228,12 +228,12 @@ class LightGCN(AbstractRecommender):
                 with open(os.path.join(dir_path, str(for_count)+'/evaluations/'+dataset.dataset_name+'evaluation.txt'), 'a') as f:
                     f.write("epoch %d:\t%s\n" % (epoch, result))
             ###### write embeds
-            if (epoch+1) % 100 == 0:
+            if (epoch+1) % write_ep == 0:
                 if for_count is not None:
                     file_name = os.path.join(dir_path, str(for_count)+'/'+dataset.dataset_name+'_'+str(epoch+1)+'epoch.graph')
                 else:
                     file_name = os.path.join(dir_path, dataset.dataset_name+'_'+str(epoch+1)+'epoch.graph')
-                self.writeEmbed(file_name, user_dic, item_dic)
+                self.writeEmbed(file_name)
             ######
 
 
@@ -258,7 +258,7 @@ class LightGCN(AbstractRecommender):
         key_list = list(dic.keys())
         value_list = list(dic.values())
         return key_list[value_list.index(value)]
-    def writeEmbed(self, file_name, user_dic, item_dic):
+    def writeEmbed(self, file_name):
         dataset = self.dataset
         user_embeds, item_embeds = self.get_embeddings([i for i in range(self.dataset.num_users)], [i for i in range(self.dataset.num_items)])
         with open(file_name, 'w') as f:
@@ -266,7 +266,7 @@ class LightGCN(AbstractRecommender):
             for i in range(dataset.num_users):
                 userid_real = self.findKey(dataset.userids, i)
                 #userid_remap = self.findKey(user_dic, str(userid_real))
-                f.write("user_"+str(userid_real)+'\t')
+                f.write(str(userid_real)+'\t')
                 embed_str = ""
                 for e in user_embeds[i]:
                     embed_str += str(e)+' '
@@ -277,7 +277,7 @@ class LightGCN(AbstractRecommender):
             for i in range(dataset.num_items):
                 itemid_real = self.findKey(dataset.itemids, i)
                 #itemid_remap = self.findKey(item_dic, str(itemid_real))
-                f.write("item_"+str(itemid_real)+'\t')
+                f.write(str(itemid_real)+'\t')
                 embed_str = ""
                 for e in item_embeds[i]:
                     embed_str += str(e)+' '
