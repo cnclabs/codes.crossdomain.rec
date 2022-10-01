@@ -30,6 +30,7 @@ if __name__ == "__main__":
     
     for_max = 1
     dir_path = "./graph"
+    write_ep = 100
     assert os.path.isdir(dir_path)
     for for_count in range(for_max):
 
@@ -52,6 +53,6 @@ if __name__ == "__main__":
             model.build_graph()
             sess.run(tf.compat.v1.global_variables_initializer())
             if for_max == 1:
-                model.train_model(dir_path)
+                model.train_model(dir_path, write_ep)
             else:
-                model.train_model(dir_path, for_count)
+                model.train_model(dir_path, write_ep, for_count)
