@@ -59,10 +59,20 @@ $ pip install -r requirements.txt
 $ ./run_BiTGCF.sh
 ```
 #### LGN (LightGCN)
+We use [NeuRec](https://github.com/wubinzzu/NeuRec) for LGN. Preporcess inputs for NeuRec format first.
+
+docker image: `nvcr.io/nvidia/tensorflow:22.08-tf2-py3`
+
 ```
 $ cd baseline/LGN
 $ ./build_cython.sh
+$ pip install -r requirements.txt
+
+# Option-1: run sequentially
 $ ./run_LGN.sh
+
+# Option-2: run parallelly 
+$ bash run_all.sh
 ```
 #### BPR related models
 Run BPR first and wait for its graphs.
