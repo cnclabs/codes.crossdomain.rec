@@ -21,11 +21,6 @@ then
 	mkdir -p ./result
 fi
 
-if [[ ! -d ./internal_data ]]
-then
-	mkdir -p ./result
-fi
-
 if [[ $mode == "normal" ]]
 then	
 	CUDA_VISIBLE_DEVICES=${gpu_id} \
