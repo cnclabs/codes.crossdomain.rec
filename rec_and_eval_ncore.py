@@ -42,29 +42,32 @@ item_emb={}
 # ground truth, csjj is target
 with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
     tar_test_df = pickle.load(pf)
-tar_test_df[args.uid_u] = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
 # csjj_test_df unique reviewerID = 451806
 
 ## sample testing users
 random.seed(3)
 if args.test_users == 'target':
-  testing_users = random.sample(set(tar_test_df[args.uid_u]), sample_amount)
+    _users = set(tar_test_df[args.uid_u])
 if args.test_users == 'shared':
   with open('{}/user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-    shared_users = pickle.load(pf)
-  testing_users = random.sample(set(shared_users), sample_amount)
-  testing_users = set(map(lambda x: "user_"+x, testing_users))
+    _users = set(pickle.load(pf))
 if args.test_users == 'cold':
   with open('{}/user_{ncore}core/{src}_{tar}_cold_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-    cold_users = pickle.load(pf)
-  testing_users = cold_users 
-  testing_users = set(map(lambda x: "user_"+x, testing_users))
+    _users = set(pickle.load(pf))
 
+assert len(_users) >= sample_amount, f'sample amount({sample_amount}) < total users({len(_users)})' 
+if len(_users) == sample_amount:
+    testing_users = _users
+else:
+    testing_users = random.sample(_users, sample_amount)
+testing_users = set(map(lambda x: "user_"+x, testing_users))
 
 # rec pool
 ## load csjj_train_df
 with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
   tar_train_df = pickle.load(pf)
+
+tar_test_df[args.uid_u]  = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
 tar_train_df[args.uid_u] = tar_train_df[args.uid_u].apply(lambda x: 'user_'+x)
 total_item_set = set(tar_train_df[args.uid_i])
 
