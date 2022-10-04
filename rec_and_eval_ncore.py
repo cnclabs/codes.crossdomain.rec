@@ -161,6 +161,25 @@ for user in testing_users:
 total_rec=np.array(total_rec)
 total_ndcg=np.array(total_ndcg)
 
+txt_contents = []
+record_row = {}
+for idx, k in enumerate(k_amount):
+    _recall = total_rec[idx]/count
+    _ndcg   = total_ndcg[idx]/count
+    _content = [
+           '\n--------------------------------',
+           f'\n recall@{k}: ',
+            str(_recall),
+           f'\n NDCG@{k}: ',
+            str(_ndcg)]
+    txt_contents.append(_content)
+    record_row[f'recall@{k}'] = _recall
+    record_row[f'NDCG@{k}'] = _ndcg
+
+record_row = pd.DataFrame([record_row]) 
+record_row_save_path = output_file.replace('.txt', '.csv')
+record_row.to_csv(record_row_save_path, index=False)
+
 print("Start writing file...")
 with open(output_file, 'w') as fw:
     fw.writelines(['=================================\n',
@@ -168,11 +187,6 @@ with open(output_file, 'w') as fw:
             str(graph_file),
             '\n evaluated users: ',
             str(len(testing_users))])
-    for idx, k in enumerate(k_amount):
-        fw.writelines([
-               '\n--------------------------------',
-               f'\n recall@{k}: ',
-                str(total_rec[idx]/count),
-               f'\n NDCG@{k}: ',
-                str(total_ndcg[idx]/count)])
+    for _content in txt_contents:
+        fw.writelines(_content)
 print('Finished!')
