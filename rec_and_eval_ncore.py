@@ -26,7 +26,7 @@ parser.add_argument('--src', type=str, help='souce name')
 parser.add_argument('--tar', type=str, help='target name')
 parser.add_argument('--uid_i', type=str, help='(default for amz) unique id column for item', default='asin')
 parser.add_argument('--uid_u', type=str, help='(default for amz) unique id column of user', default='reviewerID')
-parser.add_argument('--top_ks', nargs='*', help='top_k to eval', default=[10], action='extend', type=int)
+parser.add_argument('--top_ks', nargs='*', help='top_k to eval', default=[1, 3, 5, 10, 20], action='extend', type=int)
 
 args=parser.parse_args()
 print(args)
@@ -167,32 +167,12 @@ with open(output_file, 'w') as fw:
            'File: ',
             str(graph_file),
             '\n evaluated users: ',
-            str(len(testing_users)),
-            '\n--------------------------------',
-           '\n recall@1: ',
-            str(total_rec[0]/count),
-           '\n NDCG@1: ',
-            str(total_ndcg[0]/count),
-           '\n--------------------------------',
-           '\n recall@3: ',
-            str(total_rec[1]/count),
-           '\n NDCG@3: ',
-            str(total_ndcg[1]/count),
-           '\n--------------------------------',
-           '\n recall@5: ',
-            str(total_rec[2]/count),
-           '\n NDCG@5: ',
-            str(total_ndcg[2]/count),
-           '\n--------------------------------',
-           '\n recall@10: ',
-           str(total_rec[3]/count),
-           '\n NDCG@10: ',
-           str(total_ndcg[3]/count),
-           '\n--------------------------------',
-           '\n recall@20: ',
-           str(total_rec[4]/count),
-           '\n NDCG@20: ',
-           str(total_ndcg[4]/count),
-           '\n'])
-
+            str(len(testing_users))])
+    for idx, k in enumerate(k_amount):
+        fw.writelines([
+               '\n--------------------------------',
+               f'\n recall@{k}: ',
+                str(total_rec[idx]/count),
+               f'\n NDCG@{k}: ',
+                str(total_ndcg[idx]/count)])
 print('Finished!')
