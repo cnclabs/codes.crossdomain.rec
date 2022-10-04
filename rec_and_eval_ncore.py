@@ -19,6 +19,7 @@ parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--graph_file', type=str, help='graph_file')
 parser.add_argument('--test_users', type=str, help='{target, shared, cold}')
 parser.add_argument('--ncore', type=int, help='core number', default=5)
+parser.add_argument('--seed', type=int, help='random seed', default=3)
 parser.add_argument('--sample', type=int, help='sample amount to eval', default=4000)
 parser.add_argument('--n_worker', type=int, help='number of workers', default=None)
 parser.add_argument('--src', type=str, help='souce name')
@@ -45,7 +46,7 @@ with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.mom_save_dir, 
 # csjj_test_df unique reviewerID = 451806
 
 ## sample testing users
-random.seed(3)
+random.seed(args.seed)
 if args.test_users == 'target':
     _users = set(tar_test_df[args.uid_u])
 if args.test_users == 'shared':
@@ -80,7 +81,6 @@ def process_user_pos_neg_pair(user_list):
   for user in user_list:
       pos_pool = set(tar_train_df[tar_train_df[args.uid_u] == user][args.uid_i])
       neg_pool = total_item_set - pos_pool
-      random.seed(5)
       neg_99 = random.sample(neg_pool, 99)
       user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[args.uid_u] == user][args.uid_i])
       user_rec_dict[user] = user_rec_pool
