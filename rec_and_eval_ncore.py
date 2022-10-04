@@ -14,7 +14,7 @@ import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend VOD items')
-parser.add_argument('--mom_save_dir', type=str, help='output_file name')
+parser.add_argument('--mom_save_dir', type=str, help='groundtruth files dir')
 parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--graph_file', type=str, help='graph_file')
 parser.add_argument('--test_users', type=str, help='{target, shared, cold}')
