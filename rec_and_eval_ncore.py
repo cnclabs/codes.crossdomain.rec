@@ -22,8 +22,8 @@ parser.add_argument('--ncore', type=int, help='core number', default=5)
 parser.add_argument('--sample', type=int, help='sample amount to eval', default=4000)
 parser.add_argument('--src', type=str, help='souce name')
 parser.add_argument('--tar', type=str, help='target name')
-parser.add_argument('--item_attr', type=str, help='(default for amz) attribute represents items\' ids', default='asin')
-parser.add_argument('--user_attr', type=str, help='(default for amz) attribute represents users\' ids', default='reviewerID')
+parser.add_argument('--uid_i', type=str, help='(default for amz) unique id column for item', default='asin')
+parser.add_argument('--uid_u', type=str, help='(default for amz) unique id column of user', default='reviewerID')
 
 
 args=parser.parse_args()
@@ -34,7 +34,6 @@ graph_file=args.graph_file
 sample_amount = args.sample
 ncore = args.ncore
 src, tar = args.src, args.tar
-item_attr, user_attr = args.item_attr, args.user_attr
 
 user_emb={}
 item_emb={}
@@ -42,7 +41,7 @@ item_emb={}
 # ground truth, csjj is target
 with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
     tar_test_df = pickle.load(pf)
-tar_test_df[user_attr] = tar_test_df[user_attr].apply(lambda x: 'user_'+x)
+tar_test_df[args.uid_u] = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
 # csjj_test_df unique reviewerID = 451806
 
 ## sample testing users
@@ -65,7 +64,7 @@ if args.test_users == 'cold':
 ## load csjj_train_df
 with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
   tar_train_df = pickle.load(pf)
-tar_train_df[user_attr] = tar_train_df[user_attr].apply(lambda x: 'user_'+x)
+tar_train_df[args.uid_u] = tar_train_df[args.uid_u].apply(lambda x: 'user_'+x)
 total_item_set = set(tar_train_df.asin)
 
 
@@ -76,11 +75,11 @@ def process_user_rec_dict(user_list):
   user_rec_dict = {}
 
   for user in user_list:
-      watched_set = set(tar_train_df[tar_train_df[user_attr] == user][item_attr])
+      watched_set = set(tar_train_df[tar_train_df[args.uid_u] == user][args.uid_i])
       neg_pool = total_item_set - watched_set
       random.seed(5)
       neg_99 = random.sample(neg_pool, 99)
-      user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[user_attr] == user][item_attr])
+      user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[args.uid_u] == user][args.uid_i])
       user_rec_dict[user] = user_rec_pool
 
   return user_rec_dict
