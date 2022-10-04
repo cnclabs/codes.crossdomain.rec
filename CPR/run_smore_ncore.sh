@@ -35,7 +35,7 @@ for d in "${datasets[@]}"; do
 	-train_us ${mom_save_dir}/input_${ncore}core/all_${src}_train_input.txt \
 	-train_ust ${mom_save_dir}/input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
 	-save ./graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
-	-dimension 100 -update_times 200 -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
+	-dimension 100 -update_times $((epoch)) -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
 	#$pretrain
 
 	python3 ../rec_and_eval_ncore.py \
@@ -64,7 +64,7 @@ for d in "${datasets[@]}"; do
 	-train_us ${mom_save_dir}/input_${ncore}core/all_${src}_train_input.txt \
 	-train_ust ${mom_save_dir}/input_${ncore}core/cold_cpr_train_u_${src}+${tar}.txt \
 	-save ./graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
-	-dimension 100 -update_times 200 -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
+	-dimension 100 -update_times $((epoch)) -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
 	#$coldpretrain
 
 	python3 ../rec_and_eval_ncore.py \
