@@ -47,7 +47,7 @@ tar_test_df[args.uid_u] = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
 ## sample testing users
 random.seed(3)
 if args.test_users == 'target':
-  testing_users = random.sample(set(tar_test_df.reviewerID), sample_amount)
+  testing_users = random.sample(set(tar_test_df[args.uid_u]), sample_amount)
 if args.test_users == 'shared':
   with open('{}/user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
     shared_users = pickle.load(pf)
@@ -65,7 +65,7 @@ if args.test_users == 'cold':
 with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
   tar_train_df = pickle.load(pf)
 tar_train_df[args.uid_u] = tar_train_df[args.uid_u].apply(lambda x: 'user_'+x)
-total_item_set = set(tar_train_df.asin)
+total_item_set = set(tar_train_df[args.uid_i])
 
 
 # Generate user 100 rec pool
@@ -143,7 +143,7 @@ for user in testing_users:
         print("{} users counted.".format(count))
 
     # ground truth
-    test_data = list(tar_test_df[tar_test_df['reviewerID'] == user].asin)
+    test_data = list(tar_test_df[tar_test_df[args.uid_u] == user][args.uid_i])
 
     for k in range(len(k_amount)):
         recomm_k = recomm_list[:k_amount[k]]
