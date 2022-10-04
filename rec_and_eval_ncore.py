@@ -25,7 +25,7 @@ parser.add_argument('--src', type=str, help='souce name')
 parser.add_argument('--tar', type=str, help='target name')
 parser.add_argument('--uid_i', type=str, help='(default for amz) unique id column for item', default='asin')
 parser.add_argument('--uid_u', type=str, help='(default for amz) unique id column of user', default='reviewerID')
-
+parser.add_argument('--top_ks', nargs='*', help='top_k to eval', default=[10], action='extend', type=int)
 
 args=parser.parse_args()
 print(args)
@@ -120,7 +120,7 @@ with open(graph_file, 'r') as f:
 
 print("Got embedding!")
 
-k_amount = [1, 3, 5, 10, 20]
+k_amount = args.top_ks
 k_max = max(k_amount)
 
 d=100
