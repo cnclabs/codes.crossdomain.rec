@@ -72,12 +72,12 @@ total_item_set = set(tar_train_df[args.uid_i])
 # Generate user 100 rec pool
 print("Start generating testing users rec dict...")
 
-def process_user_rec_dict(user_list):
+def process_user_pos_neg_pair(user_list):
   user_rec_dict = {}
 
   for user in user_list:
-      watched_set = set(tar_train_df[tar_train_df[args.uid_u] == user][args.uid_i])
-      neg_pool = total_item_set - watched_set
+      pos_pool = set(tar_train_df[tar_train_df[args.uid_u] == user][args.uid_i])
+      neg_pool = total_item_set - pos_pool
       random.seed(5)
       neg_99 = random.sample(neg_pool, 99)
       user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[args.uid_u] == user][args.uid_i])
@@ -92,7 +92,7 @@ else:
     n_worker = args.n_worker
 mp = Pool(n_worker)
 split_datas = np.array_split(list(testing_users), n_worker)
-results = mp.map(process_user_rec_dict, split_datas)
+results = mp.map(process_user_pos_neg_pair, split_datas)
 mp.close()
 
 testing_users_rec_dict = {}
