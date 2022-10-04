@@ -20,6 +20,7 @@ parser.add_argument('--graph_file', type=str, help='graph_file')
 parser.add_argument('--test_users', type=str, help='{target, shared, cold}')
 parser.add_argument('--ncore', type=int, help='core number', default=5)
 parser.add_argument('--sample', type=int, help='sample amount to eval', default=4000)
+parser.add_argument('--n_worker', type=int, help='number of workers', default=None)
 parser.add_argument('--src', type=str, help='souce name')
 parser.add_argument('--tar', type=str, help='target name')
 parser.add_argument('--uid_i', type=str, help='(default for amz) unique id column for item', default='asin')
@@ -84,11 +85,14 @@ def process_user_rec_dict(user_list):
 
   return user_rec_dict
 
-cpu_amount = multiprocessing.cpu_count()
-worker = cpu_amount - 2
-mp = Pool(worker)
-split_datas = np.array_split(list(testing_users), worker)
-results = mp.map(process_user_rec_dict ,split_datas)
+if args.n_worker is None:
+    cpu_amount = multiprocessing.cpu_count()
+    n_worker = cpu_amount - 2
+else:
+    n_worker = args.n_worker
+mp = Pool(n_worker)
+split_datas = np.array_split(list(testing_users), n_worker)
+results = mp.map(process_user_rec_dict, split_datas)
 mp.close()
 
 testing_users_rec_dict = {}
