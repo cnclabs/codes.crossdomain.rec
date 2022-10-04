@@ -70,7 +70,6 @@ total_item_set = set(tar_train_df[args.uid_i])
 
 
 # Generate user 100 rec pool
-print("Start generating testing users rec dict...")
 
 def process_user_pos_neg_pair(user_list):
   user_rec_dict = {}
@@ -90,6 +89,8 @@ if args.n_worker is None:
     n_worker = cpu_amount - 2
 else:
     n_worker = args.n_worker
+
+print(f"Start generating testing users' postive-negative pairs... using {n_worker} workers.")
 mp = Pool(n_worker)
 split_datas = np.array_split(list(testing_users), n_worker)
 results = mp.map(process_user_pos_neg_pair, split_datas)
@@ -99,13 +100,13 @@ testing_users_rec_dict = {}
 for r in results:
   testing_users_rec_dict.update(r)
 
-print("testing users rec dict generated!")
+print("Done generating testing users' positive-negative pairs.")
 
 user_emb={}
 item_emb={}
 
 # get emb of testing users and all (training) items
-print("Start getting embedding...")
+print("Start getting embedding for each user and item...")
 with open(graph_file, 'r') as f:
     for line in f:
         line = line.split('\t')
