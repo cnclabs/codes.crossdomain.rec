@@ -19,7 +19,6 @@ parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--graph_file', type=str, help='graph_file')
 parser.add_argument('--test_users', type=str, help='{target, shared, cold}')
 parser.add_argument('--ncore', type=int, help='core number', default=5)
-parser.add_argument('--sample', type=int, help='sample amount to eval', default=4000)
 parser.add_argument('--src', type=str, help='souce name', default='hk')
 parser.add_argument('--tar', type=str, help='target name', default='csjj')
 parser.add_argument('--item_attr', type=str, help='(default for amz) attribute represents items\' ids', default='asin')
@@ -31,7 +30,6 @@ print(args)
 
 output_file=args.output_file
 graph_file=args.graph_file
-sample_amount = args.sample
 ncore = args.ncore
 src, tar = args.src, args.tar
 item_attr, user_attr = args.item_attr, args.user_attr
@@ -39,27 +37,17 @@ item_attr, user_attr = args.item_attr, args.user_attr
 user_emb={}
 item_emb={}
 
-# ground truth, csjj is target
-with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
-    tar_test_df = pickle.load(pf)
-tar_test_df[user_attr] = tar_test_df[user_attr].apply(lambda x: 'user_'+x)
-# csjj_test_df unique reviewerID = 451806
-
 ## sample testing users
 random.seed(3)
 if args.test_users == 'target':
-  testing_users = random.sample(set(tar_test_df.reviewerID), sample_amount)
+    with open('{}/{ncore}core_input/{src}_{tar}_test_target_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+        testing_users = pickle.load(pf)
 if args.test_users == 'shared':
-  with open('{}/user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-    shared_users = pickle.load(pf)
-  testing_users = random.sample(set(shared_users), sample_amount)
-  testing_users = set(map(lambda x: "user_"+x, testing_users))
+    with open('{}/{ncore}core_input/{src}_{tar}_test_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+        testing_users = pickle.load(pf)
 if args.test_users == 'cold':
-  with open('{}/user_{ncore}core/{src}_{tar}_cold_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-    cold_users = pickle.load(pf)
-  testing_users = cold_users 
-  testing_users = set(map(lambda x: "user_"+x, testing_users))
-
+    with open('{}/{ncore}core_input/{src}_{tar}_test_cold_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+        testing_users = pickle.load(pf)
 
 # rec pool
 ## load csjj_train_df
@@ -69,6 +57,10 @@ tar_train_df[user_attr] = tar_train_df[user_attr].apply(lambda x: 'user_'+x)
 total_item_set = set(tar_train_df.asin)
 
 
+# ground truth, csjj is target
+with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
+    tar_test_df = pickle.load(pf)
+tar_test_df[user_attr] = tar_test_df[user_attr].apply(lambda x: 'user_'+x)
 # Generate user 100 rec pool
 print("Start generating testing users rec dict...")
 
