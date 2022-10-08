@@ -45,8 +45,7 @@ for d in "${datasets[@]}"; do
 	--graph_file $(pwd)/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--tar ${tar} \
-	--ncore ${ncore} \
-	--sample ${sample}
+	--ncore ${ncore}
 
 	python3 ../rec_and_eval_ncore.py \
 	--mom_save_dir ${mom_save_dir} \
@@ -55,8 +54,7 @@ for d in "${datasets[@]}"; do
 	--graph_file $(pwd)/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--tar ${tar} \
-	--ncore ${ncore} \
-	--sample ${sample}
+	--ncore ${ncore}
 
 	# cold
 	./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
@@ -74,7 +72,6 @@ for d in "${datasets[@]}"; do
 	--graph_file $(pwd)/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--tar ${tar} \
-	--ncore ${ncore} \
-	--sample ${sample}
+	--ncore ${ncore}
 	done
 done
