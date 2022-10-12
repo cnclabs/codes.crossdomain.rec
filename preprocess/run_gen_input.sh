@@ -28,9 +28,9 @@ for d in "${datasets[@]}"; do
     --cold_sample ${cold_sample}
 
     python3  generate_ncore_input.py \
-    --mom_save_dir ${mom_save_dir} \
     --save_dir ${save_dir} \
     --ncore ${ncore} \
     --src ${src} \
-    --tar ${tar}
+    --tar ${tar} \
+    --n_testing_user ${cold_sample}
 done
