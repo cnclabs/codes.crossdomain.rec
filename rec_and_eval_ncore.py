@@ -40,13 +40,13 @@ item_emb={}
 ## sample testing users
 random.seed(3)
 if args.test_users == 'target':
-    with open('{}/{ncore}core_input/{src}_{tar}_test_target_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+    with open('{}/input_{ncore}core/{src}_{tar}_test_target_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
         testing_users = pickle.load(pf)
 if args.test_users == 'shared':
-    with open('{}/{ncore}core_input/{src}_{tar}_test_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+    with open('{}/input_{ncore}core/{src}_{tar}_test_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
         testing_users = pickle.load(pf)
 if args.test_users == 'cold':
-    with open('{}/{ncore}core_input/{src}_{tar}_test_cold_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+    with open('{}/input_{ncore}core/{src}_{tar}_test_cold_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
         testing_users = pickle.load(pf)
 
 # rec pool
