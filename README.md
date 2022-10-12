@@ -19,7 +19,7 @@ docker image: nvcr.io/nvidia/pytorch:22.05-py3
 
 $ cd CPR 
 $ pip install -r ./requirments.txt
-$ ./run_smore_ncore.sh {processed_data_dir}
+$ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir}
 
 e.g.,
 $ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/
