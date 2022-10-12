@@ -31,7 +31,7 @@ Note that:
 ## Preprocess (LOO_data -> N-core filtering -> Input)
 ```
 $ cd preprocess
-$ ./run_gen_input.sh 
+$ bash run_gen_input.sh {dir_path}
 ```
 
 ## Training and Evaluation
