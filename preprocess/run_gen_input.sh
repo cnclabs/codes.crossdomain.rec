@@ -1,5 +1,5 @@
-mom_save_dir=/TOP/tmp2/cpr/from_yzliu
-save_dir=$1
+mom_save_dir=$1
+save_dir=$2
 cold_sample=3500
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores

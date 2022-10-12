@@ -33,35 +33,23 @@ print(args)
 
 output_file=args.output_file
 graph_file=args.graph_file
-sample_amount = args.sample
 ncore = args.ncore
 src, tar = args.src, args.tar
 
 user_emb={}
 item_emb={}
 
-# ground truth, csjj is target
-with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
-    tar_test_df = pickle.load(pf)
-# csjj_test_df unique reviewerID = 451806
-
 ## sample testing users
 random.seed(args.seed)
 if args.test_users == 'target':
-    _users = set(tar_test_df[args.uid_u])
+    with open('{}/input_{ncore}core/{src}_{tar}_test_target_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+        testing_users = pickle.load(pf)
 if args.test_users == 'shared':
-  with open('{}/user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-    _users = set(pickle.load(pf))
+    with open('{}/input_{ncore}core/{src}_{tar}_test_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+        testing_users = pickle.load(pf)
 if args.test_users == 'cold':
-  with open('{}/user_{ncore}core/{src}_{tar}_cold_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-    _users = set(pickle.load(pf))
-
-assert len(_users) >= sample_amount, f'sample amount({sample_amount}) < total users({len(_users)})' 
-if len(_users) == sample_amount:
-    testing_users = _users
-else:
-    testing_users = random.sample(_users, sample_amount)
-testing_users = set(map(lambda x: "user_"+x, testing_users))
+    with open('{}/input_{ncore}core/{src}_{tar}_test_cold_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+        testing_users = pickle.load(pf)
 
 # rec pool
 ## load csjj_train_df
@@ -73,6 +61,10 @@ tar_train_df[args.uid_u] = tar_train_df[args.uid_u].apply(lambda x: 'user_'+x)
 total_item_set = set(tar_train_df[args.uid_i])
 
 
+# ground truth, csjj is target
+with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
+    tar_test_df = pickle.load(pf)
+tar_test_df[user_attr] = tar_test_df[user_attr].apply(lambda x: 'user_'+x)
 # Generate user 100 rec pool
 
 def process_user_pos_neg_pair(user_list):
