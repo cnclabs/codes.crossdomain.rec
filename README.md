@@ -31,7 +31,10 @@ Note that:
 ## Preprocess (LOO_data -> N-core filtering -> Input)
 ```
 $ cd preprocess
-$ bash run_gen_input.sh {dir_path}
+$ bash run_gen_input.sh {raw_data_dir} {save_dir}
+
+e.g., 
+$ bash run_gen_input.sh /TOP/tmp2/cpr/from_yzliu/ /TOP/tmp2/cpr/fix_ncore_test
 ```
 
 ## Training and Evaluation
