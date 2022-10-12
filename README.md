@@ -22,7 +22,7 @@ $ pip install -r ./requirments.txt
 $ ./run_smore_ncore.sh {processed_data_dir}
 
 e.g.,
-$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/
+$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/
 ```
 
 ### b. Bi-TGCF
