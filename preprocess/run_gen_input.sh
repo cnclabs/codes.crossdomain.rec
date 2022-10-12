@@ -23,7 +23,6 @@ for d in "${datasets[@]}"; do
     python3 convert_to_ncore.py \
     --mom_save_dir ${mom_save_dir} \
     --save_dir ${save_dir} \
-    --user_save_dir ${user_save_dir} \
     --ncore ${ncore} \
     --src ${src} \
     --tar ${tar} \
