@@ -6,7 +6,7 @@ We use 3 pairs of datasets **(Source_Target)**:
 * HK_CSJJ (Home_and_Kitchen_5.json + Clothing_Shoes_and_Jewelry_5.json)
 ```
 $ cd preprocess
-$ bash run_gen_input.sh {raw_data_dir} {save_dir}
+$ bash run_gen_input.sh {raw_data_dir} {processed_data_dir}
 
 e.g., 
 $ bash run_gen_input.sh /TOP/tmp2/cpr/from_yzliu/ /TOP/tmp2/cpr/fix_ncore_test
@@ -19,7 +19,10 @@ docker image: nvcr.io/nvidia/pytorch:22.05-py3
 
 $ cd CPR 
 $ pip install -r ./requirments.txt
-$ ./run_smore_ncore.sh
+$ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir}
+
+e.g.,
+$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/
 ```
 
 ### b. Bi-TGCF
