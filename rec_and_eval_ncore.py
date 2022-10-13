@@ -35,9 +35,6 @@ graph_file=args.graph_file
 ncore = args.ncore
 src, tar = args.src, args.tar
 
-user_emb={}
-item_emb={}
-
 ## sample testing users
 random.seed(args.seed)
 if args.test_users == 'target':
