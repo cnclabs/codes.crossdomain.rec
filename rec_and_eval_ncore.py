@@ -18,12 +18,13 @@ parser=argparse.ArgumentParser(description='Calculate the similarity and recomme
 parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
 parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--graph_file', type=str, help='graph_file')
-parser.add_argument('--test_users', type=str, help='{target, shared, cold}')
+parser.add_argument('--test_mode', type=str, help='{target, shared, cold}')
 parser.add_argument('--ncore', type=int, help='core number', default=5)
 parser.add_argument('--seed', type=int, help='random seed', default=3)
 parser.add_argument('--n_worker', type=int, help='number of workers', default=None)
 parser.add_argument('--src', type=str, help='souce name')
 parser.add_argument('--tar', type=str, help='target name')
+parser.add_argument('--model_name', type=str, help='cpr, lgn, lgn_s, bpr, bpr_s, emcdr, bitgcf')
 parser.add_argument('--uid_i', type=str, help='(default for amz) unique id column for item', default='asin')
 parser.add_argument('--uid_u', type=str, help='(default for amz) unique id column of user', default='reviewerID')
 parser.add_argument('--top_ks', nargs='*', help='top_k to eval', default=[1, 3, 5, 10, 20], action='extend', type=int)
@@ -38,13 +39,13 @@ src, tar = args.src, args.tar
 
 ## sample testing users
 random.seed(args.seed)
-if args.test_users == 'target':
+if args.test_mode == 'target':
     with open('{}/input_{ncore}core/{src}_{tar}_test_target_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
         testing_users = pickle.load(pf)
-if args.test_users == 'shared':
+if args.test_mode == 'shared':
     with open('{}/input_{ncore}core/{src}_{tar}_test_shared_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
         testing_users = pickle.load(pf)
-if args.test_users == 'cold':
+if args.test_mode == 'cold':
     with open('{}/input_{ncore}core/{src}_{tar}_test_cold_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
         testing_users = pickle.load(pf)
 
@@ -171,6 +172,9 @@ print('Done counting.', time.time() - st)
 
 txt_contents = []
 record_row = {}
+record_row['model_name'] = args.model_name
+record_row['dataset_pair'] = f"{src}_{tar}"
+record_row['test_mode'] = args.test_mode
 for idx, k in enumerate(k_amount):
     _recall = total_rec[idx]/count
     _ndcg   = total_ndcg[idx]/count
