@@ -22,7 +22,7 @@ for d in "${datasets[@]}"; do
 
 	for i in $(seq 2 2);
 	do
-	epoch=$((i*1))
+	epoch=$((i*100))
 
 	## ================================= Amazon dataset (SRC-TAR) =================================
 	if [ $i == 1 ]; then
@@ -31,30 +31,32 @@ for d in "${datasets[@]}"; do
 		pretrain="-pre-train ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch-100))epoch.txt"
 		coldpretrain="-pre-train ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch-100))epoch.txt"
 	fi
-	#./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
-	#-train_ut ${data_dir}/input_${ncore}core/${tar}_train_input.txt \
-	#-train_us ${data_dir}/input_${ncore}core/all_${src}_train_input.txt \
-	#-train_ust ${data_dir}/input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
-	#-save ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
-	#-dimension 100 -update_times $((epoch)) -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
-	##$pretrain
+	./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
+	-train_ut ${data_dir}/input_${ncore}core/${tar}_train_input.txt \
+	-train_us ${data_dir}/input_${ncore}core/all_${src}_train_input.txt \
+	-train_ust ${data_dir}/input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
+	-save ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	-dimension 100 -update_times $((epoch)) -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
+	#$pretrain
 
 	python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
-	--test_users target \
+	--test_mode target \
 	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_target_result_$((epoch))epoch.txt \
 	--graph_file ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--tar ${tar} \
+	--model_name cpr\
 	--ncore ${ncore}
 
 	python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
-	--test_users shared \
+	--test_mode shared \
 	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_shared_result_$((epoch))epoch.txt \
 	--graph_file ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--tar ${tar} \
+	--model_name cpr\
 	--ncore ${ncore}
 
 	# cold
@@ -68,11 +70,12 @@ for d in "${datasets[@]}"; do
 
 	python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
-	--test_users cold \
+	--test_mode cold \
 	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_cold_result_$((epoch))epoch.txt \
 	--graph_file ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--tar ${tar} \
+	--model_name cpr\
 	--ncore ${ncore}
 	done
 done
