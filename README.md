@@ -60,7 +60,8 @@ $ cd baseline/BPR_related
 $ pip install faiss-gpu lightfm==1.16
 $ ./run_lfm-bpr.sh {data_dir} {exp_record_dir}
 
-e.g., bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
+e.g.,
+$ bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 
 ```
 
