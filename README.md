@@ -58,10 +58,10 @@ Docker image: nvcr.io/nvidia/pytorch:22.05-py3
 
 $ cd baseline/BPR_related
 $ pip install faiss-gpu lightfm==1.16
-$ ./run_lfm-bpr.sh
+$ ./run_lfm-bpr.sh {data_dir} {exp_record_dir}
 
-Result path: /baseline/BPR_related/lfm_bpr_result
-Result embedding: /baseline/BPR_related/lfm_bpr_graphs
+e.g., bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
+
 ```
 
 ### e. CMF (BPR's graph is required)
