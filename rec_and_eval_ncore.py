@@ -14,7 +14,7 @@ import os
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend VOD items')
-parser.add_argument('--mom_save_dir', type=str, help='groundtruth files dir')
+parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
 parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--graph_file', type=str, help='graph_file')
 parser.add_argument('--test_users', type=str, help='{target, shared, cold}')
@@ -41,29 +41,28 @@ item_emb={}
 ## sample testing users
 random.seed(args.seed)
 if args.test_users == 'target':
-    with open('{}/input_{ncore}core/{src}_{tar}_test_target_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+    with open('{}/input_{ncore}core/{src}_{tar}_test_target_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
         testing_users = pickle.load(pf)
 if args.test_users == 'shared':
-    with open('{}/input_{ncore}core/{src}_{tar}_test_shared_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+    with open('{}/input_{ncore}core/{src}_{tar}_test_shared_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
         testing_users = pickle.load(pf)
 if args.test_users == 'cold':
-    with open('{}/input_{ncore}core/{src}_{tar}_test_cold_users.pickle'.format(args.mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+    with open('{}/input_{ncore}core/{src}_{tar}_test_cold_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
         testing_users = pickle.load(pf)
 
 # rec pool
 ## load csjj_train_df
-with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
-  tar_train_df = pickle.load(pf)
+with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.data_dir, ncore=ncore, tar=tar), 'rb') as pf:
+    tar_train_df = pickle.load(pf)
+with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar), 'rb') as pf:
+    tar_test_df = pickle.load(pf)
 
-tar_test_df[args.uid_u]  = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
 tar_train_df[args.uid_u] = tar_train_df[args.uid_u].apply(lambda x: 'user_'+x)
+tar_test_df[args.uid_u]  = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
 total_item_set = set(tar_train_df[args.uid_i])
 
 
 # ground truth, csjj is target
-with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
-    tar_test_df = pickle.load(pf)
-tar_test_df[user_attr] = tar_test_df[user_attr].apply(lambda x: 'user_'+x)
 # Generate user 100 rec pool
 
 def process_user_pos_neg_pair(user_list):
