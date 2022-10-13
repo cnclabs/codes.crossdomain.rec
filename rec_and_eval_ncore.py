@@ -11,11 +11,14 @@ import re
 import multiprocessing 
 from multiprocessing import Pool
 import os
+import uuid
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend VOD items')
 parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
+parser.add_argument('--save_dir', type=str, help='dir to save cav')
+parser.add_argument('--save_name', type=str, help='name to save csv')
 parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--graph_file', type=str, help='graph_file')
 parser.add_argument('--test_mode', type=str, help='{target, shared, cold}')
@@ -32,6 +35,12 @@ parser.add_argument('--top_ks', nargs='*', help='top_k to eval', default=[1, 3, 
 args=parser.parse_args()
 print(args)
 
+save_dir=args.save_dir
+
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
+
+save_name=args.save_name
 output_file=args.output_file
 graph_file=args.graph_file
 ncore = args.ncore
@@ -189,7 +198,8 @@ for idx, k in enumerate(k_amount):
     record_row[f'NDCG@{k}'] = _ndcg
 
 record_row = pd.DataFrame([record_row]) 
-record_row_save_path = output_file.replace('.txt', '.csv')
+uuid_str = uuid.uuid4().hex
+record_row_save_path = os.path.join(save_dir, save_name +'_' +uuid_str+'.csv')
 record_row.to_csv(record_row_save_path, index=False)
 
 print("Start writing file...")

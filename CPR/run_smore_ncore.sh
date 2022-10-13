@@ -1,6 +1,7 @@
 #!/bin/bash
 data_dir=$1
 model_save_dir=$2
+exp_record_dir=$3
 sample=3500
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
@@ -42,6 +43,8 @@ for d in "${datasets[@]}"; do
 	python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode target \
+	--save_dir ${exp_record_dir} \
+	--save_name M_cpr_D_${src}_${tar}_T_target \
 	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_target_result_$((epoch))epoch.txt \
 	--graph_file ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
@@ -52,6 +55,8 @@ for d in "${datasets[@]}"; do
 	python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode shared \
+	--save_dir ${exp_record_dir} \
+	--save_name M_cpr_D_${src}_${tar}_T_shared \
 	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_shared_result_$((epoch))epoch.txt \
 	--graph_file ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
@@ -71,6 +76,8 @@ for d in "${datasets[@]}"; do
 	python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode cold \
+	--save_dir ${exp_record_dir} \
+	--save_name M_cpr_D_${src}_${tar}_T_cold \
 	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_cold_result_$((epoch))epoch.txt \
 	--graph_file ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
