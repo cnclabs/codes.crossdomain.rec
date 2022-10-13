@@ -1,3 +1,4 @@
+import time
 import argparse
 import faiss
 import numpy as np
@@ -121,17 +122,36 @@ total_ndcg=[0, 0, 0, 0, 0]
 print("Testing users amount = {}".format(len(testing_users)))
 print("Start counting...")
 
+st = time.time()
+def text_to_array(cell):
+    emb = np.array(cell.split(), dtype=np.float32)
+    emb = np.expand_dims(emb, axis=-1)
+    
+    return emb
+    
+graph_df = pd.read_csv(graph_file, sep='\t', header=None, names=['node_id', 'embed'])
+item_graph_df = graph_df[~graph_df['node_id'].str.startswith('user_')]
+item_graph_df['embed'] = item_graph_df['embed'].apply(text_to_array)
+
+print('item graph shape:', item_graph_df.shape)
+print('Finished gen item graph df!', time.time() - st)
+
+st = time.time()
 for user in testing_users:
     count+=1
     user_emb_vec = np.array(list(user_emb[user]))
     user_emb_vec_m = np.matrix(user_emb_vec)
     user_rec_pool = testing_users_rec_dict[user]
-    filtered_item_emb = {k:v for k,v in item_emb.items() if k in user_rec_pool}
-    item_emb_vec = np.array(list(filtered_item_emb.values()))
+
+    _tmp_df = item_graph_df[item_graph_df['node_id'].isin(user_rec_pool)]
+    item_emb_vec = np.concatenate(list(_tmp_df['embed']), axis = -1).T
+    item_emb_vec = item_emb_vec.copy(order='C')
+    
+    item_key = np.array(list(_tmp_df['node_id']))
+
     index = faiss.IndexFlatIP(d)
     index.add(item_emb_vec)
     D, I = index.search(user_emb_vec_m, k_max)
-    item_key=np.array(list(filtered_item_emb.keys())) 
     recomm_list = item_key[I][0]
 
     if count%1000 == 0:
@@ -147,6 +167,7 @@ for user in testing_users:
 
 total_rec=np.array(total_rec)
 total_ndcg=np.array(total_ndcg)
+print('Done counting.', time.time() - st)
 
 txt_contents = []
 record_row = {}
