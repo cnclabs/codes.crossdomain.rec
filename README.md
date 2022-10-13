@@ -19,10 +19,10 @@ docker image: nvcr.io/nvidia/pytorch:22.05-py3
 
 $ cd CPR 
 $ pip install -r ./requirments.txt
-$ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir}
+$ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
 
 e.g.,
-$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/
+$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/ /TOP/tmp2/cpr/exp_record_test/
 ```
 
 ### b. Bi-TGCF
