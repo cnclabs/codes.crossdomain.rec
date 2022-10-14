@@ -53,7 +53,7 @@ $ cd baseline/LGN
 $ ./build_cython.sh
 $ bash preprocess/run_preprocess.sh
  
-$ bash run_all.sh
+$ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 ```
 
 
