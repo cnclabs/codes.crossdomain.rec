@@ -51,13 +51,12 @@ $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 ```
 $ cd baseline/LGN
 $ ./build_cython.sh
-$ bash preprocess/run_preprocess.sh
-
-# Option-1: run sequentially
-$ ./run_LGN.sh
-
-# Option-2: run parallelly 
-$ bash run_all.sh
+$ cd preprocess
+$ bash run_preprocess.sh /TOP/tmp2/cpr/fix_ncore_test/
+$ cd ..
+ 
+$ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ train
+$ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ eval
 ```
 
 
