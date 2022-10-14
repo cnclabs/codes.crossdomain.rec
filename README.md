@@ -31,10 +31,10 @@ docker image: nvcr.io/nvidia/tensorflow:22.08-tf2-py3
 
 $ cd baseline/Bi-TGCF
 $ pip install -r requirements.txt
-$ bash run_BiTGCF.sh {processed_data_dir} {exp_record_dir}
+$ bash run_all.sh {processed_data_dir} {exp_record_dir}
 
 e.g.,
-$ bash run_BiTGCF.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
+$ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 ```
 
 ### c. LightGCN
