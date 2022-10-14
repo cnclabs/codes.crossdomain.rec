@@ -12,7 +12,7 @@ b. `LightGCN`, `Bi-TGCF`
 ```
 c. `EMCDR`
 ```
-  docker image: tensorflow/twnsorflow:1.14.0-gpu-py3
+  docker image: tensorflow/tensorflow:1.14.0-gpu-py3
 ```
 
 ## 1. Dataset & Preprocessing
@@ -54,8 +54,9 @@ $ ./build_cython.sh
 $ cd preprocess
 $ bash run_preprocess.sh /TOP/tmp2/cpr/fix_ncore_test/
 $ cd ..
- 
+
 $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ train
+(check back to evaluation container)
 $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ eval
 ```
 
@@ -90,7 +91,7 @@ $ ./run_train.sh
 
 Change docker image to: nvcr.io/nvidia/pytorch:22.05-py3
 $ cd baseline/BPR_related/EMCDR
-$ ./run_rec_and_eval.sh
+$ ./run_rec_and_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 
 Result path /baseline/BPR_related/EMCDR/result
 ```
