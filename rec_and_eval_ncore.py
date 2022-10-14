@@ -12,36 +12,8 @@ from multiprocessing import Pool
 import os
 import uuid
 
-from evaluation.utility import save_exp_record, rank_and_score
+from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb
 
-def generate_item_graph_df(graph_file):
-    st = time.time()
-    def _text_to_array(cell):
-        emb = np.array(cell.split(), dtype=np.float32)
-        emb = np.expand_dims(emb, axis=-1)
-        
-        return emb
-        
-    graph_df = pd.read_csv(graph_file, sep='\t', header=None, names=['node_id', 'embed'])
-    item_graph_df = graph_df[~graph_df['node_id'].str.startswith('user_')]
-    item_graph_df['embed'] = item_graph_df['embed'].apply(_text_to_array)
-
-    print('item graph shape:', item_graph_df.shape)
-    print('Finished gen item graph df!', time.time() - st)
-    
-    return item_graph_df
-
-def generate_user_emb(graph_file):
-    user_emb={}
-    with open(graph_file, 'r') as f:
-        for line in f:
-            line = line.split('\t')
-            prefix = line[0]
-            emb=line[1].split()
-            #if prefix in testing_users:
-            if "user_" in prefix:
-                user_emb.update({ prefix: np.array(emb, dtype=np.float32) })
-    return user_emb
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
