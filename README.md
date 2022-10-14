@@ -1,16 +1,16 @@
 # CPR-2023
 
 ## 0. Environment
-a. CPR, BPR, CMF, evaluation
+a. `CPR`, `BPR`, `CMF`, evaluation
 ```
   docker image: nvcr.io/nvidia/pytorch:22.05-py3  
   pip install faiss-gpu==1.7.2
 ```
-b. LightGCN, Bi-TGCF
+b. `LightGCN`, `Bi-TGCF`
 ```
   docker image: nvcr.io/nvidia/tensorflow:22.08-tf2-py3
 ```
-c. EMCDR
+c. `EMCDR`
 ```
   docker image: tensorflow/twnsorflow:1.14.0-gpu-py3
 ```
