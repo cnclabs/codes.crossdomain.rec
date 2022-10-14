@@ -1,3 +1,4 @@
+import os
 import argparse
 import faiss
 import numpy as np
@@ -12,14 +13,20 @@ from utility import calculate_Recall, calculate_NDCG
 import multiprocessing 
 from multiprocessing import Pool
 import time
+import uuid
+
+from evaluation.tools import save_exp_record
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend target items')
-parser.add_argument('--mom_save_dir', type=str, help='output_file name')
+parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
+parser.add_argument('--save_dir', type=str, help='dir to save cav')
+parser.add_argument('--save_name', type=str, help='name to save csv')
 parser.add_argument('--src', type=str, help='souce name', default='hk')
 parser.add_argument('--tar', type=str, help='target name', default='csjj')
 parser.add_argument('--current_epoch', type=str)
 parser.add_argument('--output_file', type=str, help='output_file name')
-parser.add_argument('--test_users', type=str, help='{target, shared}')
+parser.add_argument('--test_mode', type=str, help='{target, shared}')
+parser.add_argument('--model_name', type=str)
 parser.add_argument('--workers', type=int, help='number of multi-processing workers')
 parser.add_argument('--dataset_name', type=str, help='{tv_vod, csj_hk, mt_books, el_cpa, spo_csj}')
 parser.add_argument('--ncore', type=int, help='core_filter', default=0)
@@ -27,29 +34,38 @@ parser.add_argument('--ncore', type=int, help='core_filter', default=0)
 args=parser.parse_args()
 source_name = args.src
 target_name = args.tar
+src = args.src
+tar = args.tar
 #target_name = dataset_name.split('_')[1]
 ncore = args.ncore
+save_dir=args.save_dir
+output_file = args.output_file
+
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
+
+save_name=args.save_name
 
 # ground truth
-with open('{}/LOO_data_{}core/{}_test.pickle'.format(args.mom_save_dir, ncore, target_name), 'rb') as pf:
+with open('{}/LOO_data_{}core/{}_test.pickle'.format(args.data_dir, ncore, target_name), 'rb') as pf:
     tar_test_df = pickle.load(pf)
 tar_test_df['reviewerID'] = tar_test_df['reviewerID'].apply(lambda x: 'user_'+x)
 
 # sample testing users
-sample_amount = 4000
+sample_amount = 3500
 random.seed(3)
-print("test_users", args.test_users)
-if args.test_users == 'target':
+print("test_users", args.test_mode)
+if args.test_mode == 'target':
     testing_users = random.sample(set(tar_test_df.reviewerID), sample_amount)
     # testing_users = ['user_'+user for user in testing_users]
-if args.test_users == 'shared':
-    with open('{}/user_{}core/{}_{}_shared_users.pickle'.format(args.mom_save_dir, ncore, source_name, target_name), 'rb') as pf:
+if args.test_mode == 'shared':
+    with open('{}/user_{}core/{}_{}_shared_users.pickle'.format(args.data_dir, ncore, source_name, target_name), 'rb') as pf:
         shared_users = pickle.load(pf)
     testing_users = random.sample(set(shared_users), sample_amount)
     testing_users = ['user_'+user for user in testing_users]
 
 # rec pool
-with open('{}/LOO_data_{}core/{}_train.pickle'.format(args.mom_save_dir, ncore, target_name), 'rb') as pf:
+with open('{}/LOO_data_{}core/{}_train.pickle'.format(args.data_dir, ncore, target_name), 'rb') as pf:
     tar_train_df = pickle.load(pf)
 tar_train_df['reviewerID'] = tar_train_df['reviewerID'].apply(lambda x: 'user_'+x)
 total_item_set = set(tar_train_df.asin)
@@ -89,7 +105,7 @@ print("testing users rec dict generated!")
 with open(f'./{source_name}_{target_name}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
         shared_users_mapped_emb_dict = pickle.load(pf)
 
-if args.test_users == 'target':
+if args.test_mode == 'target':
     ## source 1 : testing users are from shared users
     with open(f'./{source_name}_{target_name}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
         shared_users_mapped_emb_dict = pickle.load(pf)
@@ -115,7 +131,7 @@ if args.test_users == 'target':
             user_emb[user] = target_users_emb_dict[user]
             target_only_users_amount += 1
 
-if args.test_users == 'shared':
+if args.test_mode == 'shared':
     shared_users_amount = len(testing_users)
     user_emb = {k:v for k,v in shared_users_mapped_emb_dict.items() if k in testing_users}
 
@@ -194,52 +210,89 @@ total_rec = np.sum(np.array(total_rec), axis=0)
 total_ndcg = np.sum(np.array(total_ndcg), axis=0)
 count = total_count
 
-# record time
-end_time = time.time()
-print(f"spend {end_time - start_time} secs on rec & eval")
-
-print("Start writing file...")
-with open(args.output_file, 'w') as fw:
-    fw.writelines(['=================================\n',
-           # 'File: ',
-           # str(graph_file),
-            '\n evaluated users: ',
-            str(len(testing_users)),
-            '\n shared users ratio: ',
-            str(shared_users_amount/sample_amount),
-            # '\n target only users ratio: ',
-            # str(target_only_users_amount/sample_amount),
-            '\n--------------------------------',
-           '\n recall@1: ',
-            str(total_rec[0]/count),
-           '\n NDCG@1: ',
-            str(total_ndcg[0]/count),
-           '\n--------------------------------',
-           '\n recall@3: ',
-            str(total_rec[1]/count),
-           '\n NDCG@3: ',
-            str(total_ndcg[1]/count),
-           '\n--------------------------------',
-           '\n recall@5: ',
-            str(total_rec[2]/count),
-           '\n NDCG@5: ',
-            str(total_ndcg[2]/count),
-           '\n--------------------------------',
-           '\n recall@10: ',
-           str(total_rec[3]/count),
-           '\n NDCG@10: ',
-           str(total_ndcg[3]/count),
-           '\n--------------------------------',
-           '\n recall@20: ',
-           str(total_rec[4]/count),
-           '\n NDCG@20: ',
-           str(total_ndcg[4]/count),
-           '\n'])
-
-print('Finished!')
-
-
+## record time
+#end_time = time.time()
+#print(f"spend {end_time - start_time} secs on rec & eval")
+#
+#print("Start writing file...")
+#with open(args.output_file, 'w') as fw:
+#    fw.writelines(['=================================\n',
+#           # 'File: ',
+#           # str(graph_file),
+#            '\n evaluated users: ',
+#            str(len(testing_users)),
+#            '\n shared users ratio: ',
+#            str(shared_users_amount/sample_amount),
+#            # '\n target only users ratio: ',
+#            # str(target_only_users_amount/sample_amount),
+#            '\n--------------------------------',
+#           '\n recall@1: ',
+#            str(total_rec[0]/count),
+#           '\n NDCG@1: ',
+#            str(total_ndcg[0]/count),
+#           '\n--------------------------------',
+#           '\n recall@3: ',
+#            str(total_rec[1]/count),
+#           '\n NDCG@3: ',
+#            str(total_ndcg[1]/count),
+#           '\n--------------------------------',
+#           '\n recall@5: ',
+#            str(total_rec[2]/count),
+#           '\n NDCG@5: ',
+#            str(total_ndcg[2]/count),
+#           '\n--------------------------------',
+#           '\n recall@10: ',
+#           str(total_rec[3]/count),
+#           '\n NDCG@10: ',
+#           str(total_ndcg[3]/count),
+#           '\n--------------------------------',
+#           '\n recall@20: ',
+#           str(total_rec[4]/count),
+#           '\n NDCG@20: ',
+#           str(total_ndcg[4]/count),
+#           '\n'])
+#
+#print('Finished!')
 
 
 
+model_name = args.model_name
+dataset_pair = f"{src}_{tar}"
+test_mode=args.test_mode
+top_ks = k_amount
 
+save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file)
+
+
+
+#txt_contents = []
+#record_row = {}
+#record_row['model_name'] = args.model_name
+#record_row['dataset_pair'] = f"{src}_{tar}"
+#record_row['test_mode'] = args.test_mode
+#for idx, k in enumerate(k_amount):
+#    _recall = total_rec[idx]/count
+#    _ndcg   = total_ndcg[idx]/count
+#    _content = [
+#           '\n--------------------------------',
+#           f'\n recall@{k}: ',
+#            str(_recall),
+#           f'\n NDCG@{k}: ',
+#            str(_ndcg)]
+#    txt_contents.append(_content)
+#    record_row[f'recall@{k}'] = _recall
+#    record_row[f'NDCG@{k}'] = _ndcg
+#
+#record_row = pd.DataFrame([record_row]) 
+#uuid_str = uuid.uuid4().hex
+#record_row_save_path = os.path.join(save_dir, save_name +'_' +uuid_str+'.csv')
+#record_row.to_csv(record_row_save_path, index=False)
+#
+#print("Start writing file...")
+#with open(output_file, 'w') as fw:
+#    fw.writelines(['=================================\n',
+#            '\n evaluated users: ',
+#            str(len(testing_users))])
+#    for _content in txt_contents:
+#        fw.writelines(_content)
+#print('Finished!')
