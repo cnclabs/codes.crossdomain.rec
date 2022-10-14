@@ -91,7 +91,7 @@ $ ./run_train.sh
 
 Change docker image to: nvcr.io/nvidia/pytorch:22.05-py3
 $ cd baseline/BPR_related/EMCDR
-$ ./run_rec_and_eval.sh
+$ ./run_rec_and_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 
 Result path /baseline/BPR_related/EMCDR/result
 ```
