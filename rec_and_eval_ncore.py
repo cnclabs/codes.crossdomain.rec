@@ -6,14 +6,13 @@ import json
 import pandas as pd
 import pickle
 import random
-from utility import calculate_Recall, calculate_NDCG
 import re
 import multiprocessing 
 from multiprocessing import Pool
 import os
 import uuid
 
-from evaluation.tools import save_exp_record
+from evaluation.utility import save_exp_record, rank_and_score
 
 def generate_item_graph_df(graph_file):
     st = time.time()
@@ -135,63 +134,11 @@ user_emb = generate_user_emb(graph_file)
 item_graph_df= generate_item_graph_df(graph_file)
 print("Got embedding!")
 
-
-print("Testing users amount = {}".format(len(testing_users)))
-print("Start counting...")
-k_amount = args.top_ks
-k_max = max(k_amount)
-def get_top_rec_and_eval(user):
-    total_rec=[0, 0, 0, 0, 0]
-    total_ndcg=[0, 0, 0, 0, 0]
-    d=100
-    if user not in user_emb.keys():
-      return total_rec, total_ndcg, 0
-
-    user_emb_vec = np.array(list(user_emb[user]))
-    user_emb_vec_m = np.matrix(user_emb_vec)
-    
-    user_rec_pool = testing_users_rec_dict[user]
-    
-    _tmp_df = item_graph_df[item_graph_df['node_id'].isin(user_rec_pool)]
-    item_emb_vec = np.concatenate(list(_tmp_df['embed']), axis = -1).T
-    item_emb_vec = item_emb_vec.copy(order='C')
-    
-    item_key = np.array(list(_tmp_df['node_id']))
-
-    if len(user_rec_pool) == 0:
-      return total_rec, total_ndcg, 0
-    index = faiss.IndexFlatIP(d)
-    index.add(item_emb_vec)
-    D, I = index.search(user_emb_vec_m, k_max)
-    recomm_list = item_key[I][0]
-
-    # ground truth
-    test_data = list(tar_test_df[tar_test_df[args.uid_u] == user][args.uid_i])
-
-    for k in range(len(k_amount)):
-        recomm_k = recomm_list[:k_amount[k]]
-        total_rec[k]+=calculate_Recall(test_data, recomm_k)
-        total_ndcg[k]+=calculate_NDCG(test_data, recomm_k)
-
-    return total_rec, total_ndcg, 1
-
-st = time.time()
-with Pool(processes=args.n_worker) as pool:
-    m = pool.map(get_top_rec_and_eval, testing_users)
-
-print('Done counting.', time.time() - st)
-
-total_rec = []
-total_ndcg = []
-for rec, ndcg, _ in m:
-  total_rec.append(rec)
-  total_ndcg.append(ndcg)
-count = len(total_rec) 
-total_rec = np.sum(np.array(total_rec), axis=0)
-total_ndcg = np.sum(np.array(total_ndcg), axis=0)
+top_ks = args.top_ks
+total_rec, total_ndcg, count = rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, n_worker, args.uid_u, args.uid_i)
 
 model_name = args.model_name
 dataset_pair = f"{src}_{tar}"
 test_mode=args.test_mode
-top_ks = k_amount
 save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file)
+    
