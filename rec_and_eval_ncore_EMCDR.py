@@ -210,89 +210,9 @@ total_rec = np.sum(np.array(total_rec), axis=0)
 total_ndcg = np.sum(np.array(total_ndcg), axis=0)
 count = total_count
 
-## record time
-#end_time = time.time()
-#print(f"spend {end_time - start_time} secs on rec & eval")
-#
-#print("Start writing file...")
-#with open(args.output_file, 'w') as fw:
-#    fw.writelines(['=================================\n',
-#           # 'File: ',
-#           # str(graph_file),
-#            '\n evaluated users: ',
-#            str(len(testing_users)),
-#            '\n shared users ratio: ',
-#            str(shared_users_amount/sample_amount),
-#            # '\n target only users ratio: ',
-#            # str(target_only_users_amount/sample_amount),
-#            '\n--------------------------------',
-#           '\n recall@1: ',
-#            str(total_rec[0]/count),
-#           '\n NDCG@1: ',
-#            str(total_ndcg[0]/count),
-#           '\n--------------------------------',
-#           '\n recall@3: ',
-#            str(total_rec[1]/count),
-#           '\n NDCG@3: ',
-#            str(total_ndcg[1]/count),
-#           '\n--------------------------------',
-#           '\n recall@5: ',
-#            str(total_rec[2]/count),
-#           '\n NDCG@5: ',
-#            str(total_ndcg[2]/count),
-#           '\n--------------------------------',
-#           '\n recall@10: ',
-#           str(total_rec[3]/count),
-#           '\n NDCG@10: ',
-#           str(total_ndcg[3]/count),
-#           '\n--------------------------------',
-#           '\n recall@20: ',
-#           str(total_rec[4]/count),
-#           '\n NDCG@20: ',
-#           str(total_ndcg[4]/count),
-#           '\n'])
-#
-#print('Finished!')
-
-
-
 model_name = args.model_name
 dataset_pair = f"{src}_{tar}"
 test_mode=args.test_mode
 top_ks = k_amount
 
 save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file)
-
-
-
-#txt_contents = []
-#record_row = {}
-#record_row['model_name'] = args.model_name
-#record_row['dataset_pair'] = f"{src}_{tar}"
-#record_row['test_mode'] = args.test_mode
-#for idx, k in enumerate(k_amount):
-#    _recall = total_rec[idx]/count
-#    _ndcg   = total_ndcg[idx]/count
-#    _content = [
-#           '\n--------------------------------',
-#           f'\n recall@{k}: ',
-#            str(_recall),
-#           f'\n NDCG@{k}: ',
-#            str(_ndcg)]
-#    txt_contents.append(_content)
-#    record_row[f'recall@{k}'] = _recall
-#    record_row[f'NDCG@{k}'] = _ndcg
-#
-#record_row = pd.DataFrame([record_row]) 
-#uuid_str = uuid.uuid4().hex
-#record_row_save_path = os.path.join(save_dir, save_name +'_' +uuid_str+'.csv')
-#record_row.to_csv(record_row_save_path, index=False)
-#
-#print("Start writing file...")
-#with open(output_file, 'w') as fw:
-#    fw.writelines(['=================================\n',
-#            '\n evaluated users: ',
-#            str(len(testing_users))])
-#    for _content in txt_contents:
-#        fw.writelines(_content)
-#print('Finished!')

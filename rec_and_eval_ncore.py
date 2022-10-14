@@ -13,6 +13,8 @@ from multiprocessing import Pool
 import os
 import uuid
 
+from evaluation.tools import save_exp_record
+
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend VOD items')
@@ -179,36 +181,9 @@ total_rec=np.array(total_rec)
 total_ndcg=np.array(total_ndcg)
 print('Done counting.', time.time() - st)
 
-txt_contents = []
-record_row = {}
-record_row['model_name'] = args.model_name
-record_row['dataset_pair'] = f"{src}_{tar}"
-record_row['test_mode'] = args.test_mode
-for idx, k in enumerate(k_amount):
-    _recall = total_rec[idx]/count
-    _ndcg   = total_ndcg[idx]/count
-    _content = [
-           '\n--------------------------------',
-           f'\n recall@{k}: ',
-            str(_recall),
-           f'\n NDCG@{k}: ',
-            str(_ndcg)]
-    txt_contents.append(_content)
-    record_row[f'recall@{k}'] = _recall
-    record_row[f'NDCG@{k}'] = _ndcg
+model_name = args.model_name
+dataset_pair = f"{src}_{tar}"
+test_mode=args.test_mode
+top_ks = k_amount
 
-record_row = pd.DataFrame([record_row]) 
-uuid_str = uuid.uuid4().hex
-record_row_save_path = os.path.join(save_dir, save_name +'_' +uuid_str+'.csv')
-record_row.to_csv(record_row_save_path, index=False)
-
-print("Start writing file...")
-with open(output_file, 'w') as fw:
-    fw.writelines(['=================================\n',
-           'File: ',
-            str(graph_file),
-            '\n evaluated users: ',
-            str(len(testing_users))])
-    for _content in txt_contents:
-        fw.writelines(_content)
-print('Finished!')
+save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file)
