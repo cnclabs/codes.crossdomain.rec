@@ -12,7 +12,7 @@ b. `LightGCN`, `Bi-TGCF`
 ```
 c. `EMCDR`
 ```
-  docker image: tensorflow/twnsorflow:1.14.0-gpu-py3
+  docker image: tensorflow/tensorflow:1.14.0-gpu-py3
 ```
 
 ## 1. Dataset & Preprocessing
