@@ -10,6 +10,34 @@ import faiss
 import numpy as np
 import time
 
+def generate_item_graph_df(graph_file):
+    st = time.time()
+    def _text_to_array(cell):
+        emb = np.array(cell.split(), dtype=np.float32)
+        emb = np.expand_dims(emb, axis=-1)
+        
+        return emb
+        
+    graph_df = pd.read_csv(graph_file, sep='\t', header=None, names=['node_id', 'embed'])
+    item_graph_df = graph_df[~graph_df['node_id'].str.startswith('user_')]
+    item_graph_df['embed'] = item_graph_df['embed'].apply(_text_to_array)
+
+    print('item graph shape:', item_graph_df.shape)
+    print('Finished gen item graph df!', time.time() - st)
+    
+    return item_graph_df
+
+def generate_user_emb(graph_file):
+    user_emb={}
+    with open(graph_file, 'r') as f:
+        for line in f:
+            line = line.split('\t')
+            prefix = line[0]
+            emb=line[1].split()
+            #if prefix in testing_users:
+            if "user_" in prefix:
+                user_emb.update({ prefix: np.array(emb, dtype=np.float32) })
+    return user_emb
 def save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file):
     uuid_str = uuid.uuid4().hex
     record_row_save_path = os.path.join(save_dir, save_name +'_' +uuid_str+'.csv')
