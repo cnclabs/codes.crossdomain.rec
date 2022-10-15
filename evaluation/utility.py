@@ -6,9 +6,17 @@ import pandas as pd
 import uuid
 import datetime
 import faiss
-#from multiprocessing import Pool
 import numpy as np
 import time
+import pickle
+
+
+def get_testing_users(test_mode, data_input_dir, src, tar):
+    path = f'{data_input_dir}/{src}_{tar}_test_{test_mode}_users.pickle'
+    with open(path, 'rb') as pf:
+        testing_users = pickle.load(pf)
+
+    return testing_users
 
 def generate_item_graph_df(graph_file):
     st = time.time()

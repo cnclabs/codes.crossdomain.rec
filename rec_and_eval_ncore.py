@@ -12,7 +12,7 @@ from multiprocessing import Pool
 import os
 import uuid
 
-from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb
+from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb, get_testing_users
 
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -47,18 +47,11 @@ output_file=args.output_file
 graph_file=args.graph_file
 ncore = args.ncore
 src, tar = args.src, args.tar
-
+test_mode = args.test_mode
 ## sample testing users
 random.seed(args.seed)
-if args.test_mode == 'target':
-    with open('{}/input_{ncore}core/{src}_{tar}_test_target_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-        testing_users = pickle.load(pf)
-if args.test_mode == 'shared':
-    with open('{}/input_{ncore}core/{src}_{tar}_test_shared_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-        testing_users = pickle.load(pf)
-if args.test_mode == 'cold':
-    with open('{}/input_{ncore}core/{src}_{tar}_test_cold_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-        testing_users = pickle.load(pf)
+data_input_dir = os.path.join(args.data_dir, f'input_{ncore}core')
+testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
 
 # rec pool
 ## load csjj_train_df
