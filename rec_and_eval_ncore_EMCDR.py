@@ -27,6 +27,7 @@ parser.add_argument('--output_file', type=str, help='output_file name')
 parser.add_argument('--test_mode', type=str, help='{target, shared}')
 parser.add_argument('--model_name', type=str)
 parser.add_argument('--n_worker', type=int, help='number of multi-processing workers')
+parser.add_argument('--seed', type=int)
 parser.add_argument('--dataset_name', type=str, help='{tv_vod, csj_hk, mt_books, el_cpa, spo_csj}')
 parser.add_argument('--ncore', type=int, help='core_filter', default=0)
 parser.add_argument('--uid_i', type=str, help='(default for amz) unique id column for item', default='asin')
@@ -49,28 +50,23 @@ if not os.path.exists(save_dir):
 save_name=args.save_name
 
 # ground truth
-with open('{}/LOO_data_{}core/{}_test.pickle'.format(args.data_dir, ncore, target_name), 'rb') as pf:
-    tar_test_df = pickle.load(pf)
-tar_test_df['reviewerID'] = tar_test_df['reviewerID'].apply(lambda x: 'user_'+x)
 
-# sample testing users
-sample_amount = 3500
-random.seed(3)
-print("test_users", args.test_mode)
+random.seed(args.seed)
 if args.test_mode == 'target':
-    testing_users = random.sample(set(tar_test_df.reviewerID), sample_amount)
-    # testing_users = ['user_'+user for user in testing_users]
+    with open('{}/input_{ncore}core/{src}_{tar}_test_target_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+        testing_users = pickle.load(pf)
 if args.test_mode == 'shared':
-    with open('{}/user_{}core/{}_{}_shared_users.pickle'.format(args.data_dir, ncore, source_name, target_name), 'rb') as pf:
-        shared_users = pickle.load(pf)
-    testing_users = random.sample(set(shared_users), sample_amount)
-    testing_users = ['user_'+user for user in testing_users]
+    with open('{}/input_{ncore}core/{src}_{tar}_test_shared_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
+        testing_users = pickle.load(pf)
 
-# rec pool
-with open('{}/LOO_data_{}core/{}_train.pickle'.format(args.data_dir, ncore, target_name), 'rb') as pf:
+with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.data_dir, ncore=ncore, tar=tar), 'rb') as pf:
     tar_train_df = pickle.load(pf)
-tar_train_df['reviewerID'] = tar_train_df['reviewerID'].apply(lambda x: 'user_'+x)
-total_item_set = set(tar_train_df.asin)
+with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar), 'rb') as pf:
+    tar_test_df = pickle.load(pf)
+
+tar_train_df[args.uid_u] = tar_train_df[args.uid_u].apply(lambda x: 'user_'+x)
+tar_test_df[args.uid_u]  = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
+total_item_set = set(tar_train_df[args.uid_i])
 
 # Generate user 100 rec pool
 print("Start generating user rec dict...")
