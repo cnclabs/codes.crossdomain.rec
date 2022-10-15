@@ -14,7 +14,7 @@ from multiprocessing import Pool
 import time
 import uuid
 
-from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb
+from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb, get_testing_users
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend target items')
 parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
@@ -43,6 +43,7 @@ tar = args.tar
 ncore = args.ncore
 save_dir=args.save_dir
 output_file = args.output_file
+test_mode = args.test_mode
 
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
@@ -52,12 +53,8 @@ save_name=args.save_name
 # ground truth
 
 random.seed(args.seed)
-if args.test_mode == 'target':
-    with open('{}/input_{ncore}core/{src}_{tar}_test_target_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-        testing_users = pickle.load(pf)
-if args.test_mode == 'shared':
-    with open('{}/input_{ncore}core/{src}_{tar}_test_shared_users.pickle'.format(args.data_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:
-        testing_users = pickle.load(pf)
+data_input_dir = os.path.join(args.data_dir, f'input_{ncore}core')
+testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
 
 with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.data_dir, ncore=ncore, tar=tar), 'rb') as pf:
     tar_train_df = pickle.load(pf)
