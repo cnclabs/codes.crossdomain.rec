@@ -11,7 +11,6 @@ import os
 import uuid
 import multiprocessing
 
-
 from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb, get_testing_users, get_testing_users_rec_dict
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -63,12 +62,12 @@ testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
 tar_test_path  = '{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar) 
 with open(tar_test_path, 'rb') as pf:
     tar_test_df = pickle.load(pf)
-tar_test_df[args.uid_u]  = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
+tar_test_df[uid_u]  = tar_test_df[uid_u].apply(lambda x: 'user_'+x)
 
 tar_train_path = f'{args.data_dir}/input_{ncore}core/{tar}_train_input.txt'
-tar_train_df = pd.read_csv(tar_train_path, sep='\t', header=None, names=['reviewerID', 'asin', 'xxx'])
+tar_train_df = pd.read_csv(tar_train_path, sep='\t', header=None, names=[uid_u, uid_i, 'xxx'])
 
-total_item_set = set(tar_train_df[args.uid_i])
+total_item_set = set(tar_train_df[uid_i])
 
 testing_users_rec_dict = get_testing_users_rec_dict(n_worker, testing_users, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set)
 
