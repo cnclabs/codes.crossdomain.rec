@@ -47,6 +47,9 @@ ncore = args.ncore
 src, tar = args.src, args.tar
 uid_u, uid_i = args.uid_u, args.uid_i
 test_mode = args.test_mode
+model_name = args.model_name
+dataset_pair = f"{src}_{tar}"
+top_ks = args.top_ks
 save_dir=args.save_dir
 
 if not os.path.exists(save_dir):
@@ -76,16 +79,46 @@ total_item_set = set(tar_train_df[uid_i])
 
 testing_users_rec_dict = get_testing_users_rec_dict(n_worker, testing_users, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set)
 
-print("Start getting embedding for each user and item...")
-user_emb = generate_user_emb(graph_file)
-item_graph_df= generate_item_graph_df(graph_file)
-print("Got embedding!")
+if model_name == 'emcdr':
+    # Get emb of testing users
+    with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/{src}_{tar}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
+            shared_users_mapped_emb_dict = pickle.load(pf)
+    
+    if args.test_mode == 'target':
+        ## source 1 : testing users are from shared users
+        with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/{src}_{tar}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
+            shared_users_mapped_emb_dict = pickle.load(pf)
+        ## source 2 : testing users are from target domain only users
+        target_users_emb_dict = {}
+        with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/{tar}_lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
+            for line in f:
+                line = line.split('\t')
+                prefix = line[0]
+                prefix = prefix.replace(" ", "")
+                emb=line[1].split()  
+                if 'user_' in prefix:
+                    target_users_emb_dict[prefix] = np.array(emb, dtype=np.float32)
+    
+        user_emb = {}
+        for user in testing_users:
+            if user in shared_users_mapped_emb_dict.keys():
+                user_emb[user] = shared_users_mapped_emb_dict[user]
+            else:
+                user_emb[user] = target_users_emb_dict[user]
+    
+    if args.test_mode == 'shared':
+        user_emb = {k:v for k,v in shared_users_mapped_emb_dict.items() if k in testing_users}
+    
+    print("Start getting embedding for each user and item...")
+    _path = f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/{tar}_lightfm_bpr_{args.current_epoch}_10e-5.txt'
+    item_graph_df= generate_item_graph_df(_path)
+    print("Got embedding!")
+else:
+    print("Start getting embedding for each user and item...")
+    user_emb = generate_user_emb(graph_file)
+    item_graph_df= generate_item_graph_df(graph_file)
+    print("Got embedding!")
 
-top_ks = args.top_ks
 total_rec, total_ndcg, count = rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, n_worker, uid_u, uid_i)
-
-model_name = args.model_name
-dataset_pair = f"{src}_{tar}"
-test_mode=args.test_mode
 save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file)
     
