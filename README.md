@@ -33,9 +33,11 @@ $ bash run_gen_input.sh /TOP/tmp2/cpr/from_yzliu/ /TOP/tmp2/cpr/fix_ncore_test
 ```
 $ cd CPR 
 $ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
+$ ./run_eval.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
 
 e.g.,
 $ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/ /TOP/tmp2/cpr/exp_record_test/
+$ bash run_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/ /TOP/tmp2/cpr/exp_record_test/
 ```
 
 ### b. Bi-TGCF
