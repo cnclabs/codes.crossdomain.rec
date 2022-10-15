@@ -1,13 +1,13 @@
 #!/bin/bash
 
-mom_save_dir=/TOP/tmp2/cpr/from_yzliu
+mom_save_dir=$1
 update_times=1000 
 num_checkpoint=1
 split=$((200/$num_checkpoint))
 
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
+ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 
 for d in "${datasets[@]}"; do
     IFS='_'
