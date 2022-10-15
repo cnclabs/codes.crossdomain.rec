@@ -47,4 +47,18 @@ for d in "${datasets[@]}"; do
     --item_emb_path /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt \
     --user_emb_path_shared /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/${src}_${tar}/shared_users_mapped_emb_dict_${update_times}.pickle\
     --user_emb_path_target /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt
+
+
+    python3 ../../../rec_and_eval_ncore.py \
+    --data_dir ${data_dir} \
+    --test_mode cold \
+    --save_dir ${exp_record_dir} \
+    --save_name M_${model_name}_D_${src}_${tar}_T_cold \
+    --src ${src} \
+    --tar ${tar} \
+    --n_worker 8 \
+    --ncore $ncore \
+    --model_name emcdr\
+    --item_emb_path /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/cold_${tar}_lightfm_bpr_${update_times}_10e-5.txt \
+    --user_emb_path_cold /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/${src}_${tar}/cold_users_mapped_emb_dict_${update_times}.pickle
 done

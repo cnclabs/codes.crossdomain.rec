@@ -27,6 +27,7 @@ parser.add_argument('--save_name', type=str, help='name to save csv')
 parser.add_argument('--user_emb_path', type=str)
 parser.add_argument('--user_emb_path_shared', type=str)
 parser.add_argument('--user_emb_path_target', type=str)
+parser.add_argument('--user_emb_path_cold', type=str)
 parser.add_argument('--item_emb_path', type=str)
 parser.add_argument('--test_mode', type=str, help='{target, shared, cold}')
 parser.add_argument('--ncore', type=int, help='core number', default=5)
@@ -80,10 +81,6 @@ total_item_set = set(tar_train_df[uid_i])
 testing_users_rec_dict = get_testing_users_rec_dict(n_worker, testing_users, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set)
 
 if model_name == 'emcdr':
-    # Get emb of testing users
-    with open(args.user_emb_path_shared, 'rb') as pf:
-            shared_users_mapped_emb_dict = pickle.load(pf)
-    
     if args.test_mode == 'target':
         ## source 1 : testing users are from shared users
         with open(args.user_emb_path_shared, 'rb') as pf:
@@ -107,10 +104,15 @@ if model_name == 'emcdr':
                 user_emb[user] = target_users_emb_dict[user]
     
     if args.test_mode == 'shared':
+        with open(args.user_emb_path_shared, 'rb') as pf:
+                shared_users_mapped_emb_dict = pickle.load(pf)
         user_emb = {k:v for k,v in shared_users_mapped_emb_dict.items() if k in testing_users}
     
+    if args.test_mode == 'cold':
+        with open(args.user_emb_path_cold, 'rb') as pf:
+            user_emb = pickle.load(pf)
+
     print("Start getting embedding for each user and item...")
-    #_path = f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/{tar}_lightfm_bpr_{args.current_epoch}_10e-5.txt'
     item_graph_df= generate_item_graph_df(args.item_emb_path)
     print("Got embedding!")
 else:
