@@ -14,7 +14,12 @@ from multiprocessing import Pool
 import time
 import uuid
 
-from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb, get_testing_users
+from evaluation.utility import (save_exp_record,
+        rank_and_score,
+        generate_item_graph_df,
+        generate_user_emb,
+        get_testing_users,
+        get_testing_users_rec_dict)
 
 parser=argparse.ArgumentParser(description='Calculate the similarity and recommend target items')
 parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
@@ -33,47 +38,19 @@ parser.add_argument('--ncore', type=int, help='core_filter', default=0)
 parser.add_argument('--uid_i', type=str, help='(default for amz) unique id column for item', default='asin')
 parser.add_argument('--uid_u', type=str, help='(default for amz) unique id column of user', default='reviewerID')
 parser.add_argument('--top_ks', nargs='*', help='top_k to eval', default=[1, 3, 5, 10, 20], action='extend', type=int)
-
 args=parser.parse_args()
+print(args)
 
-src = args.src
-tar = args.tar
-ncore = args.ncore
-save_dir = args.save_dir
+save_name = args.save_name
 output_file = args.output_file
+ncore = args.ncore
+src, tar = args.src, args.tar
+uid_u, uid_i = args.uid_u, args.uid_i
 test_mode = args.test_mode
-save_name=args.save_name
+save_dir=args.save_dir
 
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
-
-random.seed(args.seed)
-data_input_dir = os.path.join(args.data_dir, f'input_{ncore}core')
-testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
-
-with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.data_dir, ncore=ncore, tar=tar), 'rb') as pf:
-    tar_train_df = pickle.load(pf)
-with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar), 'rb') as pf:
-    tar_test_df = pickle.load(pf)
-
-tar_train_df[args.uid_u] = tar_train_df[args.uid_u].apply(lambda x: 'user_'+x)
-tar_test_df[args.uid_u]  = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
-total_item_set = set(tar_train_df[args.uid_i])
-
-# Generate user 100 rec pool
-print("Start generating user rec dict...")
-
-def process_user_pos_neg_pair(user_list):
-  user_rec_dict = {}
-
-  for user in user_list:
-      pos_pool = set(tar_train_df[tar_train_df[args.uid_u] == user][args.uid_i])
-      neg_pool = total_item_set - pos_pool
-      neg_99 = random.sample(neg_pool, 99)
-      user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[args.uid_u] == user][args.uid_i])
-      user_rec_dict[user] = user_rec_pool
-
-  return user_rec_dict
 
 if args.n_worker is None:
     cpu_amount = multiprocessing.cpu_count()
@@ -81,18 +58,21 @@ if args.n_worker is None:
 else:
     n_worker = args.n_worker
 
-print(f"Start generating testing users' postive-negative pairs... using {n_worker} workers.")
-mp = Pool(n_worker)
-split_datas = np.array_split(list(testing_users), n_worker)
-results = mp.map(process_user_pos_neg_pair, split_datas)
-mp.close()
+random.seed(args.seed)
+data_input_dir = os.path.join(args.data_dir, f'input_{ncore}core')
+testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
 
-testing_users_rec_dict = {}
-for r in results:
-  testing_users_rec_dict.update(r)
+# TODO:((katieyth): 
+tar_test_path  = '{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar) 
+with open(tar_test_path, 'rb') as pf:
+    tar_test_df = pickle.load(pf)
+tar_test_df[uid_u]  = tar_test_df[uid_u].apply(lambda x: 'user_'+x)
 
-print("testing users rec dict generated!")
+tar_train_path = f'{args.data_dir}/input_{ncore}core/{tar}_train_input.txt'
+tar_train_df = pd.read_csv(tar_train_path, sep='\t', header=None, names=[uid_u, uid_i, 'xxx'])
 
+total_item_set = set(tar_train_df[uid_i])
+testing_users_rec_dict = get_testing_users_rec_dict(n_worker, testing_users, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set)
 
 # Get emb of testing users
 with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/{src}_{tar}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
@@ -113,19 +93,14 @@ if args.test_mode == 'target':
             if 'user_' in prefix:
                 target_users_emb_dict[prefix] = np.array(emb, dtype=np.float32)
 
-    shared_users_amount = 0
-    target_only_users_amount = 0
     user_emb = {}
     for user in testing_users:
         if user in shared_users_mapped_emb_dict.keys():
             user_emb[user] = shared_users_mapped_emb_dict[user]
-            shared_users_amount += 1
         else:
             user_emb[user] = target_users_emb_dict[user]
-            target_only_users_amount += 1
 
 if args.test_mode == 'shared':
-    shared_users_amount = len(testing_users)
     user_emb = {k:v for k,v in shared_users_mapped_emb_dict.items() if k in testing_users}
 
 print("Start getting embedding for each user and item...")
