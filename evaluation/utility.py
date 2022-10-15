@@ -1,5 +1,7 @@
 import statistics
 import math
+from multiprocessing import Pool
+from functools import partial
 
 import os
 import pandas as pd
@@ -9,7 +11,33 @@ import faiss
 import numpy as np
 import time
 import pickle
+import random
 
+def get_testing_users_rec_dict(n_worker, testing_users, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set):
+    mp = Pool(n_worker)
+    print(f"Start generating testing users' postive-negative pairs... using {n_worker} workers.")
+    split_datas = np.array_split(list(testing_users), n_worker)
+    func = partial(process_user_pos_neg_pair, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set)
+    results = mp.map(func, split_datas)
+    mp.close()
+    
+    testing_users_rec_dict = {}
+    for r in results:
+        testing_users_rec_dict.update(r)
+    print("Done generating testing users' positive-negative pairs.")
+
+    return testing_users_rec_dict
+
+def process_user_pos_neg_pair(tar_train_df, tar_test_df, uid_u, uid_i, total_item_set,  user_list):
+  user_rec_dict = {}
+  for user in user_list:
+      pos_pool = set(tar_train_df[tar_train_df[uid_u] == user][uid_i])
+      neg_pool = total_item_set - pos_pool
+      neg_99 = random.sample(neg_pool, 99)
+      user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[uid_u] == user][uid_i])
+      user_rec_dict[user] = user_rec_pool
+
+  return user_rec_dict
 
 def get_testing_users(test_mode, data_input_dir, src, tar):
     path = f'{data_input_dir}/{src}_{tar}_test_{test_mode}_users.pickle'

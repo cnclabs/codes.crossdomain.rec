@@ -7,13 +7,12 @@ import pandas as pd
 import pickle
 import random
 import re
-import multiprocessing 
-from multiprocessing import Pool
 import os
 import uuid
+import multiprocessing
 
-from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb, get_testing_users
 
+from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb, get_testing_users, get_testing_users_rec_dict
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
@@ -37,18 +36,26 @@ parser.add_argument('--top_ks', nargs='*', help='top_k to eval', default=[1, 3, 
 args=parser.parse_args()
 print(args)
 
+save_name = args.save_name
+output_file = args.output_file
+graph_file = args.graph_file
+ncore = args.ncore
+src, tar = args.src, args.tar
+uid_u, uid_i = args.uid_u, args.uid_i
+test_mode = args.test_mode
 save_dir=args.save_dir
 
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 
-save_name=args.save_name
-output_file=args.output_file
-graph_file=args.graph_file
-ncore = args.ncore
-src, tar = args.src, args.tar
-test_mode = args.test_mode
+if args.n_worker is None:
+    cpu_amount = multiprocessing.cpu_count()
+    n_worker = cpu_amount - 2
+else:
+    n_worker = args.n_worker
+
 random.seed(args.seed)
+
 data_input_dir = os.path.join(args.data_dir, f'input_{ncore}core')
 testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
 
@@ -63,35 +70,7 @@ tar_train_df = pd.read_csv(tar_train_path, sep='\t', header=None, names=['review
 
 total_item_set = set(tar_train_df[args.uid_i])
 
-def process_user_pos_neg_pair(user_list):
-  user_rec_dict = {}
-
-  for user in user_list:
-      pos_pool = set(tar_train_df[tar_train_df[args.uid_u] == user][args.uid_i])
-      neg_pool = total_item_set - pos_pool
-      neg_99 = random.sample(neg_pool, 99)
-      user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[args.uid_u] == user][args.uid_i])
-      user_rec_dict[user] = user_rec_pool
-
-  return user_rec_dict
-
-if args.n_worker is None:
-    cpu_amount = multiprocessing.cpu_count()
-    n_worker = cpu_amount - 2
-else:
-    n_worker = args.n_worker
-
-print(f"Start generating testing users' postive-negative pairs... using {n_worker} workers.")
-mp = Pool(n_worker)
-split_datas = np.array_split(list(testing_users), n_worker)
-results = mp.map(process_user_pos_neg_pair, split_datas)
-mp.close()
-
-testing_users_rec_dict = {}
-for r in results:
-  testing_users_rec_dict.update(r)
-
-print("Done generating testing users' positive-negative pairs.")
+testing_users_rec_dict = get_testing_users_rec_dict(n_worker, testing_users, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set)
 
 print("Start getting embedding for each user and item...")
 user_emb = generate_user_emb(graph_file)
@@ -99,7 +78,7 @@ item_graph_df= generate_item_graph_df(graph_file)
 print("Got embedding!")
 
 top_ks = args.top_ks
-total_rec, total_ndcg, count = rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, n_worker, args.uid_u, args.uid_i)
+total_rec, total_ndcg, count = rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, n_worker, uid_u, uid_i)
 
 model_name = args.model_name
 dataset_pair = f"{src}_{tar}"
