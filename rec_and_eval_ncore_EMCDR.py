@@ -35,22 +35,17 @@ parser.add_argument('--uid_u', type=str, help='(default for amz) unique id colum
 parser.add_argument('--top_ks', nargs='*', help='top_k to eval', default=[1, 3, 5, 10, 20], action='extend', type=int)
 
 args=parser.parse_args()
-source_name = args.src
-target_name = args.tar
+
 src = args.src
 tar = args.tar
-#target_name = dataset_name.split('_')[1]
 ncore = args.ncore
-save_dir=args.save_dir
+save_dir = args.save_dir
 output_file = args.output_file
 test_mode = args.test_mode
+save_name=args.save_name
 
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
-
-save_name=args.save_name
-
-# ground truth
 
 random.seed(args.seed)
 data_input_dir = os.path.join(args.data_dir, f'input_{ncore}core')
@@ -100,16 +95,16 @@ print("testing users rec dict generated!")
 
 
 # Get emb of testing users
-with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/{source_name}_{target_name}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
+with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/{src}_{tar}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
         shared_users_mapped_emb_dict = pickle.load(pf)
 
 if args.test_mode == 'target':
     ## source 1 : testing users are from shared users
-    with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/{source_name}_{target_name}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
+    with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/{src}_{tar}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
         shared_users_mapped_emb_dict = pickle.load(pf)
     ## source 2 : testing users are from target domain only users
     target_users_emb_dict = {}
-    with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/{target_name}_lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
+    with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/{tar}_lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
         for line in f:
             line = line.split('\t')
             prefix = line[0]
@@ -133,18 +128,6 @@ if args.test_mode == 'shared':
     shared_users_amount = len(testing_users)
     user_emb = {k:v for k,v in shared_users_mapped_emb_dict.items() if k in testing_users}
 
-# Get emb of all (training) items
-#item_emb = {}
-#with open(f'../lfm_bpr_graphs/{target_name}_lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
-#    for line in f:
-#        line = line.split('\t')
-#        prefix = line[0]
-#        prefix = prefix.replace(" ", "")
-#        emb=line[1].split()
-#        if 'user_' in prefix:
-#            continue
-#        else:
-#            item_emb.update({ prefix: np.array(emb, dtype=np.float32) })
 print("Start getting embedding for each user and item...")
 _path = f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/{tar}_lightfm_bpr_{args.current_epoch}_10e-5.txt'
 item_graph_df= generate_item_graph_df(_path)
@@ -158,69 +141,3 @@ dataset_pair = f"{src}_{tar}"
 test_mode=args.test_mode
 save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file)
     
-#print("Got embedding!")
-#
-#k_amount = args.top_ks
-#k_max = max(k_amount)
-#
-#d=100
-#count = 0
-#total_rec=[0, 0, 0, 0, 0]
-#total_ndcg=[0, 0, 0, 0, 0]
-#
-#print("Start counting...")
-#
-#def get_top_rec_and_eval(user):
-#    total_rec=[0, 0, 0, 0, 0]
-#    total_ndcg=[0, 0, 0, 0, 0]
-#    if user not in user_emb.keys():
-#      return total_rec, total_ndcg, 0
-#    user_emb_vec = np.array(list(user_emb[user]))
-#    user_emb_vec_m = np.matrix(user_emb_vec)
-#    user_rec_pool = user_rec_dict[user]
-#    if len(user_rec_pool) == 0:
-#      return total_rec, total_ndcg, 0
-#    filtered_item_emb = {k:v for k,v in item_emb.items() if k in user_rec_pool}
-#    item_emb_vec = np.array(list(filtered_item_emb.values()))
-#    # print("item_emb_vec: ", item_emb_vec.shape)
-#    index = faiss.IndexFlatIP(d)
-#    index.add(item_emb_vec)
-#    D, I = index.search(user_emb_vec_m, k_max)
-#    item_key=np.array(list(filtered_item_emb.keys())) 
-#    recomm_list = item_key[I][0]
-#
-#    # ground truth
-#    test_data = list(tar_test_df[tar_test_df['reviewerID'] == user].asin)
-#    # test_data = ['item_' + str(asin) for asin in test_data for asin in test_data]
-#
-#    for k in range(len(k_amount)):
-#        recomm_k = recomm_list[:k_amount[k]]
-#        total_rec[k]+=calculate_Recall(test_data, recomm_k)
-#        total_ndcg[k]+=calculate_NDCG(test_data, recomm_k)
-#    return total_rec, total_ndcg, 1
-#
-## print(f"absolute count: {count}")
-#
-## record time 
-#start_time = time.time() 
-#with Pool(processes=args.workers) as pool:
-#    m = pool.map(get_top_rec_and_eval, testing_users)
-#
-#total_count = 0
-#total_rec = []
-#total_ndcg = []
-#
-#for rec, ndcg, count in m:
-#  total_rec.append(rec)
-#  total_ndcg.append(ndcg)
-#  total_count += count 
-#
-#total_rec = np.sum(np.array(total_rec), axis=0)
-#total_ndcg = np.sum(np.array(total_ndcg), axis=0)
-#count = total_count
-#
-#model_name = args.model_name
-#dataset_pair = f"{src}_{tar}"
-#test_mode=args.test_mode
-#top_ks = k_amount
-#save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file)
