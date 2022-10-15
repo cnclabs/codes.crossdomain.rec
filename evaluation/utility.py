@@ -74,7 +74,7 @@ def generate_user_emb(graph_file):
             if "user_" in prefix:
                 user_emb.update({ prefix: np.array(emb, dtype=np.float32) })
     return user_emb
-def save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file):
+def save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name):
     uuid_str = uuid.uuid4().hex
     record_row_save_path = os.path.join(save_dir, save_name +'_' +uuid_str+'.csv')
     #txt_contents = []

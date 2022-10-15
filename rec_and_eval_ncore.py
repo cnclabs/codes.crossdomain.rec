@@ -24,8 +24,6 @@ parser=argparse.ArgumentParser(description='Calculate the similarity and recomme
 parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
 parser.add_argument('--save_dir', type=str, help='dir to save cav')
 parser.add_argument('--save_name', type=str, help='name to save csv')
-parser.add_argument('--output_file', type=str, help='output_file name')
-#parser.add_argument('--graph_file', type=str, help='graph_file')
 parser.add_argument('--user_emb_path', type=str)
 parser.add_argument('--user_emb_path_shared', type=str)
 parser.add_argument('--user_emb_path_target', type=str)
@@ -45,7 +43,6 @@ args=parser.parse_args()
 print(args)
 
 save_name = args.save_name
-output_file = args.output_file
 ncore = args.ncore
 src, tar = args.src, args.tar
 uid_u, uid_i = args.uid_u, args.uid_i
@@ -123,5 +120,5 @@ else:
     print("Got embedding!")
 
 total_rec, total_ndcg, count = rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, n_worker, uid_u, uid_i)
-save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name, output_file)
+save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name)
     
