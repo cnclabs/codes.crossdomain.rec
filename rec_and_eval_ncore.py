@@ -11,7 +11,12 @@ import os
 import uuid
 import multiprocessing
 
-from evaluation.utility import save_exp_record, rank_and_score, generate_item_graph_df, generate_user_emb, get_testing_users, get_testing_users_rec_dict
+from evaluation.utility import (save_exp_record,
+        rank_and_score,
+        generate_item_graph_df,
+        generate_user_emb,
+        get_testing_users,
+        get_testing_users_rec_dict)
 
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
