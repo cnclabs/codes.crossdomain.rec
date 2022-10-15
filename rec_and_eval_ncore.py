@@ -25,7 +25,11 @@ parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
 parser.add_argument('--save_dir', type=str, help='dir to save cav')
 parser.add_argument('--save_name', type=str, help='name to save csv')
 parser.add_argument('--output_file', type=str, help='output_file name')
-parser.add_argument('--graph_file', type=str, help='graph_file')
+#parser.add_argument('--graph_file', type=str, help='graph_file')
+parser.add_argument('--user_emb_path', type=str)
+parser.add_argument('--user_emb_path_shared', type=str)
+parser.add_argument('--user_emb_path_target', type=str)
+parser.add_argument('--item_emb_path', type=str)
 parser.add_argument('--test_mode', type=str, help='{target, shared, cold}')
 parser.add_argument('--ncore', type=int, help='core number', default=5)
 parser.add_argument('--seed', type=int, help='random seed', default=3)
@@ -42,7 +46,6 @@ print(args)
 
 save_name = args.save_name
 output_file = args.output_file
-graph_file = args.graph_file
 ncore = args.ncore
 src, tar = args.src, args.tar
 uid_u, uid_i = args.uid_u, args.uid_i
@@ -81,16 +84,16 @@ testing_users_rec_dict = get_testing_users_rec_dict(n_worker, testing_users, tar
 
 if model_name == 'emcdr':
     # Get emb of testing users
-    with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/{src}_{tar}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
+    with open(args.user_emb_path_shared, 'rb') as pf:
             shared_users_mapped_emb_dict = pickle.load(pf)
     
     if args.test_mode == 'target':
         ## source 1 : testing users are from shared users
-        with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/{src}_{tar}/shared_users_mapped_emb_dict_{args.current_epoch}.pickle', 'rb') as pf:
+        with open(args.user_emb_path_shared, 'rb') as pf:
             shared_users_mapped_emb_dict = pickle.load(pf)
         ## source 2 : testing users are from target domain only users
         target_users_emb_dict = {}
-        with open(f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/{tar}_lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
+        with open(args.user_emb_path_target, 'r') as f:
             for line in f:
                 line = line.split('\t')
                 prefix = line[0]
@@ -110,13 +113,13 @@ if model_name == 'emcdr':
         user_emb = {k:v for k,v in shared_users_mapped_emb_dict.items() if k in testing_users}
     
     print("Start getting embedding for each user and item...")
-    _path = f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/{tar}_lightfm_bpr_{args.current_epoch}_10e-5.txt'
-    item_graph_df= generate_item_graph_df(_path)
+    #_path = f'/TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/{tar}_lightfm_bpr_{args.current_epoch}_10e-5.txt'
+    item_graph_df= generate_item_graph_df(args.item_emb_path)
     print("Got embedding!")
 else:
     print("Start getting embedding for each user and item...")
-    user_emb = generate_user_emb(graph_file)
-    item_graph_df= generate_item_graph_df(graph_file)
+    user_emb = generate_user_emb(args.user_emb_path)
+    item_graph_df= generate_item_graph_df(args.item_emb_path)
     print("Got embedding!")
 
 total_rec, total_ndcg, count = rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, n_worker, uid_u, uid_i)
