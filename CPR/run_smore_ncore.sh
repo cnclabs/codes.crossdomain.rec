@@ -79,7 +79,8 @@ for d in "${datasets[@]}"; do
 	--save_dir ${exp_record_dir} \
 	--save_name M_cpr_D_${src}_${tar}_T_cold \
 	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_cold_result_$((epoch))epoch.txt \
-	--graph_file ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--user_emb_path ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--item_emb_path ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
 	--src ${src} \
 	--tar ${tar} \
 	--model_name cpr\
