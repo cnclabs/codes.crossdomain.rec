@@ -48,20 +48,19 @@ graph_file=args.graph_file
 ncore = args.ncore
 src, tar = args.src, args.tar
 test_mode = args.test_mode
-## sample testing users
 random.seed(args.seed)
 data_input_dir = os.path.join(args.data_dir, f'input_{ncore}core')
 testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
 
-# rec pool
-## load csjj_train_df
-with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.data_dir, ncore=ncore, tar=tar), 'rb') as pf:
-    tar_train_df = pickle.load(pf)
-with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar), 'rb') as pf:
+# TODO:((katieyth): 
+tar_test_path  = '{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar) 
+with open(tar_test_path, 'rb') as pf:
     tar_test_df = pickle.load(pf)
-
-tar_train_df[args.uid_u] = tar_train_df[args.uid_u].apply(lambda x: 'user_'+x)
 tar_test_df[args.uid_u]  = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
+
+tar_train_path = f'{args.data_dir}/input_{ncore}core/{tar}_train_input.txt'
+tar_train_df = pd.read_csv(tar_train_path, sep='\t', header=None, names=['reviewerID', 'asin', 'xxx'])
+
 total_item_set = set(tar_train_df[args.uid_i])
 
 def process_user_pos_neg_pair(user_list):
