@@ -1,4 +1,4 @@
-data_dir=/TOP/tmp2/cpr/fix_ncore_test/
+data_dir=$1
 src=hk
 tar=csjj
 bash run_pre_sample_single.sh ${src} ${tar} target ${data_dir}
