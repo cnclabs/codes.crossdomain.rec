@@ -60,12 +60,7 @@ $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 $ cd baseline/LGN
 $ ./build_cython.sh
 $ cd preprocess
-
-should be
 $ bash run_preprocess.sh /TOP/tmp2/cpr/fix_ncore_test/
-
-but now
-bash run_preprocess.sh /TOP/tmp2/cpr/from_yzliu/
 $ cd ..
 
 $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ train
