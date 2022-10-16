@@ -61,10 +61,10 @@ target_domain_ratings = filtered_target_domain_train.groupby(['reviewerID', 'asi
 target_domain_ratings.columns = ['UserId','ItemId','Rating']
 print("Finished generating target_domain_ratings...")
 
-with open(f'{args.mom_save_dir}/LOO_data_{str(ncore)}core/{source_domain}_train.pickle', 'rb') as pf:
-    source_domain_train = pickle.load(pf)
-source_domain_train['reviewerID'] = source_domain_train['reviewerID'].apply(lambda x: 'user_' + x)
-overlap_users = set(source_domain_train.reviewerID).intersection(set(filtered_target_domain_train.reviewerID))
+with open('/TOP/tmp2/cpr/fix_ncore_test/user_5core/hk_csjj_shared_users.pickle', 'rb') as pf:
+    su = pickle.load(pf)
+su = set(map(lambda x: "user_"+x, su))
+overlap_users = set(su) - set(testing_users)
 
 overlap_users_emb = {}
 with open(f'../lfm_bpr_graphs/{source_domain}_lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
@@ -86,7 +86,7 @@ user_info['emb'] = user_info['UserId'].map(overlap_users_emb)
 each_column = [i for i in range(100)]
 user_info[each_column] = pd.DataFrame(user_info.emb.to_list(), index=user_info.index)
 user_info = user_info.drop(columns='emb')
-print("Finished constructing user_info!")
+print("Finished constructing user_info!", user_info.shape)
 
 ## get item embedding from target domain
 item_emb_dict = {}
