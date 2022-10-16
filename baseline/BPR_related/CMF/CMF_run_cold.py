@@ -14,6 +14,13 @@ from multiprocessing import Pool
 import time
 from tqdm import tqdm
 
+sys.path.insert(1, '../../../')
+from evaluation.utility import (save_exp_record,
+        rank_and_score,
+        generate_item_graph_df,
+        generate_user_emb,
+        load_testing_users_rec_dict)
+
 parser=argparse.ArgumentParser(description='CMF')
 parser.add_argument('--mom_save_dir', type=str, help='')
 parser.add_argument('--current_epoch', type=str, help='current_epoch num')
@@ -27,25 +34,33 @@ args=parser.parse_args()
 source_domain, target_domain = args.dataset.split("_")
 ncore = args.ncore
 
+data_input_dir='/TOP/tmp2/cpr/fix_ncore_test/input_5core/'
+test_mode='cold'
+src='hk'
+tar='csjj'
+testing_users_rec_dict = load_testing_users_rec_dict(data_input_dir, test_mode, src, tar)
+testing_users = list(testing_users_rec_dict.keys())
+
+cold_start_users_emb = {}
+with open(f'../lfm_bpr_graphs/{source_domain}_lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
+    for line in f:
+        line = line.strip("\n")
+        prefix, emb = line.split('\t')
+        prefix = prefix.replace(" ", "")
+        emb = emb.split()
+        if prefix in testing_users: # same as cold-start users
+            cold_start_users_emb[prefix] = np.array(emb, dtype=np.float32)
+
 with open(f'{args.mom_save_dir}/LOO_data_{str(ncore)}core/{target_domain}_train.pickle', 'rb') as pk:
     target_domain_train = pickle.load(pk)
 target_domain_train['reviewerID'] = target_domain_train['reviewerID'].apply(lambda x: 'user_' + x)
 
-# open mt books cold start users
-with open(f'{args.mom_save_dir}/user_{str(ncore)}core/{source_domain}_{target_domain}_cold_users.pickle', 'rb') as pf:
-    dataset_cold_start_users = pickle.load(pf)
-dataset_cold_start_users = ["user_"+user for user in dataset_cold_start_users]
-
-filtered_target_domain_train = target_domain_train[~target_domain_train['reviewerID'].isin(dataset_cold_start_users)]
+filtered_target_domain_train = target_domain_train[~target_domain_train['reviewerID'].isin(testing_users)]
 filtered_target_domain_train = filtered_target_domain_train[['reviewerID','asin','overall']]
 target_domain_ratings = filtered_target_domain_train.groupby(['reviewerID', 'asin'])['overall'].mean().reset_index()
 target_domain_ratings.columns = ['UserId','ItemId','Rating']
 print("Finished generating target_domain_ratings...")
 
-# getting side information
-
-## get user information
-## extract mt domain embedding of overlap_users as user_info
 with open(f'{args.mom_save_dir}/LOO_data_{str(ncore)}core/{source_domain}_train.pickle', 'rb') as pf:
     source_domain_train = pickle.load(pf)
 source_domain_train['reviewerID'] = source_domain_train['reviewerID'].apply(lambda x: 'user_' + x)
@@ -72,7 +87,6 @@ each_column = [i for i in range(100)]
 user_info[each_column] = pd.DataFrame(user_info.emb.to_list(), index=user_info.index)
 user_info = user_info.drop(columns='emb')
 print("Finished constructing user_info!")
-
 
 ## get item embedding from target domain
 item_emb_dict = {}
@@ -102,7 +116,6 @@ overlap_users_target_domain_ratings = target_domain_ratings[target_domain_rating
 non_overlap_users_target_domain_ratings = target_domain_ratings[~target_domain_ratings['UserId'].isin(overlap_users)]
 sorted_target_domain_ratings = pd.concat([overlap_users_target_domain_ratings, non_overlap_users_target_domain_ratings], ignore_index=True)
 
-
 print("Start fitting model...")
 start_time = time.time()
 model = CMF(method='als', k=args.k)
@@ -117,55 +130,15 @@ with open(f'{args.mom_save_dir}/LOO_data_{str(ncore)}core/{target_domain}_test.p
 target_domain_test_df['reviewerID'] = target_domain_test_df['reviewerID'].apply(lambda x: 'user_'+x)
 
 ## testing users are cold-start users
-testing_users = dataset_cold_start_users
-
-# generate user 100 rec pool
 print("Start generating user rec dict...")
 
 total_item_set = item_emb_dict.keys()
 
-def process_user_rec_dict(user_list):
-  user_rec_dict = {}
-
-  for user in tqdm(user_list):
-      watched_set = set(target_domain_train[target_domain_train['reviewerID'] == user].asin)
-      neg_pool = total_item_set - watched_set
-      # random.seed(5)
-      neg_99 = random.sample(neg_pool, 99)
-      user_rec_pool = list(neg_99) + list(target_domain_test_df[target_domain_test_df['reviewerID'] == user].asin)
-      user_rec_dict[user] = user_rec_pool
-
-  return user_rec_dict
-
-cpu_amount = multiprocessing.cpu_count()
-worker = cpu_amount - 2
-mp = Pool(worker)
-split_datas = np.array_split(list(testing_users), worker)
-results = mp.map(process_user_rec_dict ,split_datas)
-mp.close()
-
-user_rec_dict = {}
-for r in results:
-  user_rec_dict.update(r)
-
-print("testing users rec dict generated!")
 
 k_amount = [1, 3, 5, 10, 20]
 k_max = max(k_amount)
 count = 0
-# total_rec=[0, 0, 0, 0, 0]
-# total_ndcg=[0, 0, 0, 0, 0]
 
-# get cold-start users embedding from mt domain
-cold_start_users_emb = {}
-with open(f'../lfm_bpr_graphs/{source_domain}_lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
-    for line in f:
-        line = line.strip("\n")
-        prefix, emb = line.split('\t')
-        prefix = prefix.replace(" ", "")
-        emb = emb.split()
-        if prefix in testing_users: # same as cold-start users
-            cold_start_users_emb[prefix] = np.array(emb, dtype=np.float32)
 
 print("Start counting...")
 # for user in testing_users:
@@ -210,45 +183,10 @@ total_rec = np.sum(np.array(total_rec), axis=0)
 total_ndcg = np.sum(np.array(total_ndcg), axis=0)
 count = total_count
 
-# record time
-end_time = time.time()
-print(f"spend {end_time - start_time} secs on rec & eval")
-
-
-output_file = args.output_file
-
-print("Start writing file...")
-with open(output_file, 'w') as fw:
-    fw.writelines(['=================================\n',
-           # 'Latent factors to use: ',
-           # str(args.k),
-            '\n evaluated users: ',
-            str(len(testing_users)),
-            '\n--------------------------------',
-           '\n recall@1: ',
-            str(total_rec[0]/count),
-           '\n NDCG@1: ',
-            str(total_ndcg[0]/count),
-           '\n--------------------------------',
-           '\n recall@3: ',
-            str(total_rec[1]/count),
-           '\n NDCG@3: ',
-            str(total_ndcg[1]/count),
-           '\n--------------------------------',
-           '\n recall@5: ',
-            str(total_rec[2]/count),
-           '\n NDCG@5: ',
-            str(total_ndcg[2]/count),
-           '\n--------------------------------',
-           '\n recall@10: ',
-           str(total_rec[3]/count),
-           '\n NDCG@10: ',
-           str(total_ndcg[3]/count),
-           '\n--------------------------------',
-           '\n recall@20: ',
-           str(total_rec[4]/count),
-           '\n NDCG@20: ',
-           str(total_ndcg[4]/count),
-           '\n'])
-
-print('Finished!')
+model_name='cmf'
+dataset_pair='hk_csjj'
+test_mode='cold'
+top_ks = [1, 3, 5, 10, 20]
+save_dir='/TOP/tmp2/cpr/exp_record_test/'
+save_name='M_cmf_D_hk_csjj_T_cold'
+save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name)
