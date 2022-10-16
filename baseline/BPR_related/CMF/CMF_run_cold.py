@@ -57,8 +57,8 @@ target_domain_train['reviewerID'] = target_domain_train['reviewerID'].apply(lamb
 
 filtered_target_domain_train = target_domain_train[~target_domain_train['reviewerID'].isin(testing_users)]
 filtered_target_domain_train = filtered_target_domain_train[['reviewerID','asin','overall']]
-target_domain_ratings = filtered_target_domain_train.groupby(['reviewerID', 'asin'])['overall'].mean().reset_index()
-target_domain_ratings.columns = ['UserId','ItemId','Rating']
+filtered_target_domain_ratings = filtered_target_domain_train.groupby(['reviewerID', 'asin'])['overall'].mean().reset_index()
+filtered_target_domain_ratings.columns = ['UserId','ItemId','Rating']
 print("Finished generating target_domain_ratings...")
 
 with open('/TOP/tmp2/cpr/fix_ncore_test/user_5core/hk_csjj_shared_users.pickle', 'rb') as pf:
@@ -111,15 +111,10 @@ item_info[each_column] = pd.DataFrame(item_info.emb.to_list(), index=item_info.i
 item_info = item_info.drop(columns='emb')
 print("Finished constructing item_info!")
 
-# sort target_domain_ratings 
-overlap_users_target_domain_ratings = target_domain_ratings[target_domain_ratings['UserId'].isin(overlap_users)]
-non_overlap_users_target_domain_ratings = target_domain_ratings[~target_domain_ratings['UserId'].isin(overlap_users)]
-sorted_target_domain_ratings = pd.concat([overlap_users_target_domain_ratings, non_overlap_users_target_domain_ratings], ignore_index=True)
-
 print("Start fitting model...")
 start_time = time.time()
 model = CMF(method='als', k=args.k)
-model.fit(X=sorted_target_domain_ratings, U=user_info, I=item_info)
+model.fit(X=filtered_target_domain_ratings, U=user_info, I=item_info)
 print("Finished fitting model!")
 print("It took {} seconds to fit the model.".format(time.time() - start_time))
 
