@@ -13,8 +13,22 @@ import time
 import pickle
 import random
 
-def get_testing_users_rec_dict(n_worker, testing_users, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set):
+def load_testing_users_rec_dict(data_input_dir, test_mode, src, tar):
+    path = f'{data_input_dir}/testing_users_rec_dict_{src}_{tar}_{test_mode}.pickle'
+    with open(path, 'rb') as pf:
+        testing_users_rec_dict = pickle.load(pf)
+
+    return testing_users_rec_dict
+
+def get_testing_users_rec_dict(n_worker, tar_test_df, uid_u, uid_i, test_mode, data_input_dir, src, tar):
+    tar_train_path = f'{data_input_dir}/{tar}_train_input.txt'
+    tar_train_df = pd.read_csv(tar_train_path, sep='\t', header=None, names=[uid_u, uid_i, 'xxx'])
+    total_item_set = set(tar_train_df[uid_i])
+    
+    testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
+
     mp = Pool(n_worker)
+
     print(f"Start generating testing users' postive-negative pairs... using {n_worker} workers.")
     split_datas = np.array_split(list(testing_users), n_worker)
     func = partial(process_user_pos_neg_pair, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set)
@@ -28,6 +42,13 @@ def get_testing_users_rec_dict(n_worker, testing_users, tar_train_df, tar_test_d
 
     return testing_users_rec_dict
 
+def get_testing_users(test_mode, data_input_dir, src, tar):
+    path = f'{data_input_dir}/{src}_{tar}_test_{test_mode}_users.pickle'
+    with open(path, 'rb') as pf:
+        testing_users = pickle.load(pf)
+
+    return testing_users
+
 def process_user_pos_neg_pair(tar_train_df, tar_test_df, uid_u, uid_i, total_item_set,  user_list):
   user_rec_dict = {}
   for user in user_list:
@@ -39,12 +60,6 @@ def process_user_pos_neg_pair(tar_train_df, tar_test_df, uid_u, uid_i, total_ite
 
   return user_rec_dict
 
-def get_testing_users(test_mode, data_input_dir, src, tar):
-    path = f'{data_input_dir}/{src}_{tar}_test_{test_mode}_users.pickle'
-    with open(path, 'rb') as pf:
-        testing_users = pickle.load(pf)
-
-    return testing_users
 
 def generate_item_graph_df(graph_file):
     st = time.time()

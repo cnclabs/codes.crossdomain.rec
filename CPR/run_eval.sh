@@ -3,8 +3,8 @@ data_dir=$1
 model_save_dir=$2
 exp_record_dir=$3
 sample=3500
-#declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
-declare -a datasets=("hk_csjj")
+declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
+#declare -a datasets=("hk_csjj")
 declare -A ncores
 ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 
