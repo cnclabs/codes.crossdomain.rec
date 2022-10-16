@@ -1,6 +1,6 @@
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
-mom_save_dir='/TOP/tmp2/cpr/fix_ncore/'
+mom_save_dir=$1
 ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 
 for d in "${datasets[@]}"; do
