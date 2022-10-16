@@ -28,6 +28,12 @@ e.g.,
 $ bash run_gen_input.sh /TOP/tmp2/cpr/from_yzliu/ /TOP/tmp2/cpr/fix_ncore_test
 ```
 
+pre-sample negative pairs for target/shared/cold testing users
+```
+bash run_pre_sample_all.sh /TOP/tmp2/cpr/fix_ncore_test/
+
+```
+
 ## 2. Model Training & Evaluation
 ### a. CPR
 ```
