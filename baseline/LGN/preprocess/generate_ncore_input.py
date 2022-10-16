@@ -30,16 +30,18 @@ save_dir = "../dataset"
 
 # ------------ SRC-TAR ------------
 # tar
+with open('{mom_save_dir}/LOO_data_{ncore}core/{tar}_train.pickle'.format(mom_save_dir=mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
+    tar_train = pickle.load(pf)
+tar_train[user_attr] = tar_train[user_attr].apply(lambda x: 'user_'+x)
 
 with open('{mom_save_dir}/LOO_data_{ncore}core/{tar}_test.pickle'.format(mom_save_dir=mom_save_dir, ncore=ncore, tar=tar), 'rb') as pf:
     tar_test_df = pickle.load(pf)
 tar_test_df[user_attr] = tar_test_df[user_attr].apply(lambda x: 'user_'+x)
 
-_path = f'{mom_save_dir}/input_{ncore}core/{tar}_train_input.txt'
-tar_train_graph = pd.read_csv(_path, sep='\t', header=None)
-tar_train_graph = tar_train_graph.iloc[:,:-1] # remove the last useless column
-tar_train_graph.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_target.train'.format(tar=tar, src=src)), header=False, index=False, sep=',')
-tar_train_graph.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_shared.train'.format(tar=tar, src=src)), header=False, index=False, sep=',')
+tar_train_graph = tar_train.groupby([user_attr, item_attr]).size().reset_index().drop([0], axis=1)
+_df = tar_train_graph
+_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_target.train'.format(tar=tar, src=src)), header=False, index=False, sep=',')
+_df.to_csv(os.path.join(save_dir,'{src}_{tar}_lil_shared.train'.format(tar=tar, src=src)), header=False, index=False, sep=',')
 
 target_users = random.sample(set(tar_test_df[user_attr]), sample_amount)
 with open('{mom_save_dir}/user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(mom_save_dir=mom_save_dir, ncore=ncore, src=src, tar=tar), 'rb') as pf:

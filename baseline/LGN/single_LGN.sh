@@ -1,21 +1,22 @@
 #!/bin/bash
-mom_save_dir='/TOP/tmp2/cpr/from_yzliu'
 src=$1 #(hk spo mt) 
 tar=$2 #(csjj csj b)
 graph=$3 #(big lil)
-te=$4 #(target shared cold)
+test_mode=$4 #(target shared cold)
 mode=$5 #train, eval, traineval
 gpu_id=$6
+data_dir=$7
+exp_record_dir=$8
 epoch=200
 declare -A ncores
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
-sample=4000
+ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
+sample=3500
+model_name=lgn_${graph}
 
 
 dataset=${src}_${tar}
 ncore=${ncores[$dataset]}
-echo "Make sure you've run build_cython & preprocess for LGN."
-fullname=${dataset}_${graph}_${te}
+fullname=${dataset}_${graph}_${test_mode}
 
 if [[ ! -d ./graph ]]
 then
@@ -39,13 +40,15 @@ if [[ "$mode" == "eval" || "$mode" == "traineval" ]]
 then
 	echo Start evaluating $fullname ...
         python3 ../../rec_and_eval_ncore.py \
-            --test_users ${te} \
-            --mom_save_dir ${mom_save_dir} \
-            --output_file $(pwd)/result/${fullname}_${epoch}_lightgcn_result.txt \
-            --graph_file $(pwd)/graph/${fullname}_${epoch}epoch.graph \
+            --data_dir ${data_dir} \
+            --test_mode ${test_mode} \
+            --save_dir ${exp_record_dir} \
+            --save_name M_cpr_D_${src}_${tar}_T_target \
+            --user_emb_path $(pwd)/graph/${fullname}_${epoch}epoch.graph \
+            --item_emb_path $(pwd)/graph/${fullname}_${epoch}epoch.graph \
             --src ${src} \
             --tar ${tar} \
-            --ncore ${ncore} \
-            --sample ${sample}
+            --model_name ${model_name}\
+            --ncore ${ncore}
         echo Done evaluating $fullname
 fi
