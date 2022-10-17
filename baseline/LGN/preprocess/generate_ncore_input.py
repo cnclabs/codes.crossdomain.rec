@@ -27,6 +27,8 @@ sample_amount = args.sample
 mom_save_dir = args.mom_save_dir
 
 save_dir = "../dataset"
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
 
 # ------------ SRC-TAR ------------
 # tar
