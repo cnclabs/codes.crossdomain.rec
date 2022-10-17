@@ -40,30 +40,6 @@ for d in "${datasets[@]}"; do
 	-dimension 100 -update_times $((epoch)) -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
 	#$pretrain
 
-	python3 ../rec_and_eval_ncore.py \
-	--data_dir ${data_dir} \
-	--test_mode target \
-	--save_dir ${exp_record_dir} \
-	--save_name M_cpr_D_${src}_${tar}_T_target \
-	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_target_result_$((epoch))epoch.txt \
-	--graph_file ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
-	--src ${src} \
-	--tar ${tar} \
-	--model_name cpr\
-	--ncore ${ncore}
-
-	python3 ../rec_and_eval_ncore.py \
-	--data_dir ${data_dir} \
-	--test_mode shared \
-	--save_dir ${exp_record_dir} \
-	--save_name M_cpr_D_${src}_${tar}_T_shared \
-	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_shared_result_$((epoch))epoch.txt \
-	--graph_file ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
-	--src ${src} \
-	--tar ${tar} \
-	--model_name cpr\
-	--ncore ${ncore}
-
 	# cold
 	./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
 	-train_ut ${data_dir}/input_${ncore}core/cold_${tar}_train_input.txt \
@@ -73,17 +49,5 @@ for d in "${datasets[@]}"; do
 	-dimension 100 -update_times $((epoch)) -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
 	#$coldpretrain
 
-	python3 ../rec_and_eval_ncore.py \
-	--data_dir ${data_dir} \
-	--test_mode cold \
-	--save_dir ${exp_record_dir} \
-	--save_name M_cpr_D_${src}_${tar}_T_cold \
-	--output_file ${model_save_dir}/result/all_${src}_${tar}_cpr_cold_result_$((epoch))epoch.txt \
-	--user_emb_path ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
-	--item_emb_path ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
-	--src ${src} \
-	--tar ${tar} \
-	--model_name cpr\
-	--ncore ${ncore}
 	done
 done
