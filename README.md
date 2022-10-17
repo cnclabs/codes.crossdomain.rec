@@ -57,15 +57,14 @@ $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 
 ### c. LightGCN
 ```
+$ pip install faiss-gpu
 $ cd baseline/LGN
 $ ./build_cython.sh
 $ cd preprocess
 $ bash run_preprocess.sh /TOP/tmp2/cpr/fix_ncore_test/
 $ cd ..
 
-$ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ train
-(check back to evaluation container)
-$ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ eval
+$ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ traineval
 ```
 
 
