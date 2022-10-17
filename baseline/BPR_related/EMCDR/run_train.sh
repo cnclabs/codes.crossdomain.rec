@@ -1,2 +1,3 @@
+data_dir=$1
 ./run_MLP.sh
-./run_infer_Us.sh /TOP/tmp2/cpr/fix_ncore_test/
+./run_infer_Us.sh ${data_dir}
