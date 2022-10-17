@@ -73,10 +73,10 @@ $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ t
 ```
 $ cd baseline/BPR_related
 $ pip install lightfm==1.16
-$ ./run_lfm-bpr.sh {data_dir} {exp_record_dir}
+$ ./run_lfm-bpr.sh {data_dir} {exp_record_dir} {mode}
 
 e.g.,
-$ bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
+$ bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ traineval
 
 ```
 
@@ -93,12 +93,15 @@ Result path: baseline/BPR_related/CMF/result
 ```
 $ cd baseline/BPR_related/EMCDR
 $ pip install pandas
-$ ./run_preprocess.sh
-$ ./run_train.sh
+$ bash run_preprocess.sh {data_dir}
+$ bash run_train.sh {data_dir}
+
+e.g., 
+$ bash run_preprocess.sh /TOP/tmp2/cpr/fix_ncore_test/
+$ bash run_train.sh /TOP/tmp2/cpr/fix_ncore_test/
 
 Change docker image to: nvcr.io/nvidia/pytorch:22.05-py3
 $ cd baseline/BPR_related/EMCDR
 $ ./run_rec_and_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 
-Result path /baseline/BPR_related/EMCDR/result
 ```
