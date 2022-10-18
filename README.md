@@ -98,3 +98,9 @@ $ cd baseline/BPR_related/EMCDR
 $ ./run_rec_and_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 
 ```
+
+## 3. Generate Latex Score Table
+
+```
+$ python gen_latex_table.py /TOP/tmp2/cpr/exp_record_test/
+```
