@@ -1,7 +1,7 @@
 # CPR-2023
 
 ## 0. Environment
-a. `CPR`, `BPR`, `CMF`, evaluation
+a. `CPR`, `BPR`, evaluation
 ```
   docker image: nvcr.io/nvidia/pytorch:22.05-py3  
   pip install faiss-gpu==1.7.2
