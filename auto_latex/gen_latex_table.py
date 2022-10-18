@@ -149,12 +149,15 @@ if __name__ == '__main__':
         improve_list = (cpr_list - strong_list) / strong_list
     
         imp = 'Improv. '
-    
+
+        # TODO
+        clean_imp = 'Improv. ' 
         for i in improve_list:
             imp+= f'& {i*100:.2f}\% '
+            clean_imp+= f'{i*100:.2f}%\t'
         imp += "\\"
         model_row_map['imp'] = imp
-    
+        print(clean_imp) 
         path = f'./{mode_name}.txt'
         gen_latex_table(mode_name, path, model_row_map)
         
