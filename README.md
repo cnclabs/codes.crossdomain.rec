@@ -48,11 +48,12 @@ $ bash run_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/ex
 
 ### b. Bi-TGCF
 ```
+$ pip install faiss-gpu 
 $ cd baseline/Bi-TGCF
 $ bash run_all.sh {processed_data_dir} {exp_record_dir}
 
 e.g.,
-$ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
+$ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ traineval
 ```
 
 ### c. LightGCN
@@ -80,16 +81,8 @@ $ bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_tes
 
 ```
 
-### e. CMF (BPR's graph is required)
-```
-$ cd baseline/BPR_related/CMF
-$ pip install cmfrec==3.4.3
-$ ./run_CMF.sh
 
-Result path: baseline/BPR_related/CMF/result
-```
-
-### f. EMCDR (BPR's graph is required)
+### e. EMCDR (BPR's graph is required)
 ```
 $ cd baseline/BPR_related/EMCDR
 $ pip install pandas
