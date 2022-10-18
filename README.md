@@ -85,7 +85,7 @@ $ bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_tes
 
 
 ### e. EMCDR (BPR's graph is required)
-Use `Environment-C` for training
+Use `Environment-C` for training  
 Use `Environment-A` for evaluation
 ```
 $ cd baseline/BPR_related/EMCDR
