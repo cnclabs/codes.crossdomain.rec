@@ -120,8 +120,8 @@ if __name__ == '__main__':
     
     
                     score = _df1[metric_name].values
-                    if len(score) == 1:
-                        score = score[0]
+                    if len(score) >= 1:
+                        score = max(score)
                         if model_name == 'cpr':
                             model_row += f"& {_b}"
                             model_row += f'{score:.4f}{b_}'
