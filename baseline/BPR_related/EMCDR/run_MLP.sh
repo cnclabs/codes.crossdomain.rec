@@ -7,7 +7,7 @@ split=$(($update_times/$num_checkpoint))
 
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
+ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 
 for d in "${datasets[@]}"; do
 	IFS='_'

@@ -1,9 +1,10 @@
 #!/bin/bash
-mom_save_dir=/TOP/tmp2/cpr/from_yzliu
-sample=4000
-declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
+mom_save_dir=/TOP/tmp2/cpr/fix_ncore
+sample=3500
+declare -a datasets=("mt_b")
+#declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
+ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 
 if [[ ! -d ./result ]]
 then

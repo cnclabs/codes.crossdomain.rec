@@ -1,4 +1,4 @@
-mom_save_dir='/TOP/tmp2/cpr/from_yzliu/'
+mom_save_dir='/TOP/tmp2/cpr/fix_ncore/'
 #!/bin/bash
 set -xe
 
@@ -6,7 +6,7 @@ set -xe
 #num_checkpoint=5
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
+ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 workers=8
 l2_reg=0.0025
 init_alpha=0.025

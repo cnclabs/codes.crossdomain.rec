@@ -1,10 +1,10 @@
 #!/bin/bash
-mom_save_dir=/TOP/tmp2/cpr/from_yzliu
-sample=4000
+mom_save_dir=/TOP/tmp2/cpr/fix_ncore
+sample=3500
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
 declare -A gpus
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
+ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 gpus=(['hk_csjj']=2 ["spo_csj"]=2 ["mt_b"]=2)
 
 for d in "${datasets[@]}"; do

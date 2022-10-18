@@ -114,7 +114,7 @@ target_test_df['reviewerID'] = target_test_df['reviewerID'].apply(lambda x: 'use
 test_users_types = ["target", "shared"]
 for test_users_type in tqdm(test_users_types):
     ## sample testing users
-    sample_amount = 4000
+    sample_amount = 3500
     # random.seed(3)
     if test_users_type == 'target':
         try:

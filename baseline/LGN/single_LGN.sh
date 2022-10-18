@@ -1,5 +1,5 @@
 #!/bin/bash
-mom_save_dir='/TOP/tmp2/cpr/from_yzliu'
+mom_save_dir='/TOP/tmp2/cpr/fix_ncore'
 src=$1 #(hk spo mt) 
 tar=$2 #(csjj csj b)
 graph=$3 #(big lil)
@@ -8,8 +8,8 @@ mode=$5 #train, eval, traineval
 gpu_id=$6
 epoch=200
 declare -A ncores
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
-sample=4000
+ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
+sample=3500
 
 
 dataset=${src}_${tar}

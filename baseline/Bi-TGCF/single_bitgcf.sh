@@ -1,9 +1,9 @@
 #!/bin/bash
-mom_save_dir=/TOP/tmp2/cpr/from_yzliu
-sample=4000
+mom_save_dir=/TOP/tmp2/cpr/fix_ncore
+sample=3500
 
 declare -A ncores
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=10)
+ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 
 src=$1
 tar=$2

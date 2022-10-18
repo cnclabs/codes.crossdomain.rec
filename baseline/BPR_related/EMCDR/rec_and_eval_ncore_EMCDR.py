@@ -36,7 +36,7 @@ with open('{}/LOO_data_{}core/{}_test.pickle'.format(args.mom_save_dir, ncore, t
 tar_test_df['reviewerID'] = tar_test_df['reviewerID'].apply(lambda x: 'user_'+x)
 
 # sample testing users
-sample_amount = 4000
+sample_amount = 3500
 random.seed(3)
 print("test_users", args.test_users)
 if args.test_users == 'target':
