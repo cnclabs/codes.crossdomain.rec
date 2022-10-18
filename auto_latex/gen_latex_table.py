@@ -100,6 +100,9 @@ if __name__ == '__main__':
         for model_name in model_list:
             show_name = model_show_name_map[model_name]
             model_row = f'{show_name}\t'
+            
+            # TODO
+            clean_row = f'{model_name}\t'
             for dataset_name in dataset_list:
                 for metric_name in metric_list:
                     _df1 = result_df[
@@ -129,18 +132,21 @@ if __name__ == '__main__':
                                 model_row += f'& {cross}{score:.4f}'
                             else:
                                 model_row += f'& {score:.4f}'
+                        # TODO
+                        clean_row += f'{score:.4f}\t'
                     else:
                         model_row += f'& - '
+                        # TODO
+                        clean_row += f'-\t'
     
             model_row += " \\"
             model_row += "\\"
             model_row_map[model_name] = model_row
-            print(model_row)
+            #print(model_row)
+            print(clean_row)
         cpr_list = np.array(cpr_list)
         strong_list = np.array(strong_list)
         improve_list = (cpr_list - strong_list) / strong_list
-        print(cpr_list)
-        print(strong_list)
     
         imp = 'Improv. '
     
@@ -148,7 +154,6 @@ if __name__ == '__main__':
             imp+= f'& {i*100:.2f}\% '
         imp += "\\"
         model_row_map['imp'] = imp
-        print(imp)
     
         path = f'./{mode_name}.txt'
         gen_latex_table(mode_name, path, model_row_map)
