@@ -36,6 +36,7 @@ $ bash run_pre_sample_all.sh /TOP/tmp2/cpr/fix_ncore_test/
 
 ## 2. Model Training & Evaluation
 ### a. CPR
+Use Environment-A
 ```
 $ cd CPR 
 $ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
@@ -47,6 +48,7 @@ $ bash run_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/ex
 ```
 
 ### b. Bi-TGCF
+Use Environment-B
 ```
 $ pip install faiss-gpu 
 $ cd baseline/Bi-TGCF
@@ -57,6 +59,7 @@ $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ t
 ```
 
 ### c. LightGCN
+Use Environment-B
 ```
 $ pip install faiss-gpu
 $ cd baseline/LGN
@@ -71,6 +74,7 @@ $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ t
 
 
 ### d. BPR
+Use Environment-A
 ```
 $ cd baseline/BPR_related
 $ pip install lightfm==1.16
@@ -83,6 +87,8 @@ $ bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_tes
 
 
 ### e. EMCDR (BPR's graph is required)
+Use Environment-C for training
+Use Environment-A for evaluation
 ```
 $ cd baseline/BPR_related/EMCDR
 $ pip install pandas
@@ -93,7 +99,7 @@ e.g.,
 $ bash run_preprocess.sh /TOP/tmp2/cpr/fix_ncore_test/
 $ bash run_train.sh /TOP/tmp2/cpr/fix_ncore_test/
 
-Change docker image to: nvcr.io/nvidia/pytorch:22.05-py3
+(Change to Environment-A)
 $ cd baseline/BPR_related/EMCDR
 $ ./run_rec_and_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 
