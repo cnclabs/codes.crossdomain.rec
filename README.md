@@ -40,12 +40,10 @@ $ bash run_pre_sample_all.sh /TOP/tmp2/cpr/fix_ncore_test/
 Use `Environment-A`
 ```
 $ cd CPR 
-$ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
-$ ./run_eval.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
+$ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir} {exp_record_dir} {mode}
 
 e.g.,
-$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/ /TOP/tmp2/cpr/exp_record_test/
-$ bash run_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/ /TOP/tmp2/cpr/exp_record_test/
+$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/ /TOP/tmp2/cpr/exp_record_test/ traineval
 ```
 
 ### b. Bi-TGCF
