@@ -1,19 +1,16 @@
 # CPR-2023
 
 ## 0. Environment
-a. `CPR`, `BPR`, evaluation
-```
-  docker image: nvcr.io/nvidia/pytorch:22.05-py3  
-  pip install faiss-gpu==1.7.2
-```
-b. `LightGCN`, `Bi-TGCF`
-```
-  docker image: nvcr.io/nvidia/tensorflow:22.08-tf2-py3
-```
-c. `EMCDR`
-```
-  docker image: tensorflow/tensorflow:1.14.0-gpu-py3
-```
+a. Environment-A (`CPR`, `BPR`, evaluation)  
+- docker image: `nvcr.io/nvidia/pytorch:22.05-py3`
+- pip install faiss-gpu==1.7.2
+
+b. Environment-B (`LightGCN`, `Bi-TGCF`)  
+- docker image: `nvcr.io/nvidia/tensorflow:22.08-tf2-py3`
+- pip install faiss-gpu==1.7.2
+
+c. Environment-C (`EMCDR`)  
+- docker image: `tensorflow/tensorflow:1.14.0-gpu-py3`
 
 ## 1. Dataset & Preprocessing
 We use 3 pairs of datasets **(Source_Target)**:
