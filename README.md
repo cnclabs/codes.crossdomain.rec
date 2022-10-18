@@ -80,7 +80,7 @@ Use `Environment-A`
 ```
 $ cd baseline/BPR_related
 $ pip install lightfm==1.16
-$ ./run_lfm-bpr.sh {data_dir} {exp_record_dir} {mode}
+$ ./run_lfm-bpr.sh {processed_data_dir} {exp_record_dir} {mode}
 
 e.g.,
 $ bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ traineval
@@ -94,8 +94,8 @@ Use `Environment-A` for evaluation
 ```
 $ cd baseline/BPR_related/EMCDR
 $ pip install pandas
-$ bash run_preprocess.sh {data_dir}
-$ bash run_train.sh {data_dir}
+$ bash run_preprocess.sh {processed_data_dir}
+$ bash run_train.sh {processed_data_dir}
 
 e.g., 
 $ bash run_preprocess.sh /TOP/tmp2/cpr/fix_ncore_test/
@@ -103,6 +103,9 @@ $ bash run_train.sh /TOP/tmp2/cpr/fix_ncore_test/
 
 (Change to Environment-A)
 $ cd baseline/BPR_related/EMCDR
+$ ./run_rec_and_eval.sh {processed_data_dir} {exp_record_dir}
+
+e.g.,
 $ ./run_rec_and_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/
 
 ```
