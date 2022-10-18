@@ -51,8 +51,7 @@ $ bash run_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/ex
 Use `Environment-B`
 ``` 
 $ cd baseline/Bi-TGCF
-$ bash run_all.sh {processed_data_dir} {exp_record_dir}
-
+$ bash run_all.sh {processed_data_dir} {exp_record_dir} {mode}
 e.g.,
 $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ traineval
 ```
@@ -63,9 +62,14 @@ Use `Environment-B`
 $ cd baseline/LGN
 $ ./build_cython.sh
 $ cd preprocess
+$ bash run_preprocess.sh {processed_data_dir}
+e.g.,
 $ bash run_preprocess.sh /TOP/tmp2/cpr/fix_ncore_test/
-$ cd ..
 
+
+$ cd ..
+$ bash run_all.sh {processed_data_dir} {exp_record_dir} {mode}
+e.g.,
 $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ traineval
 ```
 
