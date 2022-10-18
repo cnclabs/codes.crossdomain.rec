@@ -24,7 +24,7 @@ then
 	mkdir -p ./result
 fi
 
-if [[ $normal_cod == "normal" ]]
+if [[ $normal_cold == "normal" ]]
 then
     if [[ "$mode" == "train" || "$mode" == "traineval" ]]
     then 
