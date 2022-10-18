@@ -3,15 +3,15 @@
 ## 0. Environment
 a. `Environment-A` (CPR, BPR, EMCDR's evaluation)  
 - docker image: `nvcr.io/nvidia/pytorch:22.05-py3`
-- `pip install -r requirements_env_a.txt`
+- pip install -r `requirements_env_a.txt`
 
 b. `Environment-B` (LightGCN, Bi-TGCF)  
 - docker image: `nvcr.io/nvidia/tensorflow:22.08-tf2-py3`
-- `pip install -r requirements_env_b.txt`
+- pip install -r `requirements_env_b.txt`
 
 c. `Environment-C` (EMCDR's training)  
 - docker image: `tensorflow/tensorflow:1.14.0-gpu-py3`
-- `pip install -r requirements_env_c.txt`
+- pip install -r `requirements_env_c.txt`
 
 ## 1. Dataset & Preprocessing
 We use 3 pairs of datasets **(Source_Target)**:
