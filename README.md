@@ -21,14 +21,14 @@ We use 3 pairs of datasets **(Source_Target)**:
 * SPO_CSJ (Sports_and_Outdoors_5.json + Clothing_Shoes_and_Jewelry_5.json)
 * HK_CSJJ (Home_and_Kitchen_5.json + Clothing_Shoes_and_Jewelry_5.json)
 ```
+[Step-1] Gen input
 $ cd preprocess
 $ bash run_gen_input.sh {raw_data_dir} {processed_data_dir}
 
 e.g., 
 $ bash run_gen_input.sh /TOP/tmp2/cpr/from_yzliu/ /TOP/tmp2/cpr/fix_ncore_test
 
-
-pre-sample negative pairs for target/shared/cold testing users
+[Step-2] Pre-sample negative pairs for target/shared/cold testing users
 $ cd ..
 $ bash run_pre_sample_all.sh {processed_data_dir}
 
@@ -36,9 +36,6 @@ e.g.,
 $ bash run_pre_sample_all.sh /TOP/tmp2/cpr/fix_ncore_test/
 ```
 
-
-
-```
 
 ## 2. Model Training & Evaluation
 ### a. CPR
