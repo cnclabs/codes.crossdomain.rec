@@ -1,15 +1,15 @@
 # CPR-2023
 
 ## 0. Environment
-a. Environment-A (`CPR`, `BPR`, evaluation)  
+a. `Environment-A` (CPR, BPR, evaluation)  
 - docker image: `nvcr.io/nvidia/pytorch:22.05-py3`
 - pip install faiss-gpu==1.7.2
 
-b. Environment-B (`LightGCN`, `Bi-TGCF`)  
+b. `Environment-B` (LightGCN, Bi-TGCF)  
 - docker image: `nvcr.io/nvidia/tensorflow:22.08-tf2-py3`
 - pip install faiss-gpu==1.7.2
 
-c. Environment-C (`EMCDR`)  
+c. `Environment-C` (EMCDR)  
 - docker image: `tensorflow/tensorflow:1.14.0-gpu-py3`
 
 ## 1. Dataset & Preprocessing
@@ -36,7 +36,7 @@ $ bash run_pre_sample_all.sh /TOP/tmp2/cpr/fix_ncore_test/
 
 ## 2. Model Training & Evaluation
 ### a. CPR
-Use Environment-A
+Use `Environment-A`
 ```
 $ cd CPR 
 $ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
@@ -48,9 +48,8 @@ $ bash run_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/ex
 ```
 
 ### b. Bi-TGCF
-Use Environment-B
-```
-$ pip install faiss-gpu 
+Use `Environment-B`
+``` 
 $ cd baseline/Bi-TGCF
 $ bash run_all.sh {processed_data_dir} {exp_record_dir}
 
@@ -59,9 +58,8 @@ $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ t
 ```
 
 ### c. LightGCN
-Use Environment-B
+Use `Environment-B`
 ```
-$ pip install faiss-gpu
 $ cd baseline/LGN
 $ ./build_cython.sh
 $ cd preprocess
@@ -74,7 +72,7 @@ $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ t
 
 
 ### d. BPR
-Use Environment-A
+Use `Environment-A`
 ```
 $ cd baseline/BPR_related
 $ pip install lightfm==1.16
@@ -87,8 +85,8 @@ $ bash run_lfm-bpr.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_tes
 
 
 ### e. EMCDR (BPR's graph is required)
-Use Environment-C for training
-Use Environment-A for evaluation
+Use `Environment-C` for training
+Use `Environment-A` for evaluation
 ```
 $ cd baseline/BPR_related/EMCDR
 $ pip install pandas
