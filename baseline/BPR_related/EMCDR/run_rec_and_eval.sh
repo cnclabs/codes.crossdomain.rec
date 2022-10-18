@@ -11,6 +11,8 @@ declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
 ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 
+echo pwd
+
 for d in "${datasets[@]}"; do
 	IFS='_'
 	read -a domains <<< "$d"
@@ -29,9 +31,9 @@ for d in "${datasets[@]}"; do
     --n_worker 8 \
     --ncore $ncore \
     --model_name ${model_name} \
-    --item_emb_path /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt \
-    --user_emb_path_shared /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/${src}_${tar}/shared_users_mapped_emb_dict_${update_times}.pickle\
-    --user_emb_path_target /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt
+    --item_emb_path $(pwd)/../lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt \
+    --user_emb_path_shared $(pwd)/${src}_${tar}/shared_users_mapped_emb_dict_${update_times}.pickle\
+    --user_emb_path_target $(pwd)/../lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt
 
 
     python3 ../../../rec_and_eval_ncore.py \
@@ -44,9 +46,9 @@ for d in "${datasets[@]}"; do
     --n_worker 8 \
     --ncore $ncore\
     --model_name ${model_name} \
-    --item_emb_path /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt \
-    --user_emb_path_shared /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/${src}_${tar}/shared_users_mapped_emb_dict_${update_times}.pickle\
-    --user_emb_path_target /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt
+    --item_emb_path $(pwd)/../lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt \
+    --user_emb_path_shared $(pwd)/${src}_${tar}/shared_users_mapped_emb_dict_${update_times}.pickle\
+    --user_emb_path_target $(pwd)/../lfm_bpr_graphs/${tar}_lightfm_bpr_${update_times}_10e-5.txt
 
 
     python3 ../../../rec_and_eval_ncore.py \
@@ -59,6 +61,6 @@ for d in "${datasets[@]}"; do
     --n_worker 8 \
     --ncore $ncore \
     --model_name emcdr\
-    --item_emb_path /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/lfm_bpr_graphs/cold_${tar}_lightfm_bpr_${update_times}_10e-5.txt \
-    --user_emb_path_cold /TOP/home/ythuang/CODE/tmp/refactor_eval/codes.crossdomain.rec/baseline/BPR_related/EMCDR/${src}_${tar}/cold_users_mapped_emb_dict_${update_times}.pickle
+    --item_emb_path $(pwd)/../lfm_bpr_graphs/cold_${tar}_lightfm_bpr_${update_times}_10e-5.txt \
+    --user_emb_path_cold $(pwd)/${src}_${tar}/cold_users_mapped_emb_dict_${update_times}.pickle
 done
