@@ -94,7 +94,7 @@ Use `Environment-A` for evaluation
 ```
 $ cd baseline/BPR_related/EMCDR
 $ pip install pandas
-(must wait until BPR finish training)
+(must wait until BPR finish training since the following preprocess need BPR's output)
 $ bash run_preprocess.sh {processed_data_dir}
 $ bash run_train.sh {processed_data_dir}
 
