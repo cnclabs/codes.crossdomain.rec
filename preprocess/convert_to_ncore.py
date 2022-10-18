@@ -10,7 +10,6 @@ os.chdir(os.path.dirname(os.path.realpath(__file__)))
 parser=argparse.ArgumentParser(description='Filtered LOO datas with n core.')
 parser.add_argument('--mom_save_dir', type=str, help='',default=None)
 parser.add_argument('--save_dir', type=str, help='where to save LOOs', default=None)
-parser.add_argument('--user_save_dir', type=str, help='where to save users', default=None)
 parser.add_argument('--ncore', type=int, help='core number', default=5)
 parser.add_argument('--src', type=str, help='souce name', default='hk')
 parser.add_argument('--tar', type=str, help='target name', default='csjj')
@@ -25,15 +24,8 @@ ncore = args.ncore
 src, tar = args.src, args.tar
 item_attr, user_attr = args.item_attr, args.user_attr
 
-if args.save_dir:
-    save_dir = "{}/LOO_data_{}core".format(args.save_dir, ncore)
-else:
-    save_dir = "{}/LOO_data_{}core".format(args.mom_save_dir, ncore)
-
-if args.user_save_dir:
-    user_save_dir = "{}/user_{}core".format(args.user_save_dir, ncore)
-else:
-    user_save_dir = "{}/user_{}core".format(args.mom_save_dir, ncore)
+save_dir = "{}/LOO_data_{}core".format(args.save_dir, ncore)
+user_save_dir = "{}/user_{}core".format(args.save_dir, ncore)
 
 if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
