@@ -4,6 +4,7 @@
 a. `Environment-A` (CPR, BPR, evaluation)  
 - docker image: `nvcr.io/nvidia/pytorch:22.05-py3`
 - pip install faiss-gpu==1.7.2
+- pip install lightfm==1.16 (for BPR)
 
 b. `Environment-B` (LightGCN, Bi-TGCF)  
 - docker image: `nvcr.io/nvidia/tensorflow:22.08-tf2-py3`
@@ -11,6 +12,7 @@ b. `Environment-B` (LightGCN, Bi-TGCF)
 
 c. `Environment-C` (EMCDR)  
 - docker image: `tensorflow/tensorflow:1.14.0-gpu-py3`
+- pip install pandas
 
 ## 1. Dataset & Preprocessing
 We use 3 pairs of datasets **(Source_Target)**:
@@ -79,7 +81,6 @@ $ bash run_all.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_test/ t
 Use `Environment-A`
 ```
 $ cd baseline/BPR_related
-$ pip install lightfm==1.16
 $ ./run_lfm-bpr.sh {processed_data_dir} {exp_record_dir} {mode}
 
 e.g.,
@@ -93,7 +94,6 @@ Use `Environment-C` for training
 Use `Environment-A` for evaluation
 ```
 $ cd baseline/BPR_related/EMCDR
-$ pip install pandas
 (must wait until BPR finish training since the following preprocess need BPR's output)
 $ bash run_preprocess.sh {processed_data_dir}
 $ bash run_train.sh {processed_data_dir}
