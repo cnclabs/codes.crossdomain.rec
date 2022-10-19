@@ -116,7 +116,7 @@ if __name__ == '__main__':
                         & (result_df['dataset_pair']==dataset_name) \
                     ]
                     _others = _df2[metric_name].values
-                    if len(_others) > 1:
+                    if len(_others) >= 1:
                        _max = max(_others)
                     else:
                         _max = -1
@@ -149,6 +149,8 @@ if __name__ == '__main__':
             print(clean_row)
         cpr_list = np.array(cpr_list)
         strong_list = np.array(strong_list)
+        print(cpr_list)
+        print(strong_list)
         improve_list = (cpr_list - strong_list) / strong_list
     
         imp = 'Improv. '
