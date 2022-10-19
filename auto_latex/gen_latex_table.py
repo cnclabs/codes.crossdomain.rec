@@ -76,7 +76,6 @@ if __name__ == '__main__':
                f'    {cpr}\n',
                r'    \midrule'+ '\n',
                f'    {imp}\n',
-               r'    \midrule'+ '\n',
                r'    \bottomrule' + '\n',
                r'    \end{tabular}' + '\n',
                '\n',
@@ -116,7 +115,11 @@ if __name__ == '__main__':
                         & ~(result_df['model_name']=='cpr') \
                         & (result_df['dataset_pair']==dataset_name) \
                     ]
-                    _max = max(_df2[metric_name].values)
+                    _others = _df2[metric_name].values
+                    if len(_others) > 1:
+                       _max = max(_others)
+                    else:
+                        _max = -1
     
     
                     score = _df1[metric_name].values
@@ -155,7 +158,7 @@ if __name__ == '__main__':
         for i in improve_list:
             imp+= f'& {i*100:.2f}\% '
             clean_imp+= f'{i*100:.2f}%\t'
-        imp += "\\"
+        imp += r" \\"
         model_row_map['imp'] = imp
         print(clean_imp) 
         path = f'./{mode_name}.txt'
