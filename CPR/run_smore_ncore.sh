@@ -9,7 +9,6 @@ ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 if [[ ! -d ${model_save_dir}/graph ]]
 then
 	mkdir -p ${model_save_dir}/graph
-	mkdir -p ${model_save_dir}/result
 fi
 
 for d in "${datasets[@]}"; do
