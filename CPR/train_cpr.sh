@@ -30,7 +30,7 @@ for d in "${datasets[@]}"; do
 		pretrain="-pre-train ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch-100))epoch.txt"
 		coldpretrain="-pre-train ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch-100))epoch.txt"
 	fi
-	./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
+	./cpr \
 	-train_ut ${data_dir}/input_${ncore}core/${tar}_train_input.txt \
 	-train_us ${data_dir}/input_${ncore}core/all_${src}_train_input.txt \
 	-train_ust ${data_dir}/input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
@@ -39,7 +39,7 @@ for d in "${datasets[@]}"; do
 	#$pretrain
 
 	# cold
-	./ADS_crossDomainRec/smore-stack/pre-train_changeUpt_cpr \
+	./cpr \
 	-train_ut ${data_dir}/input_${ncore}core/cold_${tar}_train_input.txt \
 	-train_us ${data_dir}/input_${ncore}core/all_${src}_train_input.txt \
 	-train_ust ${data_dir}/input_${ncore}core/cold_cpr_train_u_${src}+${tar}.txt \
