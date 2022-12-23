@@ -1,7 +1,6 @@
 #!/bin/bash
 data_dir=$1
 model_save_dir=$2
-exp_record_dir=$3
 sample=3500
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
