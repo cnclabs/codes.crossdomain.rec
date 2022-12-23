@@ -23,7 +23,7 @@ for d in "${datasets[@]}"; do
 	ncore=${ncores[$d]}
         epoch=200
 
-	python3 ../rec_and_eval_ncore.py \
+	python3 ../../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode target \
 	--save_dir ${exp_record_dir} \
@@ -35,7 +35,7 @@ for d in "${datasets[@]}"; do
 	--model_name cpr\
 	--ncore ${ncore}
 
-	python3 ../rec_and_eval_ncore.py \
+	python3 ../../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode shared \
 	--save_dir ${exp_record_dir} \
@@ -47,7 +47,7 @@ for d in "${datasets[@]}"; do
 	--model_name cpr\
 	--ncore ${ncore}
 
-	python3 ../rec_and_eval_ncore.py \
+	python3 ../../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode cold \
 	--save_dir ${exp_record_dir} \
