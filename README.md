@@ -40,11 +40,11 @@ $ bash run_pre_sample_all.sh /TOP/tmp2/cpr/fix_ncore_test/
 Use `Environment-A`
 ```
 $ cd CPR 
-$ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
+$ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir}
 $ ./run_eval.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
 
 e.g.,
-$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/ /TOP/tmp2/cpr/exp_record_test/
+$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/
 $ bash run_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/ /TOP/tmp2/cpr/exp_record_test/
 ```
 
@@ -116,5 +116,5 @@ $ ./run_rec_and_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/exp_record_t
 $ python gen_latex_table.py {exp_record_dir}
 
 e.g.,
-$ python gen_latex_table.py /TOP/tmp2/cpr/exp_record_test/
+$ python gen_latex_table.py --exp_record_dir /TOP/tmp2/cpr/exp_record_test/
 ```
