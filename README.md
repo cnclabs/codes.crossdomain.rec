@@ -34,18 +34,30 @@ e.g.,
 $ bash run_pre_sample_all.sh /TOP/tmp2/cpr/fix_ncore_test/
 ```
 
+# sample file structures
+- `{processed_data_dir}`  
+/TOP/tmp2/cpr/fix_ncore_test/  
+- `{model_save_dir}`  
+/TOP/tmp2/ythuang/ecir2023/ckpt/  
+- `{exp_record_dir}`   
+/TOP/tmp2/ythuang/ecir2023/score/  
 
 ## 2. Model Training & Evaluation
 ### a. CPR
 Use `Environment-A`
 ```
-$ cd CPR 
-$ ./run_smore_ncore.sh {processed_data_dir} {model_save_dir}
-$ ./run_eval.sh {processed_data_dir} {model_save_dir} {exp_record_dir}
+# enter CPR directory
+$ cd models/CPR
 
-e.g.,
-$ bash run_smore_ncore.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/
-$ bash run_eval.sh /TOP/tmp2/cpr/fix_ncore_test/ /TOP/tmp2/cpr/fix_ncore_test/experiments/cpr/ /TOP/tmp2/cpr/exp_record_test/
+# compile cpp code
+$ make
+
+# train cpr
+$ bash train_cpr.sh {processed_data_dir} {model_save_dir}
+
+# eval cpr 
+$ bash eval_cpr.sh {processed_data_dir} {model_save_dir}/cpr/ {exp_record_dir}
+
 ```
 
 ### b. Bi-TGCF
