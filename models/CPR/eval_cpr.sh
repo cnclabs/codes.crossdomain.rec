@@ -8,12 +8,6 @@ declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
 ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 
-if [[ ! -d ${model_save_dir}/graph ]]
-then
-	mkdir -p ${model_save_dir}/graph
-	mkdir -p ${model_save_dir}/result
-fi
-
 for d in "${datasets[@]}"; do
 	IFS='_'
 	read -a domains <<< "$d"
@@ -28,8 +22,8 @@ for d in "${datasets[@]}"; do
 	--test_mode target \
 	--save_dir ${exp_record_dir} \
 	--save_name M_cpr_D_${src}_${tar}_T_target \
-	--user_emb_path ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_${epoch}epoch.txt \
-	--item_emb_path ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_${epoch}epoch.txt \
+	--user_emb_path ${model_save_dir}/${src}_${tar}_normal.txt \
+	--item_emb_path ${model_save_dir}/${src}_${tar}_normal.txt \
 	--src ${src} \
 	--tar ${tar} \
 	--model_name cpr\
@@ -40,8 +34,8 @@ for d in "${datasets[@]}"; do
 	--test_mode shared \
 	--save_dir ${exp_record_dir} \
 	--save_name M_cpr_D_${src}_${tar}_T_shared \
-	--user_emb_path ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
-	--item_emb_path ${model_save_dir}/graph/all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--user_emb_path ${model_save_dir}/${src}_${tar}_normal.txt \
+	--item_emb_path ${model_save_dir}/${src}_${tar}_normal.txt \
 	--src ${src} \
 	--tar ${tar} \
 	--model_name cpr\
@@ -52,8 +46,8 @@ for d in "${datasets[@]}"; do
 	--test_mode cold \
 	--save_dir ${exp_record_dir} \
 	--save_name M_cpr_D_${src}_${tar}_T_cold \
-	--user_emb_path ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
-	--item_emb_path ${model_save_dir}/graph/cold_all_${src}_${tar}_cpr_ug_0.01_ig_0.06_$((epoch))epoch.txt \
+	--user_emb_path ${model_save_dir}/${src}_${tar}_cold.txt \
+	--item_emb_path ${model_save_dir}/${src}_${tar}_cold.txt \
 	--src ${src} \
 	--tar ${tar} \
 	--model_name cpr\
