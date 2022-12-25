@@ -77,7 +77,7 @@ for d in "${datasets[@]}"; do
     if [[ "$mode" == "eval" || "$mode" == "traineval" ]]
     then
     ### eval @tar @shared
-    python3 ../../rec_and_eval_ncore.py \
+    python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode target \
         --save_dir ${exp_record_dir} \
@@ -89,7 +89,7 @@ for d in "${datasets[@]}"; do
         --model_name ${model_name} \
 	--ncore ${ncore}
 
-    python3 ../../rec_and_eval_ncore.py \
+    python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode shared \
         --save_dir ${exp_record_dir} \
@@ -103,7 +103,7 @@ for d in "${datasets[@]}"; do
     fi
 
     ### eval @tar @shared
-    python3 ../../rec_and_eval_ncore.py \
+    python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode target \
         --save_dir ${exp_record_dir} \
@@ -115,7 +115,7 @@ for d in "${datasets[@]}"; do
         --model_name ${model_name}_s \
 	--ncore ${ncore} 
 
-    python3 ../../rec_and_eval_ncore.py \
+    python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode shared \
         --save_dir ${exp_record_dir} \
@@ -128,7 +128,7 @@ for d in "${datasets[@]}"; do
 	--ncore ${ncore} 
 
     ### eval @cold
-    python3 ../../rec_and_eval_ncore.py \
+    python3 ../rec_and_eval_ncore.py \
 	--data_dir ${data_dir} \
 	--test_mode cold \
         --save_dir ${exp_record_dir} \
