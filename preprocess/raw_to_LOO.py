@@ -11,21 +11,31 @@ import argparse
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 parser=argparse.ArgumentParser(description='Raw data -> LOO data. Please determine the name of the raw data to be processed.')
-parser.add_argument('--raw_data', type=str, help='name of raw data to be processed', default=None)
-parser.add_argument('--dataset_name', type=str, help="name to be represent this dataset in the future", default=None)
+parser.add_argument('--raw_data_path', type=str)
+parser.add_argument('--dataset_brief_name', type=str)
+parser.add_argument('--save_dir', type=str)
 parser.add_argument('--user_attr', type=str, help='(default for amz) attribute represents users\' ids', default='reviewerID')
 parser.add_argument('--time_attr', type=str, help='(default for amz) attribute represents time', default='unixReviewTime')
 args=parser.parse_args()
 print(args)
 
-raw_data, dataset_name = args.raw_data, args.dataset_name
-assert raw_data is not None, "name of raw data can't be empty"
-assert dataset_name is not None, "dataset name can't be empty"
+#raw_data, dataset_name = args.raw_data, args.dataset_name
+
+#raw_data_path='/TOP/tmp2/ythuang/DATA/ecir2023/Clothing_Shoes_and_Jewelry_5.json'
+#dataset_name='csjj'
+raw_data_path=args.raw_data_path
+dataset_name=args.dataset_brief_name
+save_dir=args.save_dir
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
+
+#assert raw_data is not None, "name of raw data can't be empty"
+#assert dataset_name is not None, "dataset name can't be empty"
 
 time_attr, user_attr = args.time_attr, args.user_attr
 
 print('>>>>>Reading raw data...')
-jf = open(os.path.join('../raw_data', raw_data), 'r')
+jf = open(raw_data_path, 'r')
 line_list = []
 for line in jf.readlines():
     dic = json.loads(line)
@@ -69,7 +79,8 @@ def process_train_test(user_list):
 total_users = dataset_2.reviewerID.unique()
 print("total user amount = {}".format(len(total_users)))
 
-cpu_amount = multiprocessing.cpu_count() - 10
+cpu_amount = multiprocessing.cpu_count() *0.5
+cpu_amount = int(cpu_amount)
 print(f'>>>>>Multiprocessing... with cpu_amount {cpu_amount}')
 mp = Pool(cpu_amount)
 split_datas = np.array_split(list(total_users), cpu_amount)
@@ -94,15 +105,15 @@ print(f'>>>>>DONE Gathering result...')
 
 
 print(f'>>>>>Saving train...')
-with open('../LOO_data_0core/{}_train.pickle'.format(dataset_name), 'wb') as pickle_file:
+with open(f'{save_dir}/{dataset_name}_train.pickle', 'wb') as pickle_file:
     pickle.dump(dataset_train_df, pickle_file)
 
 print(f'>>>>>Saving test...')
-with open('../LOO_data_0core/{}_test.pickle'.format(dataset_name), 'wb') as pickle_file:
+with open(f'{save_dir}/{dataset_name}_test.pickle', 'wb') as pickle_file:
     pickle.dump(dataset_test_df, pickle_file)
 
 print(f'>>>>>Saving one log user...')
-with open('../LOO_data_0core/{}_one_log_user.pickle'.format(dataset_name), 'wb') as pickle_file:
+with open(f'{save_dir}/{dataset_name}_one_log_user.pickle', 'wb') as pickle_file:
     pickle.dump(one_log_user_list, pickle_file)
 
 
