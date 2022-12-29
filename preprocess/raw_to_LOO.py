@@ -19,18 +19,11 @@ parser.add_argument('--time_attr', type=str, help='(default for amz) attribute r
 args=parser.parse_args()
 print(args)
 
-#raw_data, dataset_name = args.raw_data, args.dataset_name
-
-#raw_data_path='/TOP/tmp2/ythuang/DATA/ecir2023/Clothing_Shoes_and_Jewelry_5.json'
-#dataset_name='csjj'
 raw_data_path=args.raw_data_path
 dataset_name=args.dataset_brief_name
 save_dir=args.save_dir
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
-
-#assert raw_data is not None, "name of raw data can't be empty"
-#assert dataset_name is not None, "dataset name can't be empty"
 
 time_attr, user_attr = args.time_attr, args.user_attr
 
@@ -75,7 +68,6 @@ def process_train_test(user_list):
     
     return [dataset_one_log_user, dataset_train_data, dataset_test_data]
 
-
 total_users = dataset_2.reviewerID.unique()
 print("total user amount = {}".format(len(total_users)))
 
@@ -98,11 +90,9 @@ for r in results:
     train_data += r[1]
     test_data += r[2]
 
-
 dataset_train_df = pd.concat(train_data)
 dataset_test_df = pd.concat(test_data)
 print(f'>>>>>DONE Gathering result...')
-
 
 print(f'>>>>>Saving train...')
 with open(f'{save_dir}/{dataset_name}_train.pickle', 'wb') as pickle_file:
@@ -115,14 +105,3 @@ with open(f'{save_dir}/{dataset_name}_test.pickle', 'wb') as pickle_file:
 print(f'>>>>>Saving one log user...')
 with open(f'{save_dir}/{dataset_name}_one_log_user.pickle', 'wb') as pickle_file:
     pickle.dump(one_log_user_list, pickle_file)
-
-
-
-
-
-
-
-
-
-
-
