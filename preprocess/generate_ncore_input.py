@@ -8,7 +8,7 @@ import random
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 parser=argparse.ArgumentParser(description='Generated correspond inputs from LOO datas with n core.')
-parser.add_argument('--save_dir', type=str, help='where to save inputs', default=None)
+parser.add_argument('--processed_data_dir', type=str, help='where to save inputs', default=None)
 parser.add_argument('--ncore', type=int, help='core number', default=5)
 parser.add_argument('--n_testing_user', type=int, default=4000)
 parser.add_argument('--src', type=str, help='souce name', default='hk')
@@ -22,15 +22,16 @@ print(args)
 ncore = args.ncore
 src, tar = args.src, args.tar
 item_attr, user_attr = args.item_attr, args.user_attr
+processed_data_dir=args.processed_data_dir
 
-save_dir = "{}/input_{}core".format(args.save_dir, ncore)
+save_dir = "{}/input_{}core".format(processed_data_dir, ncore)
 
 if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
 
 # ------------ SRC-TAR ------------
 # tar
-with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.save_dir, ncore=ncore, tar=tar), 'rb') as pf:
+with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(processed_data_dir, ncore=ncore, tar=tar), 'rb') as pf:
     tar_train = pickle.load(pf)
 
 tar_train[user_attr] = tar_train[user_attr].apply(lambda x: 'user_'+x)
@@ -39,7 +40,7 @@ _df = pd.concat([tar_train_graph])
 _df.to_csv(os.path.join(save_dir,'{tar}_train_input.txt'.format(tar=tar)), header=False, sep='\t')
 
 # src (source)
-with open('{}/LOO_data_{ncore}core/{src}_train.pickle'.format(args.save_dir, ncore=ncore, src=src), 'rb') as pf:
+with open('{}/LOO_data_{ncore}core/{src}_train.pickle'.format(processed_data_dir, ncore=ncore, src=src), 'rb') as pf:
     src_train = pickle.load(pf)
 
 src_train[user_attr] = src_train[user_attr].apply(lambda x: 'user_'+x)
@@ -51,7 +52,7 @@ pd.concat([tar_train_graph, src_train_graph]).to_csv(os.path.join(save_dir, 'all
 # process global test target/shared/cold users
 
 # target
-with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.save_dir, ncore=ncore, tar=tar), 'rb') as pf:
+with open('{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(processed_data_dir, ncore=ncore, tar=tar), 'rb') as pf:
     tar_test_df = pickle.load(pf)
 all_target_users = tar_test_df[user_attr]
 target_users = random.sample(set(all_target_users), args.n_testing_user)
@@ -61,7 +62,7 @@ with open(os.path.join(save_dir, '{src}_{tar}_test_target_users.pickle'.format(s
     pickle.dump(target_users, pf)
 
 # shared
-with open('{}/user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(args.save_dir, ncore=ncore, tar=tar, src=src), 'rb') as pf:
+with open('{}/user_{ncore}core/{src}_{tar}_shared_users.pickle'.format(processed_data_dir, ncore=ncore, tar=tar, src=src), 'rb') as pf:
     all_shared_users = pickle.load(pf)
 shared_users = random.sample(set(all_shared_users), args.n_testing_user)
 shared_users = set(map(lambda x: "user_"+x, shared_users))
@@ -70,14 +71,14 @@ with open(os.path.join(save_dir, '{src}_{tar}_test_shared_users.pickle'.format(s
     pickle.dump(shared_users, pf)
 
 # cold
-with open('{}/user_{ncore}core/{src}_{tar}_cold_users.pickle'.format(args.save_dir, ncore=ncore, tar=tar, src=src), 'rb') as pf:
+with open('{}/user_{ncore}core/{src}_{tar}_cold_users.pickle'.format(processed_data_dir, ncore=ncore, tar=tar, src=src), 'rb') as pf:
     cold_users = pickle.load(pf)
 cold_users = set(map(lambda x: "user_"+x, cold_users))
 
 with open(os.path.join(save_dir, '{src}_{tar}_test_cold_users.pickle'.format(src=src, tar=tar)), 'wb') as pf:
     pickle.dump(cold_users, pf)
 
-with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(args.save_dir, ncore=ncore, tar=tar), 'rb') as pf:
+with open('{}/LOO_data_{ncore}core/{tar}_train.pickle'.format(processed_data_dir, ncore=ncore, tar=tar), 'rb') as pf:
     tar_train = pickle.load(pf)
 
 
