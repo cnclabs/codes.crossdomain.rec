@@ -23,6 +23,6 @@ for d in "${datasets[@]}"; do
     python raw_to_LOO.py \
     	--raw_data_path ${raw_dir}/${fullname} \
     	--dataset_brief_name $d\
-    	--save_dir $save_dir
+    	--save_dir $save_dir/LOO_data_0core/
 
 done
