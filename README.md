@@ -13,34 +13,30 @@ c. `Environment-C` (EMCDR's training)
 - docker image: `tensorflow/tensorflow:1.14.0-gpu-py3`
 - pip install -r `requirements_env_c.txt`
 
-## 1. Dataset & Preprocessing
+## 1. Dataset
 We use 3 pairs of datasets **(Source_Target)**:
 * MT_B (Movies_and_TV_5.json + Books_5.json)
 * SPO_CSJ (Sports_and_Outdoors_5.json + Clothing_Shoes_and_Jewelry_5.json)
-* HK_CSJJ (Home_and_Kitchen_5.json + Clothing_Shoes_and_Jewelry_5.json)
+* HK_CSJJ (Home_and_Kitchen_5.json + Clothing_Shoes_and_Jewelry_5.json)  
+
+Note that we downloaded from http://deepyeti.ucsd.edu/jianmo/amazon/categoryFilesSmall/ previously, 
+but it is not working now (as of 2022/12/29).
 ```
-[Step-1] Gen input
 $ cd preprocess
-$ bash run_gen_input.sh {raw_data_dir} {processed_data_dir}
 
-e.g., 
-$ bash run_gen_input.sh /TOP/tmp2/cpr/from_yzliu/ /TOP/tmp2/cpr/fix_ncore_test
+[Step-1] Download Datasets
+$ bash download_amazon_data.sh {raw_data_dir}
 
-[Step-2] Pre-sample negative pairs for target/shared/cold testing users
+[Step-2] Process raw to leav-one-out 0 core (It takes long time, particularly Books_5.json)
+$ bash process_raw.sh {raw_data_dir} {processed_data_dir}
+
+[Step-3] Gen input
+$ bash run_gen_input.sh {processed_data_dir}
+
+[Step-4] Pre-sample negative pairs for target/shared/cold testing users
 $ cd ..
 $ bash run_pre_sample_all.sh {processed_data_dir}
-
-e.g.,
-$ bash run_pre_sample_all.sh /TOP/tmp2/cpr/fix_ncore_test/
 ```
-
-# sample file structures
-- `{processed_data_dir}`  
-/TOP/tmp2/cpr/fix_ncore_test/  
-- `{model_save_dir}`  
-/TOP/tmp2/ythuang/ecir2023/ckpt/  
-- `{exp_record_dir}`   
-/TOP/tmp2/ythuang/ecir2023/score/  
 
 ## 2. Model Training & Evaluation
 ### a. CPR
