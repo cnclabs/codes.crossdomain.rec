@@ -14,20 +14,6 @@ LookupMapper::LookupMapper(int size, int dimension) {
     }
 }
 
-void LookupMapper::add_relation_embeddings(int size, int dimension){
-    this->relation_embedding.resize(size);
-    this->relation_size = size;
-    this->dimension = dimension;
-    for (long index=0; index<size; ++index)
-    {
-        this->relation_embedding[index].resize(dimension);
-        for (int d=0; d<dimension; ++d)
-        {
-            this->relation_embedding[index][d] = (rand()/(double)RAND_MAX - 0.5) / dimension;
-        }
-    }
-}
-
 void LookupMapper::load_pretrain(std::string file_name, n2iHash node2index) {
     std::ifstream embedding_file;
     std::string line, node, value;
@@ -53,13 +39,6 @@ void LookupMapper::load_pretrain(std::string file_name, n2iHash node2index) {
         }
     }
     std::cout << "\t# detections:\t" << counter << std::endl;
-}
-
-void LookupMapper::update(long index, std::vector<double>& loss_vector, double alpha) {
-    for (int d=0; d<this->dimension; d++)
-    {
-        this->embedding[index][d] += alpha*loss_vector[d];
-    }
 }
 
 void LookupMapper::update_with_l2(long index, std::vector<double>& loss_vector, double alpha, double lambda) {
