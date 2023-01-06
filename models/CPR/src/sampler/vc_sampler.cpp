@@ -9,12 +9,10 @@ VCSampler::VCSampler(FileGraph* file_graph) {
     std::cout << "Build VC Sampler:" << std::endl;
     long from_index, to_index, to_offset;
     double weight;
-    std::vector<double> vertex_distribution, context_distribution, neg_distribution;
-    std::vector<double> vertex_uniform_distribution, context_uniform_distribution;
+    std::vector<double> vertex_distribution, context_distribution;
+    std::vector<double> context_uniform_distribution;
     vertex_distribution.resize(this->vertex_size, 0.0);
-    vertex_uniform_distribution.resize(this->vertex_size, 0.0);
     context_uniform_distribution.resize(this->vertex_size, 0.0);
-    neg_distribution.resize(this->vertex_size, 0.0);
 
     std::cout << "\tBuild Alias Methods" << std::endl;
     for (int from_index=0; from_index<this->vertex_size; from_index++)
@@ -26,17 +24,13 @@ VCSampler::VCSampler(FileGraph* file_graph) {
             weight = it.second;
             vertex_distribution[from_index] += weight;
             context_distribution.push_back(weight);
-            neg_distribution[to_index] += weight;
-            vertex_uniform_distribution[from_index] = 1.0;
             context_uniform_distribution[to_index] = 1.0;
             this->contexts.push_back(to_index);
         }
         this->context_sampler.append(context_distribution, 1.0);
     }
     this->vertex_sampler.append(vertex_distribution, 1.0);
-    this->vertex_uniform_sampler.append(vertex_uniform_distribution, 1.0);
     this->context_uniform_sampler.append(context_uniform_distribution, 1.0);
-    this->negative_sampler.append(neg_distribution, 0.75);
     std::cout << "\tDone" << std::endl;
 }
 
