@@ -115,17 +115,6 @@ std::vector<double>& LookupMapper::operator[](long index) {
     return this->embedding[index];
 }
 
-std::vector<double> LookupMapper::avg_embedding(std::vector<long>& indexes) {
-    double size = indexes.size();
-    std::vector<double> avg_embedding(this->dimension, 0.0);
-    for (auto index: indexes)
-        for (int d=0; d<this->dimension; d++)
-            avg_embedding[d] += this->embedding[index][d];
-    for (int d=0; d<this->dimension; d++)
-        avg_embedding[d] /= size;
-    return avg_embedding;
-}
-
 std::vector<double> LookupMapper::textgcn_embedding(std::vector<long>& indexes) {
     std::vector<double> avg_embedding(this->dimension, 0.0);
     double size = indexes.size()-1;
