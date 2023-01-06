@@ -23,18 +23,8 @@ class VCSampler {
 
         // functions
         long draw_a_vertex();
-        long draw_a_vertex_uniformly();
         long draw_a_context(long vertex);
         long draw_a_context_uniformly();
         long draw_a_context_safely(long vertex);
-        long draw_a_negative();
-        std::vector<long> draw_a_walk(int walk_steps);
-        std::vector<long> draw_a_walk(long node, int walk_steps);
-        std::vector<long> draw_a_jump_walk(long node, double jump_prob);
-        std::vector<long> get_neighbors(long node);
-        void feed_sampled_contexts(long vertex_index, int num_sample, std::vector<long>& feed_me);
-        void feed_all_neighbors(long vertex_index, std::vector<long>& feed_me);
-        std::vector<std::vector<long>> draw_skipgram(long node, int walk_length, int window_size);
-        std::vector<std::vector<long>> draw_scaledskipgram(long node, int walk_length, int window_min, int window_max);
 };
 #endif

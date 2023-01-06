@@ -67,12 +67,10 @@ int main(int argc, char **argv){
         int step;
         long user, source, target, item_pos, item_neg;
         std::vector<double> user_embed(dimension, 0.0);
-        std::vector<double> item_embed_pos(dimension, 0.0);
-        std::vector<double> item_embed_neg(dimension, 0.0);
         std::vector<double> user_loss(dimension, 0.0);
         std::vector<double> item_loss_pos(dimension, 0.0);
         std::vector<double> item_loss_neg(dimension, 0.0);
-        std::vector<long> user2items, item2words_pos, item2words_neg;
+        std::vector<long> user2items;
         unsigned long long update=0, report_period = 10000;
         double alpha=init_alpha, alpha_min=alpha*0.0001;
 
