@@ -16,7 +16,6 @@ class LookupMapper {
         std::vector<std::vector<double>> embedding;
 
         // embedding function
-        std::vector<double> avg_embedding(std::vector<long>& indexes);
         std::vector<double> textgcn_embedding(std::vector<long>& indexes);
 
         // constructor
