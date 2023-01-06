@@ -128,14 +128,6 @@ int main(int argc, char **argv){
         }
     }
     monitor.end();
-    //mapper.save_gcn_to_file(&ut_file_graph, ut_file_graph.get_all_nodes(), save_name, 0);
-    //mapper.save_to_file(&ut_file_graph, ut_file_graph.get_all_nodes(), save_name, 0);
-    //mapper.save_gcn_to_file(&us_file_graph, ut_file_graph.get_all_nodes(), save_name, 0);
-    //mapper.save_gcn_to_file(&ust_file_graph, ut_file_graph.get_all_nodes(), save_name, 0);
     mapper.save_gcn_to_file(&ust_file_graph, ust_file_graph.get_all_nodes(), save_name, 0);
-    //mapper.save_gcn_to_file(&ust_file_graph, ut_file_graph.get_all_from_nodes(), save_name, 0);
-    //i_mapper.save_gcn_to_file(&ust_file_graph, ut_file_graph.get_all_to_nodes(), save_name, 1);
-    //mapper.save_to_file(&us_file_graph, ut_file_graph.get_all_nodes(), save_name, 0);
-
     return 0;
 }
