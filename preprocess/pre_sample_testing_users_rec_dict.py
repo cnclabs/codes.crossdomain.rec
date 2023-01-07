@@ -37,15 +37,16 @@ def get_testing_users(test_mode, data_input_dir, src, tar):
     return testing_users
 
 def process_user_pos_neg_pair(tar_train_df, tar_test_df, uid_u, uid_i, total_item_set,  user_list):
-  user_rec_dict = {}
-  for user in user_list:
-      pos_pool = set(tar_train_df[tar_train_df[uid_u] == user][uid_i])
-      neg_pool = total_item_set - pos_pool
-      neg_99 = random.sample(neg_pool, 99)
-      user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[uid_u] == user][uid_i])
-      user_rec_dict[user] = user_rec_pool
-
-  return user_rec_dict
+    user_rec_dict = {}
+    for user in user_list:
+        pos_pool = set(tar_train_df[tar_train_df[uid_u] == user][uid_i])
+        neg_pool = total_item_set - pos_pool
+        neg_99 = random.sample(neg_pool, 99)
+    
+        user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[uid_u] == user][uid_i])
+        user_rec_dict[user] = user_rec_pool
+    
+    return user_rec_dict
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
