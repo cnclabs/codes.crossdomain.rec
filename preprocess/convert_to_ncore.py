@@ -19,7 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('--tar', type=str, help='target name', default='csjj')
     parser.add_argument('--item_attr', type=str, help='(default for amz) attribute represents items\' ids', default='asin')
     parser.add_argument('--user_attr', type=str, help='(default for amz) attribute represents users\' ids', default='reviewerID')
-    parser.add_argument('--cold_sample', type=int, help='# cold users selected from shared users')
+    parser.add_argument('--n_testing_user', type=int)
     args=parser.parse_args()
     print(args)
     random.seed(2022)
@@ -100,21 +100,32 @@ if __name__ == '__main__':
     print("Diff  :", len(tar_test)-len(tar_ncore_test))
     print("-"*10)
     
-    # make users
-    print("Start selecting COLD users from SHARED users ...")
-    shared_users = set(tar_ncore_train[user_attr]).intersection(set(src_ncore_train[user_attr]))
+    # make testing users
+    print("Sample testing users ...")
+    # target
+    all_testing_target_users = set(tar_ncore_test[user_attr])
+    print(f'all testing target users: {len(all_testing_target_users)}')
+    sample_testing_target_users = random.sample(all_testing_target_users, args.n_testing_user)
+    print(f'sample testing target users: {len(sample_testing_target_users)}')
+   
+    # shared TODO:(katiyth) why not sample from test?
+    all_shared_users = set(tar_ncore_train[user_attr]).intersection(set(src_ncore_train[user_attr]))
+    print(f'all train(?) shared users: {len(all_shared_users)}')
     try:
-        assert len(shared_users)>=args.cold_sample
+        assert len(all_shared_users)>=args.n_testing_user
     except:
-        print(len(shared_users))
-    cold_users = random.sample(shared_users, args.cold_sample)
+        print(len(all_shared_users))
+    sample_testing_shared_users = random.sample(all_shared_users, args.n_testing_user)
+    print(f'sample testing shared users: {len(sample_testing_shared_users)}')
+    sample_testing_cold_users   = random.sample(all_shared_users, args.n_testing_user)
+    print(f'sample testing cold users: {len(sample_testing_cold_users)}')
     
     # save users
-    with open(os.path.join(user_save_dir, '{src}_{tar}_shared_users.pickle'.format(src=src, tar=tar)), 'wb') as pf:
-        pickle.dump(shared_users, pf)
-    print("-"*10)
-    print(f"Saved! number of shared users: {len(shared_users)} (include cold users)")
-    with open(os.path.join(user_save_dir,'{src}_{tar}_cold_users.pickle'.format(src=src, tar=tar)), 'wb') as pf:
-        pickle.dump(cold_users, pf)
-    print(f"Saved! number of cold users: {len(cold_users)}")
-    print("-"*10)
+    with open(os.path.join(user_save_dir, f'{src}_{tar}_src_tar_sample_testing_target_users.pickle'), 'wb') as pf:
+        pickle.dump(sample_testing_target_users, pf)
+
+    with open(os.path.join(user_save_dir, f'{src}_{tar}_src_tar_sample_testing_shared_users.pickle'), 'wb') as pf:
+        pickle.dump(sample_testing_shared_users, pf)
+    
+    with open(os.path.join(user_save_dir, f'{src}_{tar}_src_tar_sample_testing_cold_users.pickle'), 'wb') as pf:
+        pickle.dump(sample_testing_cold_users, pf)

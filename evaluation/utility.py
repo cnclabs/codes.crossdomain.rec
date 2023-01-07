@@ -43,7 +43,7 @@ def get_testing_users_rec_dict(n_worker, tar_test_df, uid_u, uid_i, test_mode, d
     return testing_users_rec_dict
 
 def get_testing_users(test_mode, data_input_dir, src, tar):
-    path = f'{data_input_dir}/{src}_{tar}_src_tar_test_{test_mode}_users.pickle'
+    path = f'{data_input_dir}/{src}_{tar}_src_tar_sample_testing_{test_mode}_users.pickle'
     with open(path, 'rb') as pf:
         testing_users = pickle.load(pf)
 

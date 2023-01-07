@@ -1,6 +1,6 @@
 loo_data_dir=$1
 ncore_data_dir=$2
-cold_sample=3500
+n_testing_user=3500
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
 ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
@@ -19,12 +19,11 @@ for d in "${datasets[@]}"; do
     --ncore ${ncore} \
     --src ${src} \
     --tar ${tar} \
-    --cold_sample ${cold_sample}
+    --n_testing_user ${n_testing_user}&&
 
     python3  generate_ncore_input.py \
     --ncore_data_dir ${ncore_data_dir} \
     --ncore ${ncore} \
     --src ${src} \
-    --tar ${tar} \
-    --n_testing_user ${cold_sample}
+    --tar ${tar}
 done
