@@ -12,7 +12,6 @@ int main(int argc, char **argv){
     ArgParser arg_parser(argc, argv);
     std::string train_ut_path = arg_parser.get_str("-train_ut", "", "input user-target graph path");
     std::string train_us_path = arg_parser.get_str("-train_us", "", "input user-source graph path");
-    std::string train_ust_path = arg_parser.get_str("-train_ust", "", "input user-source&target graph path");
     std::string save_name = arg_parser.get_str("-save", "cse.embed", "path for saving mapper");
     std::string pre_train_path =  arg_parser.get_str("-pre-train", "", "pre-train graph path, keep it blank if not to use");
     int dimension = arg_parser.get_int("-dimension", 64, "embedding dimension");
@@ -33,8 +32,6 @@ int main(int argc, char **argv){
     FileGraph ut_file_graph(train_ut_path, 0);
     std::cout << "(US-Graph)" << std::endl;
     FileGraph us_file_graph(train_us_path, 0, ut_file_graph.index2node);
-    std::cout << "(UST-Graph)" << std::endl;
-    FileGraph ust_file_graph(train_ust_path, 0, us_file_graph.index2node);
 
     // 1. [Sampler] determine what sampler to be used
     VCSampler ut_sampler(&ut_file_graph);
@@ -44,7 +41,7 @@ int main(int argc, char **argv){
     LookupMapper mapper(us_sampler.vertex_size, dimension);
     if(pre_train_path != "")
     {
-	mapper.load_pretrain(pre_train_path, ust_file_graph.node2index);
+	mapper.load_pretrain(pre_train_path, us_file_graph.node2index);
     }
     //LookupMapper i_mapper(us_sampler.vertex_size, dimension);
 
@@ -128,6 +125,6 @@ int main(int argc, char **argv){
         }
     }
     monitor.end();
-    mapper.save_gcn_to_file(&ust_file_graph, ust_file_graph.get_all_nodes(), save_name, 0);
+    mapper.save_gcn_to_file(&us_file_graph, us_file_graph.get_all_nodes(), save_name, 0);
     return 0;
 }
