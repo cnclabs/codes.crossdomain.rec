@@ -112,7 +112,7 @@ if __name__ == '__main__':
     sample_testing_target_users = random.sample(all_testing_target_users, args.n_testing_user)
     print(f'sample testing target users: {len(sample_testing_target_users)}')
    
-    # shared TODO:(katiyth) why not sample from test?
+    # shared
     all_shared_users = set(tar_ncore_train[user_attr]).intersection(set(src_ncore_train[user_attr]))
     print(f'all train(?) shared users: {len(all_shared_users)}')
     try:
