@@ -63,13 +63,13 @@ if __name__ == '__main__':
     print("Before:", len(src_train))
     print("After :", len(src_ncore_train))
     print("Diff  :", len(src_train)-len(src_ncore_train))
-    print("Unique Users:", len(src_train[user_attr].unique()))
+    print("Unique Users:", len(src_ncore_train[user_attr].unique()))
     print("-"*10)
     print(f"SRC ({src.upper()}) Test {ncore}core")
     print("Before:", len(src_test))
     print("After :", len(src_ncore_test))
     print("Diff  :", len(src_test)-len(src_ncore_test))
-    print("Unique Users:", len(src_test[user_attr].unique()))
+    print("Unique Users:", len(src_ncore_test[user_attr].unique()))
     print("-"*10)
 
     # tar train
@@ -95,13 +95,13 @@ if __name__ == '__main__':
     print("Before:", len(tar_train))
     print("After :", len(tar_ncore_train))
     print("Diff  :", len(tar_train)-len(tar_ncore_train))
-    print("Unique Users:", len(tar_train[user_attr].unique()))
+    print("Unique Users:", len(tar_ncore_train[user_attr].unique()))
     print("-"*10)
     print(f"TAR ({tar.upper()}) Test {ncore}core")
     print("Before:", len(tar_test))
     print("After :", len(tar_ncore_test))
     print("Diff  :", len(tar_test)-len(tar_ncore_test))
-    print("Unique Users:", len(tar_test[user_attr].unique()))
+    print("Unique Users:", len(tar_ncore_test[user_attr].unique()))
     print("-"*10)
     
     # make testing users
