@@ -21,7 +21,7 @@ def load_testing_users_rec_dict(data_input_dir, test_mode, src, tar):
     return testing_users_rec_dict
 
 def get_testing_users_rec_dict(n_worker, tar_test_df, uid_u, uid_i, test_mode, data_input_dir, src, tar):
-    tar_train_path = f'{data_input_dir}/{tar}_train_input.txt'
+    tar_train_path = f'{data_input_dir}/{tar}_tar_train_input.txt'
     tar_train_df = pd.read_csv(tar_train_path, sep='\t', header=None, names=[uid_u, uid_i, 'xxx'])
     total_item_set = set(tar_train_df[uid_i])
     
@@ -43,7 +43,7 @@ def get_testing_users_rec_dict(n_worker, tar_test_df, uid_u, uid_i, test_mode, d
     return testing_users_rec_dict
 
 def get_testing_users(test_mode, data_input_dir, src, tar):
-    path = f'{data_input_dir}/{src}_{tar}_test_{test_mode}_users.pickle'
+    path = f'{data_input_dir}/{src}_{tar}_src_tar_test_{test_mode}_users.pickle'
     with open(path, 'rb') as pf:
         testing_users = pickle.load(pf)
 

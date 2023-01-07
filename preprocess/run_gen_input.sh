@@ -1,4 +1,5 @@
-processed_data_dir=$1
+loo_data_dir=$1
+ncore_data_dir=$2
 cold_sample=3500
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
@@ -15,18 +16,19 @@ for d in "${datasets[@]}"; do
     read -a domains <<< "$d"
     IFS=' '
     src=${domains[0]}
-	tar=${domains[1]}
-	ncore=${ncores[$d]}
+    tar=${domains[1]}
+    ncore=${ncores[$d]}
 
     python3 convert_to_ncore.py \
-    --processed_data_dir ${processed_data_dir} \
+    --loo_data_dir ${loo_data_dir} \
+    --ncore_data_dir ${ncore_data_dir} \
     --ncore ${ncore} \
     --src ${src} \
     --tar ${tar} \
     --cold_sample ${cold_sample}
 
     python3  generate_ncore_input.py \
-    --processed_data_dir ${processed_data_dir} \
+    --ncore_data_dir ${ncore_data_dir} \
     --ncore ${ncore} \
     --src ${src} \
     --tar ${tar} \
