@@ -1,8 +1,4 @@
-import statistics
 import math
-from multiprocessing import Pool
-from functools import partial
-
 import os
 import pandas as pd
 import uuid
@@ -11,7 +7,6 @@ import faiss
 import numpy as np
 import time
 import pickle
-import random
 
 def load_testing_users_rec_dict(data_input_dir, test_mode, src, tar):
     path = f'{data_input_dir}/testing_users_rec_dict_{src}_{tar}_{test_mode}.pickle'
@@ -19,46 +14,6 @@ def load_testing_users_rec_dict(data_input_dir, test_mode, src, tar):
         testing_users_rec_dict = pickle.load(pf)
 
     return testing_users_rec_dict
-
-def get_testing_users_rec_dict(n_worker, tar_test_df, uid_u, uid_i, test_mode, data_input_dir, src, tar):
-    tar_train_path = f'{data_input_dir}/{tar}_tar_train_input.txt'
-    tar_train_df = pd.read_csv(tar_train_path, sep='\t', header=None, names=[uid_u, uid_i, 'xxx'])
-    total_item_set = set(tar_train_df[uid_i])
-    
-    testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
-
-    mp = Pool(n_worker)
-
-    print(f"Start generating testing users' postive-negative pairs... using {n_worker} workers.")
-    split_datas = np.array_split(list(testing_users), n_worker)
-    func = partial(process_user_pos_neg_pair, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set)
-    results = mp.map(func, split_datas)
-    mp.close()
-    
-    testing_users_rec_dict = {}
-    for r in results:
-        testing_users_rec_dict.update(r)
-    print("Done generating testing users' positive-negative pairs.")
-
-    return testing_users_rec_dict
-
-def get_testing_users(test_mode, data_input_dir, src, tar):
-    path = f'{data_input_dir}/{src}_{tar}_src_tar_sample_testing_{test_mode}_users.pickle'
-    with open(path, 'rb') as pf:
-        testing_users = pickle.load(pf)
-
-    return testing_users
-
-def process_user_pos_neg_pair(tar_train_df, tar_test_df, uid_u, uid_i, total_item_set,  user_list):
-  user_rec_dict = {}
-  for user in user_list:
-      pos_pool = set(tar_train_df[tar_train_df[uid_u] == user][uid_i])
-      neg_pool = total_item_set - pos_pool
-      neg_99 = random.sample(neg_pool, 99)
-      user_rec_pool = list(neg_99) + list(tar_test_df[tar_test_df[uid_u] == user][uid_i])
-      user_rec_dict[user] = user_rec_pool
-
-  return user_rec_dict
 
 
 def generate_item_graph_df(graph_file):
@@ -89,6 +44,7 @@ def generate_user_emb(graph_file):
             if "user_" in prefix:
                 user_emb.update({ prefix: np.array(emb, dtype=np.float32) })
     return user_emb
+
 def save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name):
     uuid_str = uuid.uuid4().hex
     record_row_save_path = os.path.join(save_dir, save_name +'_' +uuid_str+'.csv')
