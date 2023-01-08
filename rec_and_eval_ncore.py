@@ -20,7 +20,6 @@ if __name__ == '__main__':
     parser.add_argument('--user_emb_path_cold', type=str)
     parser.add_argument('--item_emb_path', type=str)
     parser.add_argument('--test_mode', type=str, help='{target, shared, cold}')
-    parser.add_argument('--ncore', type=int, help='core number', default=5)
     parser.add_argument('--src', type=str, help='souce name')
     parser.add_argument('--tar', type=str, help='target name')
     parser.add_argument('--model_name', type=str, help='cpr, lgn, lgn_s, bpr, bpr_s, emcdr, bitgcf')
@@ -32,7 +31,6 @@ if __name__ == '__main__':
     print(args)
     
     save_name = args.save_name
-    ncore = args.ncore
     src, tar = args.src, args.tar
     uid_u, uid_i = args.uid_u, args.uid_i
     test_mode = args.test_mode
