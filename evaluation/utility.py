@@ -80,7 +80,7 @@ def save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, tota
     #        fw.writelines(_content)
     print('Finished!')
 
-def rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, n_worker, uid_u, uid_i):
+def rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, uid_u, uid_i):
     st = time.time()
     d=100
     count = 0
