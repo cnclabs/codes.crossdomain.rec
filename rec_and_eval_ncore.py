@@ -44,14 +44,11 @@ if __name__ == '__main__':
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     
-    # TODO:((katieyth): 
-    tar_test_path  = '{}/loo_data_{ncore}core/{tar}_tar_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar) 
+    tar_test_path  = '{}/{tar}_tar_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar) 
     with open(tar_test_path, 'rb') as pf:
         tar_test_df = pickle.load(pf)
-    tar_test_df[uid_u]  = tar_test_df[uid_u].apply(lambda x: 'user_'+x)
     #
-    data_input_dir = os.path.join(args.data_dir, f'input_{ncore}core')
-    testing_users_rec_dict = load_testing_users_rec_dict(data_input_dir, test_mode, src, tar)
+    testing_users_rec_dict = load_testing_users_rec_dict(args.data_dir, test_mode, src, tar)
     testing_users = list(testing_users_rec_dict.keys())
     
     if model_name == 'emcdr':

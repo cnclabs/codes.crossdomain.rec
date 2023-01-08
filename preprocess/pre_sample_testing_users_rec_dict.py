@@ -7,12 +7,12 @@ import numpy as np
 from functools import partial
 import random
 
-def get_testing_users_rec_dict(n_worker, tar_test_df, uid_u, uid_i, test_mode, data_input_dir, src, tar):
-    tar_train_path = f'{data_input_dir}/{tar}_tar_train_input.txt'
-    tar_train_df = pd.read_csv(tar_train_path, sep='\t', header=None, names=[uid_u, uid_i, 'xxx'])
+def get_testing_users_rec_dict(n_worker, tar_test_df, uid_u, uid_i, test_mode, ncore_data_dir, src, tar):
+    with open(f'{ncore_data_dir}/{tar}_tar_train.pickle', 'rb') as pf:
+        tar_train_df = pickle.load(pf)
     total_item_set = set(tar_train_df[uid_i])
     
-    testing_users = get_testing_users(test_mode, data_input_dir, src, tar)
+    testing_users = get_testing_users(test_mode, ncore_data_dir, src, tar)
 
     mp = Pool(n_worker)
 
@@ -79,14 +79,12 @@ if __name__ == '__main__':
     parser.add_argument('--uid_u', type=str, help='(default for amz) unique id column of user', default='reviewerID')
     args=parser.parse_args()
     
-    tar_test_path  = f'{args.data_dir}/loo_data_{args.ncore}core/{args.tar}_tar_test.pickle'
+    tar_test_path  = f'{args.data_dir}/{args.tar}_tar_test.pickle'
     with open(tar_test_path, 'rb') as pf:
         tar_test_df = pickle.load(pf)
-    tar_test_df[args.uid_u]  = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)
     
-    data_input_dir = os.path.join(args.data_dir, f'input_{args.ncore}core')
-    testing_users_rec_dict = get_testing_users_rec_dict(args.n_worker, tar_test_df, args.uid_u, args.uid_i, args.test_mode, data_input_dir, args.src, args.tar)
+    testing_users_rec_dict = get_testing_users_rec_dict(args.n_worker, tar_test_df, args.uid_u, args.uid_i, args.test_mode, args.data_dir, args.src, args.tar)
     
-    save_path = os.path.join(data_input_dir, f'testing_users_rec_dict_{args.src}_{args.tar}_{args.test_mode}.pickle')
+    save_path = os.path.join(args.data_dir, f'testing_users_rec_dict_{args.src}_{args.tar}_{args.test_mode}.pickle')
     with open(save_path, 'wb') as f:
         pickle.dump(testing_users_rec_dict, f)
