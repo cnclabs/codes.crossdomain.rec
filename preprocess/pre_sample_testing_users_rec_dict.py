@@ -71,7 +71,6 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
     parser.add_argument('--test_mode', type=str, help='{target, shared, cold}')
-    parser.add_argument('--ncore', type=int, help='core number', default=5)
     parser.add_argument('--n_worker', type=int, help='number of workers', default=None)
     parser.add_argument('--src', type=str, help='souce name')
     parser.add_argument('--tar', type=str, help='target name')
