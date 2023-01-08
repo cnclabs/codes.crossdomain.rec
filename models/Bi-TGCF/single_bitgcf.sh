@@ -44,7 +44,7 @@ then
     if [[ "$mode" == "eval" || "$mode" == "traineval" ]]
     then
         python3 ../../rec_and_eval_ncore.py \
-	    --data_dir ${data_dir} \
+	    --ncore_data_dir ${ncore_data_dir} \
 	    --test_mode target \
             --save_dir ${exp_record_dir} \
 	    --save_name M_${model_name}_D_${src}_${tar}_T_target \
@@ -55,7 +55,7 @@ then
             --model_name ${model_name} \
             --ncore ${ncore}&&
         python3 ../../rec_and_eval_ncore.py \
-	    --data_dir ${data_dir} \
+	    --ncore_data_dir ${ncore_data_dir} \
 	    --test_mode shared \
             --save_dir ${exp_record_dir} \
 	    --save_name M_${model_name}_D_${src}_${tar}_T_shared \
@@ -85,7 +85,7 @@ then
     if [[ "$mode" == "eval" || "$mode" == "traineval" ]]
     then
         python3 ../../rec_and_eval_ncore.py \
-	    --data_dir ${data_dir} \
+	    --ncore_data_dir ${ncore_data_dir} \
 	    --test_mode cold \
             --save_dir ${exp_record_dir} \
 	    --save_name M_${model_name}_D_${src}_${tar}_T_cold \
