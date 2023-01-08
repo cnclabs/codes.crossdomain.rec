@@ -15,7 +15,6 @@ def load_testing_users_rec_dict(data_input_dir, test_mode, src, tar):
 
     return testing_users_rec_dict
 
-
 def generate_item_graph_df(graph_file):
     st = time.time()
     def _text_to_array(cell):
@@ -158,4 +157,3 @@ def calculate_NDCG(active_watching_log, topk_program):
         return 0
     else:
         return float(dcg/idcg)
-

@@ -69,7 +69,7 @@ def process_user_pos_neg_pair(tar_train_df, tar_test_df, uid_u, uid_i, total_ite
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
+    parser.add_argument('--ncore_data_dir', type=str, help='groundtruth files dir')
     parser.add_argument('--test_mode', type=str, help='{target, shared, cold}')
     parser.add_argument('--n_worker', type=int, help='number of workers', default=None)
     parser.add_argument('--src', type=str, help='souce name')
@@ -78,12 +78,12 @@ if __name__ == '__main__':
     parser.add_argument('--uid_u', type=str, help='(default for amz) unique id column of user', default='reviewerID')
     args=parser.parse_args()
     
-    tar_test_path  = f'{args.data_dir}/{args.tar}_tar_test.pickle'
+    tar_test_path  = f'{args.ncore_data_dir}/{args.tar}_tar_test.pickle'
     with open(tar_test_path, 'rb') as pf:
         tar_test_df = pickle.load(pf)
     
-    testing_users_rec_dict = get_testing_users_rec_dict(args.n_worker, tar_test_df, args.uid_u, args.uid_i, args.test_mode, args.data_dir, args.src, args.tar)
+    testing_users_rec_dict = get_testing_users_rec_dict(args.n_worker, tar_test_df, args.uid_u, args.uid_i, args.test_mode, args.ncore_data_dir, args.src, args.tar)
     
-    save_path = os.path.join(args.data_dir, f'testing_users_rec_dict_{args.src}_{args.tar}_{args.test_mode}.pickle')
+    save_path = os.path.join(args.ncore_data_dir, f'testing_users_rec_dict_{args.src}_{args.tar}_{args.test_mode}.pickle')
     with open(save_path, 'wb') as f:
         pickle.dump(testing_users_rec_dict, f)

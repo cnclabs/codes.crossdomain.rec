@@ -29,19 +29,25 @@ if __name__ == '__main__':
         os.makedirs(input_save_dir)
 
     # src
+    print("Processing src train...")
     with open(f'{args.ncore_data_dir}/{src}_src_train.pickle', 'rb') as pf:
         src_train = pickle.load(pf)
     src_train_graph = compute_cpr_link_weight(src_train, user_attr, item_attr) 
     src_train_graph.to_csv(os.path.join(input_save_dir, f'{src}_src_train_input.txt'), header=False, sep='\t')
+    print("Done src train!")
     
     # tar
+    print("Processing tar train...")
     with open(f'{args.ncore_data_dir}/{tar}_tar_train.pickle', 'rb') as pf:
         tar_train = pickle.load(pf)
     tar_train_graph = compute_cpr_link_weight(tar_train, user_attr, item_attr) 
     tar_train_graph.to_csv(os.path.join(input_save_dir,f'{tar}_tar_train_input.txt'), header=False, sep='\t')
+    print("Done tar train!")
     
     # ctar
+    print("Processing ctar train...")
     with open(f'{args.ncore_data_dir}/{tar}_ctar_train.pickle', 'rb') as pf:
         ctar_train = pickle.load(pf)
     ctar_train_graph = compute_cpr_link_weight(ctar_train, user_attr, item_attr) 
     ctar_train_graph.to_csv(os.path.join(input_save_dir,f'{tar}_ctar_train_input.txt'), header=False, sep='\t')
+    print("Done ctar train!")
