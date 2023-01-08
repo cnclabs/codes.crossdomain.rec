@@ -10,6 +10,11 @@ def ncore_filter(train, user_attr, item_attr, ncore):
             (train[item_attr].isin(train[item_attr].value_counts()[train[item_attr].value_counts()>=ncore].index))]
     return ncore_train
 
+def add_user_prefix_df(df, user_attr):
+    df[user_attr] = df[user_attr].apply(lambda x: 'user_'+x)
+
+    return df
+
 if __name__ == '__main__':
     parser=argparse.ArgumentParser(description='Filtered LOO datas with n core.')
     parser.add_argument('--loo_data_dir', type=str, help='',default=None)
@@ -28,13 +33,10 @@ if __name__ == '__main__':
     src, tar = args.src, args.tar
     item_attr, user_attr = args.item_attr, args.user_attr
     
-    ncore_save_dir = "{}/LOO_data_{}core".format(args.ncore_data_dir, ncore)
-    user_save_dir = "{}/user_{}core".format(args.ncore_data_dir, ncore)
+    ncore_save_dir = args.ncore_data_dir
     
     if not os.path.isdir(ncore_save_dir):
         os.makedirs(ncore_save_dir)
-    if not os.path.isdir(user_save_dir):
-        os.makedirs(user_save_dir)
     
     print(f"== SOURCE-TARGET: {src.upper()}-{tar.upper()} ==")
     print(f"Start {ncore}core filtering ...")
@@ -42,20 +44,22 @@ if __name__ == '__main__':
     # src train
     with open(f'{args.loo_data_dir}/{src}_train.pickle', 'rb') as f:
         src_train = pickle.load(f)
+    src_train = add_user_prefix_df(src_train, user_attr)
     
     src_ncore_train = ncore_filter(src_train, user_attr, item_attr, ncore)
     while (src_ncore_train[user_attr].value_counts().min()<ncore) | (src_ncore_train[item_attr].value_counts().min()<ncore):
         src_ncore_train = ncore_filter(src_ncore_train, user_attr, item_attr, ncore)
     
-    with open(os.path.join(ncore_save_dir, f'{src}_train.pickle'), 'wb') as f:
+    with open(os.path.join(ncore_save_dir, f'{src}_src_train.pickle'), 'wb') as f:
         pickle.dump(src_ncore_train, f)
 
     # src test
     with open(f'{args.loo_data_dir}/{src}_test.pickle', 'rb') as f:
         src_test = pickle.load(f)
+    src_test = add_user_prefix_df(src_test, user_attr)
 
     src_ncore_test = src_test[(src_test[user_attr].isin(src_ncore_train[user_attr].unique())) & (src_test[item_attr].isin(src_ncore_train[item_attr].unique()))]
-    with open(os.path.join(ncore_save_dir, f'{src}_test.pickle'), 'wb') as f:
+    with open(os.path.join(ncore_save_dir, f'{src}_src_test.pickle'), 'wb') as f:
         pickle.dump(src_ncore_test, f)
 
     print("-"*10)
@@ -75,19 +79,22 @@ if __name__ == '__main__':
     # tar train
     with open(f'{args.loo_data_dir}/{tar}_train.pickle', 'rb') as f:
         tar_train = pickle.load(f)
+    tar_train = add_user_prefix_df(tar_train, user_attr)
     
     tar_ncore_train = ncore_filter(tar_train, user_attr, item_attr, ncore)
     while (tar_ncore_train[user_attr].value_counts().min()<ncore) | (tar_ncore_train[item_attr].value_counts().min()<ncore):
         tar_ncore_train = ncore_filter(tar_ncore_train, user_attr, item_attr, ncore)
     
-    with open(os.path.join(ncore_save_dir, f'{tar}_train.pickle'), 'wb') as f:
+    with open(os.path.join(ncore_save_dir, f'{tar}_tar_train.pickle'), 'wb') as f:
         pickle.dump(tar_ncore_train, f)
 
     # tar test
-    with open('{}/{tar}_test.pickle'.format(args.loo_data_dir, tar=tar), 'rb') as f:
+    with open(f'{args.loo_data_dir}/{tar}_test.pickle', 'rb') as f:
         tar_test = pickle.load(f)
+    tar_test = add_user_prefix_df(tar_test, user_attr)
+
     tar_ncore_test = tar_test[(tar_test[user_attr].isin(tar_ncore_train[user_attr].unique())) & (tar_test[item_attr].isin(tar_ncore_train[item_attr].unique()))]
-    with open(os.path.join(ncore_save_dir, f'{tar}_test.pickle'), 'wb') as f:
+    with open(os.path.join(ncore_save_dir, f'{tar}_tar_test.pickle'), 'wb') as f:
         pickle.dump(tar_ncore_test, f)
     
     print("-"*10)
@@ -112,7 +119,7 @@ if __name__ == '__main__':
     sample_testing_target_users = random.sample(all_testing_target_users, args.n_testing_user)
     print(f'sample testing target users: {len(sample_testing_target_users)}')
    
-    # shared
+    # shared & cold
     all_shared_users = set(tar_ncore_train[user_attr]).intersection(set(src_ncore_train[user_attr]))
     print(f'all train(?) shared users: {len(all_shared_users)}')
     try:
@@ -121,15 +128,31 @@ if __name__ == '__main__':
         print(len(all_shared_users))
     sample_testing_shared_users = random.sample(all_shared_users, args.n_testing_user)
     print(f'sample testing shared users: {len(sample_testing_shared_users)}')
+
     sample_testing_cold_users   = random.sample(all_shared_users, args.n_testing_user)
     print(f'sample testing cold users: {len(sample_testing_cold_users)}')
     
     # save users
-    with open(os.path.join(user_save_dir, f'{src}_{tar}_src_tar_sample_testing_target_users.pickle'), 'wb') as pf:
+    with open(os.path.join(ncore_save_dir, f'{src}_{tar}_src_tar_sample_testing_target_users.pickle'), 'wb') as pf:
         pickle.dump(sample_testing_target_users, pf)
 
-    with open(os.path.join(user_save_dir, f'{src}_{tar}_src_tar_sample_testing_shared_users.pickle'), 'wb') as pf:
+    with open(os.path.join(ncore_save_dir, f'{src}_{tar}_src_tar_sample_testing_shared_users.pickle'), 'wb') as pf:
         pickle.dump(sample_testing_shared_users, pf)
     
-    with open(os.path.join(user_save_dir, f'{src}_{tar}_src_tar_sample_testing_cold_users.pickle'), 'wb') as pf:
+    with open(os.path.join(ncore_save_dir, f'{src}_{tar}_src_tar_sample_testing_cold_users.pickle'), 'wb') as pf:
         pickle.dump(sample_testing_cold_users, pf)
+
+    # cold tar
+    # now that we have cold users, we can produce artificial cold user in target dataset
+    cold_tar_train = tar_ncore_train[~tar_ncore_train[user_attr].isin(sample_testing_cold_users)]
+
+    with open(os.path.join(ncore_save_dir, f'{tar}_ctar_train.pickle'), 'wb') as f:
+        pickle.dump(cold_tar_train, f)
+
+    print("-"*10)
+    print(f"COLD TAR ({tar.upper()}) Train remove cold users")
+    print("Before:", len(tar_ncore_train))
+    print("After :", len(cold_tar_train))
+    print("Diff  :", len(tar_ncore_train)-len(cold_tar_train))
+    print("Unique Users:", len(cold_tar_train[user_attr].unique()))
+    print("-"*10)

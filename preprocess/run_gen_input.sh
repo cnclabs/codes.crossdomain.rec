@@ -1,14 +1,18 @@
 loo_data_dir=$1
-ncore_data_dir=$2
+sample_dir=$2
+ncore_data_dir=${sample_dir}/ncore_data
+cpr_input_dir=${sample_dir}/cpr_input
 n_testing_user=3500
+
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
+ncores=(["hk_csjj"]=5 ["spo_csj"]=5 ["mt_b"]=5)
 
-for d in "${datasets[@]}"; do
-    IFS='_'
+for d in "${datasets[@]}";
+do
+    IFS="_"
     read -a domains <<< "$d"
-    IFS=' '
+    IFS=" "
     src=${domains[0]}
     tar=${domains[1]}
     ncore=${ncores[$d]}
@@ -21,9 +25,9 @@ for d in "${datasets[@]}"; do
     --tar ${tar} \
     --n_testing_user ${n_testing_user}&&
 
-    python3  generate_ncore_input.py \
+    python3 generate_cpr_input.py \
     --ncore_data_dir ${ncore_data_dir} \
-    --ncore ${ncore} \
+    --cpr_input_dir ${cpr_input_dir} \
     --src ${src} \
-    --tar ${tar}
+    --tar ${tar} || exit 1;
 done

@@ -6,6 +6,7 @@ declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
 ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
 epoch=200
+worker=16
 
 if [[ ! -d ${model_save_dir} ]]
 then
@@ -25,7 +26,7 @@ for d in "${datasets[@]}"; do
     -train_us ${data_dir}/input_${ncore}core/all_${src}_train_input.txt \
     -train_ust ${data_dir}/input_${ncore}core/all_cpr_train_u_${src}+${tar}.txt \
     -save ${model_save_dir}/${src}_${tar}_normal.txt \
-    -dimension 100 -update_times $((epoch)) -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
+    -dimension 100 -update_times $((epoch)) -worker ${worker} -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
     
     # cold
     ./cpr \
@@ -33,6 +34,6 @@ for d in "${datasets[@]}"; do
     -train_us ${data_dir}/input_${ncore}core/all_${src}_train_input.txt \
     -train_ust ${data_dir}/input_${ncore}core/cold_cpr_train_u_${src}+${tar}.txt \
     -save ${model_save_dir}/${src}_${tar}_cold.txt \
-    -dimension 100 -update_times $((epoch)) -worker 16 -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
+    -dimension 100 -update_times $((epoch)) -worker ${worker} -init_alpha 0.025 -user_reg 0.01 -item_reg 0.06 
     
 done
