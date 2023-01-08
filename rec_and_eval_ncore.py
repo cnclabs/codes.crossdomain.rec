@@ -11,7 +11,7 @@ from evaluation.utility import (save_exp_record,
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser(description='Calculate the similarity and recommend VOD items')
-    parser.add_argument('--data_dir', type=str, help='groundtruth files dir')
+    parser.add_argument('--ncore_data_dir', type=str, help='groundtruth files dir')
     parser.add_argument('--save_dir', type=str, help='dir to save cav')
     parser.add_argument('--save_name', type=str, help='name to save csv')
     parser.add_argument('--user_emb_path', type=str)
@@ -44,11 +44,11 @@ if __name__ == '__main__':
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     
-    tar_test_path  = '{}/{tar}_tar_test.pickle'.format(args.data_dir, ncore=ncore, tar=tar) 
+    tar_test_path  = f'{args.ncore_data_dir}/{tar}_tar_test.pickle'
     with open(tar_test_path, 'rb') as pf:
         tar_test_df = pickle.load(pf)
     #
-    testing_users_neg99_pos1 = load_testing_users_neg99_pos1(args.data_dir, test_mode, src, tar)
+    testing_users_neg99_pos1 = load_testing_users_neg99_pos1(args.ncore_data_dir, test_mode, src, tar)
     testing_users = list(testing_users_neg99_pos1.keys())
     
     if model_name == 'emcdr':
