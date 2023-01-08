@@ -1,3 +1,4 @@
+#!/bin/bash
 loo_data_dir=$1
 ncore_data_dir=$2
 n_testing_user=3500
