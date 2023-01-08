@@ -28,13 +28,10 @@ if __name__ == '__main__':
     src, tar = args.src, args.tar
     item_attr, user_attr = args.item_attr, args.user_attr
     
-    ncore_save_dir = "{}/LOO_data_{}core".format(args.ncore_data_dir, ncore)
-    user_save_dir = "{}/user_{}core".format(args.ncore_data_dir, ncore)
+    ncore_save_dir = "{}/loo_data_{}core".format(args.ncore_data_dir, ncore)
     
     if not os.path.isdir(ncore_save_dir):
         os.makedirs(ncore_save_dir)
-    if not os.path.isdir(user_save_dir):
-        os.makedirs(user_save_dir)
     
     print(f"== SOURCE-TARGET: {src.upper()}-{tar.upper()} ==")
     print(f"Start {ncore}core filtering ...")
@@ -47,7 +44,7 @@ if __name__ == '__main__':
     while (src_ncore_train[user_attr].value_counts().min()<ncore) | (src_ncore_train[item_attr].value_counts().min()<ncore):
         src_ncore_train = ncore_filter(src_ncore_train, user_attr, item_attr, ncore)
     
-    with open(os.path.join(ncore_save_dir, f'{src}_train.pickle'), 'wb') as f:
+    with open(os.path.join(ncore_save_dir, f'{src}_src_train.pickle'), 'wb') as f:
         pickle.dump(src_ncore_train, f)
 
     # src test
@@ -55,7 +52,7 @@ if __name__ == '__main__':
         src_test = pickle.load(f)
 
     src_ncore_test = src_test[(src_test[user_attr].isin(src_ncore_train[user_attr].unique())) & (src_test[item_attr].isin(src_ncore_train[item_attr].unique()))]
-    with open(os.path.join(ncore_save_dir, f'{src}_test.pickle'), 'wb') as f:
+    with open(os.path.join(ncore_save_dir, f'{src}_src_test.pickle'), 'wb') as f:
         pickle.dump(src_ncore_test, f)
 
     print("-"*10)
@@ -80,14 +77,14 @@ if __name__ == '__main__':
     while (tar_ncore_train[user_attr].value_counts().min()<ncore) | (tar_ncore_train[item_attr].value_counts().min()<ncore):
         tar_ncore_train = ncore_filter(tar_ncore_train, user_attr, item_attr, ncore)
     
-    with open(os.path.join(ncore_save_dir, f'{tar}_train.pickle'), 'wb') as f:
+    with open(os.path.join(ncore_save_dir, f'{tar}_tar_train.pickle'), 'wb') as f:
         pickle.dump(tar_ncore_train, f)
 
     # tar test
-    with open('{}/{tar}_test.pickle'.format(args.loo_data_dir, tar=tar), 'rb') as f:
+    with open(f'{args.loo_data_dir}/{tar}_test.pickle', 'rb') as f:
         tar_test = pickle.load(f)
     tar_ncore_test = tar_test[(tar_test[user_attr].isin(tar_ncore_train[user_attr].unique())) & (tar_test[item_attr].isin(tar_ncore_train[item_attr].unique()))]
-    with open(os.path.join(ncore_save_dir, f'{tar}_test.pickle'), 'wb') as f:
+    with open(os.path.join(ncore_save_dir, f'{tar}_tar_test.pickle'), 'wb') as f:
         pickle.dump(tar_ncore_test, f)
     
     print("-"*10)
@@ -125,11 +122,18 @@ if __name__ == '__main__':
     print(f'sample testing cold users: {len(sample_testing_cold_users)}')
     
     # save users
-    with open(os.path.join(user_save_dir, f'{src}_{tar}_src_tar_sample_testing_target_users.pickle'), 'wb') as pf:
+    with open(os.path.join(ncore_save_dir, f'{src}_{tar}_src_tar_sample_testing_target_users.pickle'), 'wb') as pf:
         pickle.dump(sample_testing_target_users, pf)
 
-    with open(os.path.join(user_save_dir, f'{src}_{tar}_src_tar_sample_testing_shared_users.pickle'), 'wb') as pf:
+    with open(os.path.join(ncore_save_dir, f'{src}_{tar}_src_tar_sample_testing_shared_users.pickle'), 'wb') as pf:
         pickle.dump(sample_testing_shared_users, pf)
     
-    with open(os.path.join(user_save_dir, f'{src}_{tar}_src_tar_sample_testing_cold_users.pickle'), 'wb') as pf:
+    with open(os.path.join(ncore_save_dir, f'{src}_{tar}_src_tar_sample_testing_cold_users.pickle'), 'wb') as pf:
         pickle.dump(sample_testing_cold_users, pf)
+
+    # cold tar
+    # produce artificial cold user in target dataset
+    cold_tar_train = tar_ncore_train[~tar_ncore_train[user_attr].isin(sample_testing_cold_users)]
+
+    with open(os.path.join(ncore_save_dir, f'{tar}_ctar_train.pickle'), 'wb') as f:
+        pickle.dump(cold_tar_train, f)

@@ -79,7 +79,7 @@ if __name__ == '__main__':
     parser.add_argument('--uid_u', type=str, help='(default for amz) unique id column of user', default='reviewerID')
     args=parser.parse_args()
     
-    tar_test_path  = '{}/LOO_data_{ncore}core/{tar}_test.pickle'.format(args.data_dir, ncore=args.ncore, tar=args.tar) 
+    tar_test_path  = f'{args.data_dir}/loo_data_{args.ncore}core/{args.tar}_tar_test.pickle'
     with open(tar_test_path, 'rb') as pf:
         tar_test_df = pickle.load(pf)
     tar_test_df[args.uid_u]  = tar_test_df[args.uid_u].apply(lambda x: 'user_'+x)

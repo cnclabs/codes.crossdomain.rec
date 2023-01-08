@@ -26,7 +26,7 @@ if __name__ == '__main__':
             os.makedirs(input_save_dir)
     
     # tar
-    with open(f'{args.ncore_data_dir}/LOO_data_{ncore}core/{tar}_train.pickle', 'rb') as pf:
+    with open(f'{args.ncore_data_dir}/loo_data_{ncore}core/{tar}_tar_train.pickle', 'rb') as pf:
         tar_train = pickle.load(pf)
     
     # this is for CPR code current limitation (or design), no difference between user, item. It's just a bag.
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     tar_train_graph.to_csv(os.path.join(input_save_dir,f'{tar}_tar_train_input.txt'), header=False, sep='\t')
     
     # src
-    with open(f'{args.ncore_data_dir}/LOO_data_{ncore}core/{src}_train.pickle', 'rb') as pf:
+    with open(f'{args.ncore_data_dir}/loo_data_{ncore}core/{src}_src_train.pickle', 'rb') as pf:
         src_train = pickle.load(pf)
     
     # this is for CPR code current limitation (or design), no difference between user, item. It's just a bag.
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     # process global testing target/shared/cold users
 
     # target
-    with open(f'{args.ncore_data_dir}/user_{ncore}core/{src}_{tar}_src_tar_sample_testing_target_users.pickle', 'rb') as pf:
+    with open(f'{args.ncore_data_dir}/loo_data_{ncore}core/{src}_{tar}_src_tar_sample_testing_target_users.pickle', 'rb') as pf:
         target_users= pickle.load(pf)
     # this is for CPR code current limitation (or design), no difference between user, item. It's just a bag.
     target_users = set(map(lambda x: "user_"+x, target_users))
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         pickle.dump(target_users, pf)
     
     # shared
-    with open(f'{args.ncore_data_dir}/user_{ncore}core/{src}_{tar}_src_tar_sample_testing_shared_users.pickle', 'rb') as pf:
+    with open(f'{args.ncore_data_dir}/loo_data_{ncore}core/{src}_{tar}_src_tar_sample_testing_shared_users.pickle', 'rb') as pf:
         shared_users = pickle.load(pf)
     # this is for CPR code current limitation (or design), no difference between user, item. It's just a bag.
     shared_users = set(map(lambda x: "user_"+x, shared_users))
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         pickle.dump(shared_users, pf)
     
     # cold
-    with open(f'{args.ncore_data_dir}/user_{ncore}core/{src}_{tar}_src_tar_sample_testing_cold_users.pickle', 'rb') as pf:
+    with open(f'{args.ncore_data_dir}/loo_data_{ncore}core/{src}_{tar}_src_tar_sample_testing_cold_users.pickle', 'rb') as pf:
         cold_users = pickle.load(pf)
 
     # this is for CPR code current limitation (or design), no difference between user, item. It's just a bag.
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     with open(os.path.join(input_save_dir, f'{src}_{tar}_src_tar_sample_testing_cold_users.pickle'), 'wb') as pf:
         pickle.dump(cold_users, pf)
     
-    with open(f'{args.ncore_data_dir}/LOO_data_{ncore}core/{tar}_train.pickle', 'rb') as pf:
+    with open(f'{args.ncore_data_dir}/loo_data_{ncore}core/{tar}_tar_train.pickle', 'rb') as pf:
         tar_train = pickle.load(pf)
     
     # cold tar
