@@ -1,14 +1,17 @@
 #!/bin/bash
-src=$1
-tar=$2
-gpu_id=$3
-normal_cold=$4
-data_dir=$5
-exp_record_dir=$6
-mode=$7
-n_epoch=200 # current code will save only {20, 40,....}
+ncore_data_dir=$1
+cpr_input_dir=$2
+emb_save_dir=$3
+exp_record_dir=$4
+mode=$5
+src=$6
+tar=$7
+gpu_id=$8
+normal_cold=$9
 model_name=bitgcf
-sample=3500
+epoch=200 # current code will save only {20, 40,....}
+embed_size=25
+batch_size=65536
 
 declare -A ncores
 ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
@@ -45,8 +48,8 @@ then
 	    --test_mode target \
             --save_dir ${exp_record_dir} \
 	    --save_name M_${model_name}_D_${src}_${tar}_T_target \
-            --item_emb_path $(pwd)/graph/all_${src}_${tar}_${n_epoch}.graph \
-            --user_emb_path $(pwd)/graph/all_${src}_${tar}_${n_epoch}.graph \
+            --item_emb_path $(pwd)/graph/all_${src}_${tar}_${epoch}.graph \
+            --user_emb_path $(pwd)/graph/all_${src}_${tar}_${epoch}.graph \
             --src ${src} \
             --tar ${tar} \
             --model_name ${model_name} \
@@ -56,8 +59,8 @@ then
 	    --test_mode shared \
             --save_dir ${exp_record_dir} \
 	    --save_name M_${model_name}_D_${src}_${tar}_T_shared \
-            --user_emb_path $(pwd)/graph/all_${src}_${tar}_${n_epoch}.graph \
-            --item_emb_path $(pwd)/graph/all_${src}_${tar}_${n_epoch}.graph \
+            --user_emb_path $(pwd)/graph/all_${src}_${tar}_${epoch}.graph \
+            --item_emb_path $(pwd)/graph/all_${src}_${tar}_${epoch}.graph \
             --src ${src} \
             --tar ${tar} \
             --model_name ${model_name} \
@@ -86,8 +89,8 @@ then
 	    --test_mode cold \
             --save_dir ${exp_record_dir} \
 	    --save_name M_${model_name}_D_${src}_${tar}_T_cold \
-            --user_emb_path $(pwd)/graph/all_${src}_cold_${tar}_${n_epoch}.graph \
-            --item_emb_path $(pwd)/graph/all_${src}_cold_${tar}_${n_epoch}.graph \
+            --user_emb_path $(pwd)/graph/all_${src}_cold_${tar}_${epoch}.graph \
+            --item_emb_path $(pwd)/graph/all_${src}_cold_${tar}_${epoch}.graph \
             --src ${src} \
             --tar ${tar} \
             --model_name ${model_name}\
