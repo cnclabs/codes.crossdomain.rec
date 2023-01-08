@@ -16,7 +16,6 @@ def get_testing_users_rec_dict(n_worker, tar_test_df, uid_u, uid_i, test_mode, n
 
     mp = Pool(n_worker)
 
-    print(f"Start generating testing users' postive-negative pairs... using {n_worker} workers.")
     split_datas = np.array_split(list(testing_users), n_worker)
     func = partial(process_user_pos_neg_pair, tar_train_df, tar_test_df, uid_u, uid_i, total_item_set)
     results = mp.map(func, split_datas)
@@ -27,7 +26,6 @@ def get_testing_users_rec_dict(n_worker, tar_test_df, uid_u, uid_i, test_mode, n
         testing_users_rec_dict.update(r)
     print('Total users:', len(testing_users))
     print('Remain user:', len(testing_users_rec_dict))
-    print("Done generating testing users' positive-negative pairs.")
 
     return testing_users_rec_dict
 
@@ -82,8 +80,10 @@ if __name__ == '__main__':
     with open(tar_test_path, 'rb') as pf:
         tar_test_df = pickle.load(pf)
     
+    print(f"Start generating {args.src}-{args.tar}-{args.test_mode} testing users' postive-negative pairs... using {args.n_worker} workers.")
     testing_users_rec_dict = get_testing_users_rec_dict(args.n_worker, tar_test_df, args.uid_u, args.uid_i, args.test_mode, args.ncore_data_dir, args.src, args.tar)
+    print("Done!")
     
-    save_path = os.path.join(args.ncore_data_dir, f'testing_users_rec_dict_{args.src}_{args.tar}_{args.test_mode}.pickle')
+    save_path = os.path.join(args.ncore_data_dir, f'testing_users_neg99_pos1_{args.src}_{args.tar}_{args.test_mode}.pickle')
     with open(save_path, 'wb') as f:
         pickle.dump(testing_users_rec_dict, f)

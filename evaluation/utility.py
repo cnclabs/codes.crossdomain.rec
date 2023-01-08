@@ -8,8 +8,8 @@ import numpy as np
 import time
 import pickle
 
-def load_testing_users_rec_dict(data_input_dir, test_mode, src, tar):
-    path = f'{data_input_dir}/testing_users_rec_dict_{src}_{tar}_{test_mode}.pickle'
+def load_testing_users_neg99_pos1(data_input_dir, test_mode, src, tar):
+    path = f'{data_input_dir}/testing_users_neg99_pos1_{src}_{tar}_{test_mode}.pickle'
     with open(path, 'rb') as pf:
         testing_users_rec_dict = pickle.load(pf)
 
