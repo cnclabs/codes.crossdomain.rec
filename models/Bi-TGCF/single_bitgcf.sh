@@ -33,12 +33,12 @@ then
     then 
 	CUDA_VISIBLE_DEVICES=${gpu_id} \
         python3 ./BiTGCF/main.py \
-            --data_path ${data_dir}/input_${ncore}core \
-            --source_dataset all_${src} \
-            --target_dataset ${tar} \
-            --epoch ${n_epoch} \
-            --batch_size 65536 \
-            --embed_size 25
+            --data_path ${cpr_input_dir} \
+            --source_dataset ${src}_src \
+            --target_dataset ${tar}_tar \
+            --epoch ${epoch} \
+            --batch_size ${batch_size} \
+            --embed_size ${embed_size}
     fi
 
     if [[ "$mode" == "eval" || "$mode" == "traineval" ]]
@@ -74,12 +74,12 @@ then
     then 
 	CUDA_VISIBLE_DEVICES=${gpu_id} \
         python3 ./BiTGCF/main.py\
-            --data_path ${data_dir}/input_${ncore}core \
-            --source_dataset all_${src} \
-            --target_dataset cold_${tar} \
-            --epoch ${n_epoch} \
-            --batch_size 65536 \
-            --embed_size 25
+            --data_path ${cpr_input_dir} \
+            --source_dataset ${src}_src \
+            --target_dataset ${tar}_ctar \
+            --epoch ${epoch} \
+            --batch_size ${batch_size} \
+            --embed_size ${embed_size}
     fi
 
     if [[ "$mode" == "eval" || "$mode" == "traineval" ]]
