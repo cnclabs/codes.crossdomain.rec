@@ -3,6 +3,47 @@ import pandas as pd
 import numpy as np
 import argparse
 
+def gen_latex_table(mode_name, path, model_row_map):
+    bpr = model_row_map['bpr']
+    bpr_s = model_row_map['bpr_s']
+    lgn_lil = model_row_map['lgn_lil']
+    lgn_big = model_row_map['lgn_big']
+    emcdr = model_row_map['emcdr']
+    bitgcf = model_row_map['bitgcf']
+    cpr = model_row_map['cpr']
+    imp = model_row_map['imp']
+    
+    with open(path, 'w') as fw:
+        contents = [
+           r'\begin' + '{table}[t]\n',
+           r'\begin' + '{center}\n',
+           r'    \begin' + '{tabular}{l rrr rrr}\n',
+           r'    \toprule'+ '\n',
+           r'    & \multicolumn{2}{c}{\texttt{HK-CSJ}} & \multicolumn{2}{c}{\texttt{MT-B}} & \multicolumn{2}{c}{\texttt{SPO-CSJ}} \\' +'\n',
+           r'    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}'+ '\n',
+           r'    & HR@10 & NDCG@10 & HR@10 & NDCG@10 & HR@10 & NDCG@10\\' + '\n',
+           r'    \midrule'+ '\n',
+           f'    {bpr}\n',
+           f'    {bpr_s}\n',
+           f'    {lgn_lil}\n',
+           f'    {lgn_big}\n',
+           r'    \midrule'+ '\n',
+           f'    {emcdr}\n',
+           f'    {bitgcf}\n',
+           f'    {cpr}\n',
+           r'    \midrule'+ '\n',
+           f'    {imp}\n',
+           r'    \bottomrule' + '\n',
+           r'    \end{tabular}' + '\n',
+           '\n',
+           r'\caption{' + f'Test users from {mode_name} users'+ r'}' + '\n',
+           r'\label{' + f'tab:{mode_name}_table'+ r'}%' + '\n',
+           r'\vspace*{-0.6cm}' + '\n',
+           r'\end{center}' + '\n',
+           r'\end{table}%' + '\n',
+           ]
+        fw.writelines(contents)
+
 if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--exp_record_dir', type=str)
@@ -45,47 +86,6 @@ if __name__ == '__main__':
         'bitgcf': 'Bi-TGCF',
         'cpr': 'CPR'
     }
-
-    def gen_latex_table(mode_name, path, model_row_map):
-        bpr = model_row_map['bpr']
-        bpr_s = model_row_map['bpr_s']
-        lgn_lil = model_row_map['lgn_lil']
-        lgn_big = model_row_map['lgn_big']
-        emcdr = model_row_map['emcdr']
-        bitgcf = model_row_map['bitgcf']
-        cpr = model_row_map['cpr']
-        imp = model_row_map['imp']
-        
-        with open(path, 'w') as fw:
-            contents = [
-               r'\begin' + '{table}[t]\n',
-               r'\begin' + '{center}\n',
-               r'    \begin' + '{tabular}{l rrr rrr}\n',
-               r'    \toprule'+ '\n',
-               r'    & \multicolumn{2}{c}{\texttt{HK-CSJ}} & \multicolumn{2}{c}{\texttt{MT-B}} & \multicolumn{2}{c}{\texttt{SPO-CSJ}} \\' +'\n',
-               r'    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}'+ '\n',
-               r'    & HR@10 & NDCG@10 & HR@10 & NDCG@10 & HR@10 & NDCG@10\\' + '\n',
-               r'    \midrule'+ '\n',
-               f'    {bpr}\n',
-               f'    {bpr_s}\n',
-               f'    {lgn_lil}\n',
-               f'    {lgn_big}\n',
-               r'    \midrule'+ '\n',
-               f'    {emcdr}\n',
-               f'    {bitgcf}\n',
-               f'    {cpr}\n',
-               r'    \midrule'+ '\n',
-               f'    {imp}\n',
-               r'    \bottomrule' + '\n',
-               r'    \end{tabular}' + '\n',
-               '\n',
-               r'\caption{' + f'Test users from {mode_name} users'+ r'}' + '\n',
-               r'\label{' + f'tab:{mode_name}_table'+ r'}%' + '\n',
-               r'\vspace*{-0.6cm}' + '\n',
-               r'\end{center}' + '\n',
-               r'\end{table}%' + '\n',
-               ]
-            fw.writelines(contents)
 
     cross = '{$^\dagger$}'
     _b = '\\textbf{'
@@ -165,5 +165,3 @@ if __name__ == '__main__':
         print(clean_imp) 
         path = f'./{mode_name}.txt'
         gen_latex_table(mode_name, path, model_row_map)
-        
-
