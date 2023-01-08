@@ -1,12 +1,12 @@
 loo_data_dir=$1
-sample_dir=$2
-ncore_data_dir=${sample_dir}/ncore_data
-cpr_input_dir=${sample_dir}/cpr_input
+ncore_data_dir=$2
 n_testing_user=3500
-
+n_worker=8
 declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 declare -A ncores
 ncores=(["hk_csjj"]=5 ["spo_csj"]=5 ["mt_b"]=5)
+
+declare -a test_modes=("target" "shared" "cold")
 
 for d in "${datasets[@]}";
 do
@@ -17,7 +17,7 @@ do
     tar=${domains[1]}
     ncore=${ncores[$d]}
 
-    python3 convert_to_ncore.py \
+    python3 tools/convert_to_ncore.py \
     --loo_data_dir ${loo_data_dir} \
     --ncore_data_dir ${ncore_data_dir} \
     --ncore ${ncore} \
@@ -25,9 +25,14 @@ do
     --tar ${tar} \
     --n_testing_user ${n_testing_user}&&
 
-    python3 generate_cpr_input.py \
-    --ncore_data_dir ${ncore_data_dir} \
-    --cpr_input_dir ${cpr_input_dir} \
-    --src ${src} \
-    --tar ${tar} || exit 1;
+    for test_mode in "${test_modes[@]}";
+    do        
+        python tools/pre_sample_testing_neg99_pos1.py \
+            --ncore_data_dir ${ncore_data_dir}\
+            --test_mode ${test_mode}\
+            --n_worker ${n_worker}\
+            --src ${src}\
+            --tar ${tar} || exit 1
+    done
+
 done

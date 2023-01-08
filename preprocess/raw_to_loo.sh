@@ -20,9 +20,9 @@ fi
 
 for d in "${datasets[@]}"; do
     fullname=${fullname_map[$d]}	
-    python raw_to_LOO.py \
+    python tools/raw_to_loo.py \
     	--raw_data_path ${raw_dir}/${fullname} \
     	--dataset_brief_name $d\
-    	--save_dir $save_dir/LOO_data_0core/
+    	--save_dir $save_dir/loo_data/
 
 done

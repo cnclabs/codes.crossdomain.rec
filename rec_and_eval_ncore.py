@@ -7,7 +7,7 @@ from evaluation.utility import (save_exp_record,
         rank_and_score,
         generate_item_graph_df,
         generate_user_emb,
-        load_testing_users_rec_dict)
+        load_testing_users_neg99_pos1)
 
 if __name__ == '__main__':
     parser=argparse.ArgumentParser(description='Calculate the similarity and recommend VOD items')
@@ -48,8 +48,8 @@ if __name__ == '__main__':
     with open(tar_test_path, 'rb') as pf:
         tar_test_df = pickle.load(pf)
     #
-    testing_users_rec_dict = load_testing_users_rec_dict(args.data_dir, test_mode, src, tar)
-    testing_users = list(testing_users_rec_dict.keys())
+    testing_users_neg99_pos1 = load_testing_users_neg99_pos1(args.data_dir, test_mode, src, tar)
+    testing_users = list(testing_users_neg99_pos1.keys())
     
     if model_name == 'emcdr':
         if args.test_mode == 'target':
@@ -92,5 +92,5 @@ if __name__ == '__main__':
         item_graph_df = generate_item_graph_df(args.item_emb_path)
         print("Got embedding!")
     
-    total_rec, total_ndcg, count = rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, uid_u, uid_i)
+    total_rec, total_ndcg, count = rank_and_score(testing_users, top_ks, user_emb, testing_users_neg99_pos1, item_graph_df, tar_test_df, uid_u, uid_i)
     save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, total_ndcg, count, save_dir, save_name)
