@@ -53,7 +53,7 @@ then
     # src
     python3 ./lfm_bpr.py \
     --train ${cpr_input_dir}/${src}_src_train_input.txt \
-    --save ${emb_save_dir}/${src}_tar.txt \
+    --save ${emb_save_dir}/${src}_src.txt \
     --dim ${dim} \
     --iter ${epoch} \
     --worker ${worker} \
