@@ -13,20 +13,6 @@ epoch=200 # current code will save only {20, 40,....}
 embed_size=25
 batch_size=65536
 
-declare -A ncores
-ncores=(['hk_csjj']=5 ["spo_csj"]=5 ["mt_b"]=5)
-ncore=${ncores[${src}_${tar}]}
-
-if [[ ! -d ./graph ]]
-then
-	mkdir -p ./graph
-fi
-
-if [[ ! -d ./result ]]
-then
-	mkdir -p ./result
-fi
-
 if [[ $normal_cold == "normal" ]]
 then
     if [[ "$mode" == "train" || "$mode" == "traineval" ]]
@@ -38,7 +24,8 @@ then
             --target_dataset ${tar}_tar \
             --epoch ${epoch} \
             --batch_size ${batch_size} \
-            --embed_size ${embed_size}
+	    --emb_save_part_path ${emb_save_dir}/${src}_${tar}_src_tar \
+            --embed_size ${embed_size} || exit 1
     fi
 
     if [[ "$mode" == "eval" || "$mode" == "traineval" ]]
@@ -48,23 +35,22 @@ then
 	    --test_mode target \
             --save_dir ${exp_record_dir} \
 	    --save_name M_${model_name}_D_${src}_${tar}_T_target \
-            --item_emb_path $(pwd)/graph/all_${src}_${tar}_${epoch}.graph \
-            --user_emb_path $(pwd)/graph/all_${src}_${tar}_${epoch}.graph \
+            --item_emb_path ${emb_save_dir}/${src}_${tar}_src_tar_${epoch}.txt \
+            --user_emb_path ${emb_save_dir}/${src}_${tar}_src_tar_${epoch}.txt \
             --src ${src} \
             --tar ${tar} \
-            --model_name ${model_name} \
-            --ncore ${ncore}&&
+            --model_name ${model_name} || exit 1
+
         python3 ../../rec_and_eval_ncore.py \
 	    --ncore_data_dir ${ncore_data_dir} \
 	    --test_mode shared \
             --save_dir ${exp_record_dir} \
 	    --save_name M_${model_name}_D_${src}_${tar}_T_shared \
-            --user_emb_path $(pwd)/graph/all_${src}_${tar}_${epoch}.graph \
-            --item_emb_path $(pwd)/graph/all_${src}_${tar}_${epoch}.graph \
+            --item_emb_path ${emb_save_dir}/${src}_${tar}_src_tar_${epoch}.txt \
+            --user_emb_path ${emb_save_dir}/${src}_${tar}_src_tar_${epoch}.txt \
             --src ${src} \
             --tar ${tar} \
-            --model_name ${model_name} \
-            --ncore ${ncore}
+            --model_name ${model_name} || exit 1
     fi
 fi 
 
@@ -79,7 +65,8 @@ then
             --target_dataset ${tar}_ctar \
             --epoch ${epoch} \
             --batch_size ${batch_size} \
-            --embed_size ${embed_size}
+	    --emb_save_part_path ${emb_save_dir}/${src}_${tar}_src_ctar \
+            --embed_size ${embed_size} || exit 1
     fi
 
     if [[ "$mode" == "eval" || "$mode" == "traineval" ]]
@@ -89,11 +76,10 @@ then
 	    --test_mode cold \
             --save_dir ${exp_record_dir} \
 	    --save_name M_${model_name}_D_${src}_${tar}_T_cold \
-            --user_emb_path $(pwd)/graph/all_${src}_cold_${tar}_${epoch}.graph \
-            --item_emb_path $(pwd)/graph/all_${src}_cold_${tar}_${epoch}.graph \
+            --item_emb_path ${emb_save_dir}/${src}_${tar}_src_ctar_${epoch}.txt \
+            --user_emb_path ${emb_save_dir}/${src}_${tar}_src_ctar_${epoch}.txt \
             --src ${src} \
             --tar ${tar} \
-            --model_name ${model_name}\
-            --ncore ${ncore}
+            --model_name ${model_name} || exit 1
     fi
 fi
