@@ -236,8 +236,9 @@ if __name__ == '__main__':
                 return {value: key for key, value in target_dict.items()}
             rev_user_dict = get_reverse_dict(data_generator_t.merge_user_dict)
             rev_item_dict = get_reverse_dict(data_generator_t.item_reindex_dict)
-
-            with open(os.path.join(args.graph_dir, final_dataset+"_"+ str(current_epoch)+".graph"), "w") as fp:
+            
+            path = args.emb_save_part_path
+            with open(path+"_"+ str(current_epoch)+".txt", "w") as fp:
                 for user_index, user_embed in tqdm(enumerate(user_embeddings_t.astype(str))):
                     org_user_id = rev_user_dict[user_index]
                     embeddings = " ".join(user_embed.tolist())

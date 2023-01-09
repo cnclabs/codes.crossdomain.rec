@@ -7,8 +7,7 @@ exp_record_dir=$5
 mode=$6
 n_round=$7
 
-#declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
-declare -a datasets=("hk_csjj")
+declare -a datasets=("hk_csjj" "spo_csj" "mt_b")
 
 for round in `seq 1 $n_round` ;
 do

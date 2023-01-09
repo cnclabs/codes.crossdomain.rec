@@ -11,6 +11,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Run BiTGCF.")
     parser.add_argument('--weights_path', nargs='?', default='../',
                         help='Store model path.')
+    parser.add_argument('--emb_save_part_path')
     parser.add_argument('--data_path', nargs='?', default='../Data/',
                          help='Input data path.')
     parser.add_argument('--proj_path', nargs='?', default='./',
