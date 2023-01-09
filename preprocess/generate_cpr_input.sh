@@ -1,3 +1,4 @@
+#!/bin/bash
 ncore_data_dir=$1
 cpr_input_dir=$2
 

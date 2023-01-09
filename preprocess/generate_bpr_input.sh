@@ -1,3 +1,4 @@
+#!/bin/bash
 cpr_input_dir=$1
 bpr_input_dir=$2
 
