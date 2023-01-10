@@ -1,0 +1,4 @@
+[submodule "models/lightgcn"]
+	path = models/lightgcn
+	url = https://github.com/KatieHYT/lightgcn
+	branch = fix/modify-to-fit-cpr-pipeline

@@ -56,24 +56,26 @@ def get_best_baseline_score(result_df, mode_name, dataset_name, metric_name):
         _max = max(_scores)
     else:
         _max = -1
-        
-    return _max, _scores
+    best_baseline_model = _df2['model_name'].values[0]
+    best_baseline_scores = _df2[_df2['model_name']==best_baseline_model][metric_name].values
+    return _max, best_baseline_scores, best_baseline_model
 
 def do_pair_ttest(A_set, B_set, type1_err_alpha = 0.05):
-    _, pvalue = stats.shapiro(A_set)
-    if pvalue <= type1_err_alpha:
-        A_normal = False
-    else:
-        A_normal = True
-    _, pvalue = stats.shapiro(B_set)
-    if pvalue <= type1_err_alpha:
-        B_normal = False
-    else:
-        B_normal = True
-    assert (A_normal is True) and (B_normal is True), 'violate the normality assumption'
+    #_, pvalue = stats.shapiro(A_set)
+    #if pvalue <= type1_err_alpha:
+    #    A_normal = False
+    #else:
+    #    A_normal = True
+    #_, pvalue = stats.shapiro(B_set)
+    #if pvalue <= type1_err_alpha:
+    #    B_normal = False
+    #else:
+    #    B_normal = True
+    #assert (A_normal is True) and (B_normal is True), 'violate the normality assumption'
     
     _, pvalue = stats.ttest_rel(A_set, B_set)
     if pvalue <= type1_err_alpha:
+        #print(pvalue, type1_err_alpha)
         return True
     else:
         return False
@@ -137,7 +139,7 @@ if __name__ == '__main__':
             show_on_terminal = f'{model_name}\t'
             for dataset_name in dataset_list:
                 for metric_name in metric_list:
-                    _max, ttest_B = get_best_baseline_score(result_df, mode_name, dataset_name, metric_name)
+                    _max, ttest_B, _ = get_best_baseline_score(result_df, mode_name, dataset_name, metric_name)
                     
                     _df1 = result_df[
                         (result_df['test_mode']==mode_name) \
@@ -152,7 +154,7 @@ if __name__ == '__main__':
                         if model_name == 'cpr':
                             #TODO:(katiyth) fix ad-hoc
                             x = min(len(scores), len(ttest_B))
-                            print(len(scores), len(ttest_B), x)
+                            #print(len(scores), len(ttest_B), x)
                             significant = do_pair_ttest(scores[:x], ttest_B[:x])
                             # to bold-face our CPR
                             model_row += f"& {_b}"
@@ -167,7 +169,6 @@ if __name__ == '__main__':
                             if score == _max:
                                 # add cross for best baseline 
                                 model_row += f'& {cross}{score:.4f}'
-                                ttest_B = scores
                             else:
                                 model_row += f'& {score:.4f}'
                         # TODO

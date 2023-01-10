@@ -81,7 +81,8 @@ def save_exp_record(model_name, dataset_pair, test_mode, top_ks, total_rec, tota
 
 def rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item_graph_df, tar_test_df, uid_u, uid_i):
     st = time.time()
-    d=100
+    model_emb_size = user_emb[testing_users[0]].shape[0]
+    print(f">>>Model Emb Size: {model_emb_size}")
     count = 0
     total_rec=[0, 0, 0, 0, 0]
     total_ndcg=[0, 0, 0, 0, 0]
@@ -98,7 +99,7 @@ def rank_and_score(testing_users, top_ks, user_emb, testing_users_rec_dict, item
         
         item_key = np.array(list(_tmp_df['node_id']))
     
-        index = faiss.IndexFlatIP(d)
+        index = faiss.IndexFlatIP(model_emb_size)
         index.add(item_emb_vec)
         D, I = index.search(user_emb_vec_m, k_max)
         recomm_list = item_key[I][0]
