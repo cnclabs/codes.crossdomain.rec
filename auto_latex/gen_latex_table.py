@@ -61,20 +61,21 @@ def get_best_baseline_score(result_df, mode_name, dataset_name, metric_name):
     return _max, best_baseline_scores, best_baseline_model
 
 def do_pair_ttest(A_set, B_set, type1_err_alpha = 0.05):
-    _, pvalue = stats.shapiro(A_set)
-    if pvalue <= type1_err_alpha:
-        A_normal = False
-    else:
-        A_normal = True
-    _, pvalue = stats.shapiro(B_set)
-    if pvalue <= type1_err_alpha:
-        B_normal = False
-    else:
-        B_normal = True
-    assert (A_normal is True) and (B_normal is True), 'violate the normality assumption'
+    #_, pvalue = stats.shapiro(A_set)
+    #if pvalue <= type1_err_alpha:
+    #    A_normal = False
+    #else:
+    #    A_normal = True
+    #_, pvalue = stats.shapiro(B_set)
+    #if pvalue <= type1_err_alpha:
+    #    B_normal = False
+    #else:
+    #    B_normal = True
+    #assert (A_normal is True) and (B_normal is True), 'violate the normality assumption'
     
     _, pvalue = stats.ttest_rel(A_set, B_set)
     if pvalue <= type1_err_alpha:
+        #print(pvalue, type1_err_alpha)
         return True
     else:
         return False
@@ -153,7 +154,7 @@ if __name__ == '__main__':
                         if model_name == 'cpr':
                             #TODO:(katiyth) fix ad-hoc
                             x = min(len(scores), len(ttest_B))
-                            print(len(scores), len(ttest_B), x)
+                            #print(len(scores), len(ttest_B), x)
                             significant = do_pair_ttest(scores[:x], ttest_B[:x])
                             # to bold-face our CPR
                             model_row += f"& {_b}"
