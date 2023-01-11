@@ -25,9 +25,6 @@ for d in "${datasets[@]}"; do
     --Ut ${emcdr_input_dir}/${src}_${tar}_src_ctar_Ut.pickle || exit 1;
 done
 
-update_times=1000 
-num_checkpoint=1
-
 for d in "${datasets[@]}"; do
     IFS='_'
 	read -a domains <<< "$d"
@@ -35,20 +32,19 @@ for d in "${datasets[@]}"; do
 	src=${domains[0]}
 	tar=${domains[1]}
 
-    for checkpoint in $(seq 1 $num_checkpoint); do
-        python3 infer_Us.py \
-	    --user_to_infer_path ${ncore_data_dir}/${src}_${tar}_src_tar_sample_testing_shared_users.pickle \
-	    --Us_path ${emcdr_input_dir}/${src}_${tar}_src_tar_Us.pickle \
-            --meta_path ${emcdr_emb_dir}/${src}_${tar}_src_tar/mlp.meta \
-            --ckpt_path ${emcdr_emb_dir}/${src}_${tar}_src_tar/ \
-            --emb_save_path ${emcdr_emb_dir}/${src}_${tar}_src_tar_shared.pickle || exit 1;
+   python3 infer_Us.py \
+       --user_to_infer_path ${ncore_data_dir}/${src}_${tar}_src_tar_sample_testing_shared_users.pickle \
+       --Us_path ${emcdr_input_dir}/${src}_${tar}_src_tar_Us.pickle \
+       --meta_path ${emcdr_emb_dir}/${src}_${tar}_src_tar/mlp.meta \
+       --ckpt_path ${emcdr_emb_dir}/${src}_${tar}_src_tar/ \
+       --emb_save_path ${emcdr_emb_dir}/${src}_${tar}_src_tar_shared.pickle || exit 1;
 
-        # cold
-        python3 infer_Us.py \
-	    --user_to_infer_path ${ncore_data_dir}/${src}_${tar}_src_tar_sample_testing_cold_users.pickle \
-	    --Us_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_cold_Us.pickle \
-            --meta_path ${emcdr_emb_dir}/${src}_${tar}_src_ctar/mlp.meta \
-            --ckpt_path ${emcdr_emb_dir}/${src}_${tar}_src_ctar/ \
-            --emb_save_path ${emcdr_emb_dir}/${src}_${tar}_src_ctar_cold.pickle || exit 1;
-    done
+   # cold
+   python3 infer_Us.py \
+       --user_to_infer_path ${ncore_data_dir}/${src}_${tar}_src_tar_sample_testing_cold_users.pickle \
+       --Us_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_cold_Us.pickle \
+       --meta_path ${emcdr_emb_dir}/${src}_${tar}_src_ctar/mlp.meta \
+       --ckpt_path ${emcdr_emb_dir}/${src}_${tar}_src_ctar/ \
+       --emb_save_path ${emcdr_emb_dir}/${src}_${tar}_src_ctar_cold.pickle || exit 1;
+   
 done
