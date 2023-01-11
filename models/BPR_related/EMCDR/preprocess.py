@@ -14,22 +14,32 @@ source_name = args.dataset_name.split('_')[0]
 target_name = args.dataset_name.split('_')[1]
 ncore = args.ncore
 
-with open('{}/user_{}core/'.format(args.mom_save_dir, ncore) + args.dataset_name + '_' + 'shared_users.pickle', 'rb') as pf:
+share_user_path = .pickle
+with open(share_user_path, 'rb') as pf:
     shared_users = pickle.load(pf)
-shared_users = ["user_"+user for user in shared_users]
 print("shared users: ", shared_users[:10])
+
+cold_user_path = .pickle
+if cold:
+    with open(cold_user_path, 'rb') as pf:
+        cold_users = pickle.load(pf)
+    
+    to_map_users = set(shared_users) - set(cold_users)
+else:
+    to_map_users = set(shared_users)
+
+    print(f"num of shared users: {len(shared_users)}, num of cold users: {len(cold_users)}, num of to_map_users: {len(to_map_users)}")
 
 target_user_array = []
 target_item_array = []
 target_item_list = []
 
-with open('../lfm_bpr_graphs/'+ target_name + '_' + f'lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
-    # print("prefix: ")
+target_emb_path = emb.txt
+with open(target_emb_path, 'r') as f:
     for line in f:
         line = line.strip("\n")
         prefix, emb = line.split('\t')
         prefix = prefix.replace(" ", "")
-        # print(prefix)
         emb = emb.split()
         if prefix in shared_users:
             target_user_array.append(np.array(emb, dtype=np.float32))
@@ -40,21 +50,18 @@ with open('../lfm_bpr_graphs/'+ target_name + '_' + f'lightfm_bpr_{args.current_
 source_user_array = []
 source_item_array = []
 
-with open('../lfm_bpr_graphs/' + source_name + '_' + f'lightfm_bpr_{args.current_epoch}_10e-5.txt', 'r') as f:
+source_emb_path = emb.txt
+with open(source_emb_path, 'r') as f:
     for line in f:
         line = line.strip("\n")
         prefix, emb = line.split('\t')
         prefix = prefix.replace(" ", "")
         emb = emb.split()
-        # print("prefix: ", prefix)
-        # print("shared_users: ", shared_users)
-        if prefix in shared_users:
+        if prefix in to_map_users:
             source_user_array.append(np.array(emb, dtype=np.float32))
         if 'user_' not in prefix:
             source_item_array.append(np.array(emb, dtype=np.float32))
 
-print("source: ", source_name)
-print("target:", target_name)
 Us = np.array(source_user_array).T
 print("Us shape = {}".format(Us.shape))
 Vs = np.array(source_item_array).T
@@ -64,14 +71,21 @@ print("Ut shape = {}".format(Ut.shape))
 Vt = np.array(target_item_array).T
 print("Vt shape = {}".format(Vt.shape))
 
-with open('./' + args.dataset_name + '/' + f'lightfm_bpr_Us_{args.current_epoch}.pickle', 'wb') as pf:
-    pickle.dump(Us, pf)
-with open('./' + args.dataset_name + '/' + f'lightfm_bpr_Vs_{args.current_epoch}.pickle', 'wb') as pf:
-    pickle.dump(Vs, pf)
-with open('./' + args.dataset_name + '/' + f'lightfm_bpr_Ut_{args.current_epoch}.pickle', 'wb') as pf:
-    pickle.dump(Ut, pf)
-with open('./' + args.dataset_name + '/' + f'lightfm_bpr_Vt_{args.current_epoch}.pickle', 'wb') as pf:
-    pickle.dump(Vt, pf)
+print("Saving out...")
+Us_save_path =  .pickle
+Vs_save_path = 
+Ut_save_path = 
+Vt_save_path = 
+target_item_list_save_path = .pickle
 
-with open('./' + args.dataset_name + '/' + target_name + '_' + f'items_{args.current_epoch}.pickle', 'wb') as pf:
+with open(Us_save_path, 'wb') as pf:
+    pickle.dump(Us, pf)
+with open(Vs_save_path, 'wb') as pf:
+    pickle.dump(Vs, pf)
+with open(Ut_save_path, 'wb') as pf:
+    pickle.dump(Ut, pf)
+with open(Vt_save_path, 'wb') as pf:
+    pickle.dump(Vt, pf)
+with open(target_item_list_save_path, 'wb') as pf:
     pickle.dump(target_item_list, pf)
+print("Done!")
