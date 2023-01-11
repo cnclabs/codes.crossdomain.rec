@@ -15,7 +15,7 @@ cfg.gpu_options.per_process_gpu_memory_fraction = 0.1
 # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
 
 parser = argparse.ArgumentParser(description='EMCDR MLP mapping using lightfm embedding')
-parser.add_argument('--epoch_log', type=str, help='epoch log saving path')
+#parser.add_argument('--epoch_log', type=str, help='epoch log saving path')
 parser.add_argument('--model_save_dir', type=str, help='model saving directory path')
 parser.add_argument('--Us', type=str, help='Embedding of users in source domain file path')
 parser.add_argument('--Ut', type=str, help='Embedding of users in target domain file path')
