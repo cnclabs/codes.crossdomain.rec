@@ -10,7 +10,7 @@ gpu_id=$8
 single_normal_cold=$9
 model_name=lgn
 epoch=200
-embed_size=100
+embed_size=64
 
 # lgn lil
 if [[ $single_normal_cold == "single" ]]
