@@ -75,19 +75,3 @@ with open('./' + args.dataset_name + '/' + f'lightfm_bpr_Vt_{args.current_epoch}
 
 with open('./' + args.dataset_name + '/' + target_name + '_' + f'items_{args.current_epoch}.pickle', 'wb') as pf:
     pickle.dump(target_item_list, pf)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
