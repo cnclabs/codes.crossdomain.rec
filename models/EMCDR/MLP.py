@@ -7,19 +7,6 @@ import pickle
 
 from LM import load_data
 
-# os.environ['CUDA_VISIBLE_DEVICES'] = "0"
-os.environ['CUDA_VISIBLE_DEVICES'] = "0"
-cfg = tf.ConfigProto(log_device_placement=True)
-cfg.gpu_options.per_process_gpu_memory_fraction = 0.1
-
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
-
-parser = argparse.ArgumentParser(description='EMCDR MLP mapping using lightfm embedding')
-#parser.add_argument('--epoch_log', type=str, help='epoch log saving path')
-parser.add_argument('--model_save_dir', type=str, help='model saving directory path')
-parser.add_argument('--Us', type=str, help='Embedding of users in source domain file path')
-parser.add_argument('--Ut', type=str, help='Embedding of users in target domain file path')
-args=parser.parse_args()
 
 def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, display_step=100):
     '''多层感知机映射函数
@@ -93,6 +80,19 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, display_step=1
         print("Optimization Finished!")
     
 if __name__ == "__main__":
+    # os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+    os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+    cfg = tf.ConfigProto(log_device_placement=True)
+    cfg.gpu_options.per_process_gpu_memory_fraction = 0.1
+    
+    # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
+    
+    parser = argparse.ArgumentParser(description='EMCDR MLP mapping using lightfm embedding')
+    #parser.add_argument('--epoch_log', type=str, help='epoch log saving path')
+    parser.add_argument('--model_save_dir', type=str, help='model saving directory path')
+    parser.add_argument('--Us', type=str, help='Embedding of users in source domain file path')
+    parser.add_argument('--Ut', type=str, help='Embedding of users in target domain file path')
+    args=parser.parse_args()
     #os.makedirs(os.path.join(os.path.split(args.epoch_log)[0], 'result'))
     #os.makedirs(os.path.dirname(args.epoch_log), exist_ok=True)
     os.makedirs(args.model_save_dir + '/mlp_epoch_1000', exist_ok=True)
