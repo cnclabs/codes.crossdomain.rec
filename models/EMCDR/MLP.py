@@ -72,9 +72,9 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, display_step=1
                 avg_cost = sess.run(cost, feed_dict={Us: input_Us, Ut: input_Ut})
                 print("Epoch:", '%04d' % (epoch + 1), "cost=", "{:.9f}".format(avg_cost))
            
-                os.makedirs(os.path.dirname(args.epoch_log), exist_ok=True)
-                with open(args.epoch_log, 'a') as file:
-                    file.writelines(["Epoch:", '%04d' % (epoch + 1), ", cost=", "{:.9f}".format(avg_cost), "\n"])
+                #os.makedirs(os.path.dirname(args.epoch_log), exist_ok=True)
+                #with open(args.epoch_log, 'a') as file:
+                #    file.writelines(["Epoch:", '%04d' % (epoch + 1), ", cost=", "{:.9f}".format(avg_cost), "\n"])
 
             #print("Finish epoch {}".format(epoch+1))
 
@@ -93,8 +93,8 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, display_step=1
         print("Optimization Finished!")
     
 if __name__ == "__main__":
-    os.makedirs(os.path.join(os.path.split(args.epoch_log)[0], 'result'))
-    os.makedirs(os.path.dirname(args.epoch_log), exist_ok=True)
+    #os.makedirs(os.path.join(os.path.split(args.epoch_log)[0], 'result'))
+    #os.makedirs(os.path.dirname(args.epoch_log), exist_ok=True)
     os.makedirs(args.model_save_dir + '/mlp_epoch_1000', exist_ok=True)
     with open(args.Us, 'rb') as pf:
         Us = pickle.load(pf)
