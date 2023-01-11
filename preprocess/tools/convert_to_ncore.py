@@ -133,6 +133,9 @@ if __name__ == '__main__':
     print(f'sample testing cold users: {len(sample_testing_cold_users)}')
     
     # save users
+    with open(os.path.join(ncore_save_dir, f'{src}_{tar}_src_tar_all_shared_users.pickle'), 'wb') as pf:
+        pickle.dump(all_shared_users, pf)
+
     with open(os.path.join(ncore_save_dir, f'{src}_{tar}_src_tar_sample_testing_target_users.pickle'), 'wb') as pf:
         pickle.dump(sample_testing_target_users, pf)
 
