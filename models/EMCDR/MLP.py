@@ -8,7 +8,7 @@ import pickle
 from LM import load_data
 
 
-def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, display_step=100):
+def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, model_save_dir, display_step=100):
     '''多层感知机映射函数
     input: 
         input_Us(ndarray): 源领域矩阵
@@ -75,8 +75,7 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, display_step=1
         
         # 保存模型
         saver = tf.train.Saver()
-        os.makedirs(args.model_save_dir + '/mlp_epoch_1000', exist_ok=True)
-        saver.save(sess, args.model_save_dir + '/mlp_epoch_1000/mlp_epoch_1000')
+        saver.save(sess, os.path.join(model_save_dir, 'mlp'))
         print("Optimization Finished!")
     
 if __name__ == "__main__":
@@ -89,13 +88,11 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='EMCDR MLP mapping using lightfm embedding')
     #parser.add_argument('--epoch_log', type=str, help='epoch log saving path')
-    parser.add_argument('--model_save_dir', type=str, help='model saving directory path')
-    parser.add_argument('--Us', type=str, help='Embedding of users in source domain file path')
-    parser.add_argument('--Ut', type=str, help='Embedding of users in target domain file path')
+    parser.add_argument('--model_save_dir', type=str, required=True)
+    parser.add_argument('--Us', type=str, required=True)
+    parser.add_argument('--Ut', type=str, required=True)
     args=parser.parse_args()
-    #os.makedirs(os.path.join(os.path.split(args.epoch_log)[0], 'result'))
-    #os.makedirs(os.path.dirname(args.epoch_log), exist_ok=True)
-    os.makedirs(args.model_save_dir + '/mlp_epoch_1000', exist_ok=True)
+    
     with open(args.Us, 'rb') as pf:
         Us = pickle.load(pf)
     print("Finish loading source...")
@@ -110,4 +107,5 @@ if __name__ == "__main__":
     learning_rate = 0.01
     training_epochs = 200
     display_step = 10
-    MLP(Us, Ut, beta, learning_rate, training_epochs, display_step)
+    
+    MLP(Us, Ut, beta, learning_rate, training_epochs, args.model_save_dir, display_step)
