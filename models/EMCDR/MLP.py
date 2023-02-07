@@ -93,8 +93,6 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, model_save_dir
         #    print(v)
         
         # 保存模型
-        saver = tf.train.Saver()
-        saver.save(sess, os.path.join(model_save_dir, 'mlp'))
         print("Optimization Finished!")
     
 if __name__ == "__main__":
