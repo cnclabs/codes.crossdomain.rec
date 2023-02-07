@@ -84,13 +84,13 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, model_save_dir
 
             #print("Finish epoch {}".format(epoch+1))
 
-        # 打印变量
-        variable_names = [v.name for v in tf.trainable_variables()]
-        values = sess.run(variable_names)
-        for k, v in zip(variable_names, values):
-            print("Variable:", k)
-            print("Shape: ", v.shape)
-            print(v)
+        ## 打印变量
+        #variable_names = [v.name for v in tf.trainable_variables()]
+        #values = sess.run(variable_names)
+        #for k, v in zip(variable_names, values):
+        #    print("Variable:", k)
+        #    print("Shape: ", v.shape)
+        #    print(v)
         
         # 保存模型
         saver = tf.train.Saver()
