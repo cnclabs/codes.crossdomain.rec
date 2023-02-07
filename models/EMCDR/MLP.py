@@ -37,7 +37,7 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, model_save_dir
         reg_w1 = layers.l2_regularizer(beta)(w1)
         reg_w2 = layers.l2_regularizer(beta)(w2)
 
-        pred = tf.nn.sigmoid(tf.matmul(w2, hidden1) + b2)
+        pred = tf.matmul(w2, hidden1) + b2
         cost = tf.reduce_mean(tf.square(Ut - pred)) + reg_w1 + reg_w2
         train_step = tf.train.AdagradOptimizer(learning_rate).minimize(cost)
 
