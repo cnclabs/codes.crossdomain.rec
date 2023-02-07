@@ -48,13 +48,35 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, model_save_dir
     with tf.Session(config=cfg) as sess:
         sess.run(init)
 
+
+        patience = 0
+        best_loss = np.inf
         for epoch in range(training_epochs):
             #print("Start epoch {}".format(epoch+1))
-            sess.run(train_step, feed_dict={Us: input_Us, Ut: input_Ut})
+            block_size = 16 # emcdr paper setting
+            block_amount = int(input_Us.shape[1] // block_size)
+            from sklearn.utils import shuffle
+            a, b = shuffle(input_Us.T, input_Ut.T) # emcdr use stochastic gradient descent 
+            input_Us = a.T
+            input_Ut = b.T
+            concat_list = []
+            for i in range(block_amount+1):
+                Us_block = input_Us[:,i*block_size:(i+1)*block_size]
+                Ut_block = input_Ut[:,i*block_size:(i+1)*block_size]
+                sess.run(train_step, feed_dict={Us: Us_block, Ut: Ut_block})
 
-            if (epoch + 1) % display_step == 0:
-                avg_cost = sess.run(cost, feed_dict={Us: input_Us, Ut: input_Ut})
-                print("Epoch:", '%04d' % (epoch + 1), "cost=", "{:.9f}".format(avg_cost))
+            avg_cost = sess.run(cost, feed_dict={Us: input_Us, Ut: input_Ut})
+            if avg_cost < best_loss:
+                best_loss = avg_cost
+                patience = 0
+                saver = tf.train.Saver()
+                saver.save(sess, os.path.join(model_save_dir, 'mlp'))
+                print(">>>Model Saved.")
+            else:
+                patience +=1
+            if patience == 5:
+                break
+            print("Epoch:", '%04d' % (epoch + 1), "cost=", "{:.9f}".format(avg_cost))
            
                 #os.makedirs(os.path.dirname(args.epoch_log), exist_ok=True)
                 #with open(args.epoch_log, 'a') as file:
