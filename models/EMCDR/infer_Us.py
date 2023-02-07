@@ -32,13 +32,14 @@ if __name__ == "__main__":
         with tf.Session() as sess:
             saver = tf.train.import_meta_graph(meta_path)
             saver.restore(sess, tf.train.latest_checkpoint(ckpt_path))
+            print('Restore from: ', ckpt_path)
             all_vars = tf.trainable_variables()
             w1 = sess.run(all_vars[0])
             b1 = sess.run(all_vars[1])
             w2 = sess.run(all_vars[2])
             b2 = sess.run(all_vars[3]) 
             hidden1 = tf.nn.tanh(tf.matmul(w1, Us_block)+b1)
-            pred = tf.nn.sigmoid(tf.matmul(w2, hidden1) + b2)
+            pred = tf.matmul(w2, hidden1) + b2
             test_output = sess.run(pred)
 
             print("Finsh inference...")
