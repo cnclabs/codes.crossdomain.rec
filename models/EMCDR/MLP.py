@@ -96,12 +96,11 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, model_save_dir
         print("Optimization Finished!")
     
 if __name__ == "__main__":
-    # os.environ['CUDA_VISIBLE_DEVICES'] = "0"
     os.environ['CUDA_VISIBLE_DEVICES'] = "0"
     cfg = tf.ConfigProto(log_device_placement=True)
     cfg.gpu_options.per_process_gpu_memory_fraction = 0.1
     
-    # os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
+    #os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
     
     parser = argparse.ArgumentParser(description='EMCDR MLP mapping using lightfm embedding')
     #parser.add_argument('--epoch_log', type=str, help='epoch log saving path')
