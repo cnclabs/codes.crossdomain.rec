@@ -5,9 +5,6 @@ import tensorflow as tf
 from tensorflow.contrib import layers
 import pickle
 
-from LM import load_data
-
-
 def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, model_save_dir, display_step=100):
     '''多层感知机映射函数
     input: 
