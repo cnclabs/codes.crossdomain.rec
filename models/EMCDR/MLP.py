@@ -22,14 +22,14 @@ def MLP(input_Us, input_Ut, beta, learning_rate, training_epochs, model_save_dir
     # with tf.device('/gpu:0'): 
     with tf.device('/cpu:0'):
         # 1. 初始化参数
-        w1 = tf.Variable(tf.truncated_normal([2 * k, k], stddev = 0.1), name="w1")
-        b1 = tf.Variable(tf.zeros([2 * k, 1]), name="b1")
+        w1 = tf.Variable(tf.truncated_normal([2 * k, k], stddev = 0.001), name="w1")
+        b1 = tf.Variable(tf.truncated_normal([2 * k, 1], stddev = 0.001), name="b1")
 
-        w2 = tf.Variable(tf.zeros([k, 2 * k]), name="w2")
-        b2 = tf.Variable(tf.zeros([k, 1]), name="b2")
+        w2 = tf.Variable(tf.truncated_normal([k, 2 * k], stddev = 0.001), name="w2")
+        b2 = tf.Variable(tf.truncated_normal([k, 1], stddev = 0.001), name="b2")
 
-        Us = tf.placeholder(tf.float32,[k, m])
-        Ut = tf.placeholder(tf.float32,[k, m])
+        Us = tf.placeholder(tf.float32,[k, None])
+        Ut = tf.placeholder(tf.float32,[k, None])
 
         # 2. 构建模型
         hidden1 = tf.nn.tanh(tf.matmul(w1, Us)+b1)
