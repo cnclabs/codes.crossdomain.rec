@@ -119,9 +119,12 @@ if __name__ == "__main__":
     print("Finish loading target...")
     print("Uv shape = {}".format(np.shape(Ut)))
 
-    beta = 0.001
-    learning_rate = 0.01
+    beta = 0.001 # emcdr search and flexible
+    learning_rate = 0.00001 # emvdr search and flexible flexible
     training_epochs = 200
     display_step = 10
     
+    if not os.path.exists(args.model_save_dir):
+        os.makedirs(args.model_save_dir)
+
     MLP(Us, Ut, beta, learning_rate, training_epochs, args.model_save_dir, display_step)
