@@ -19,10 +19,8 @@ do
     --pretrained_source_emb_path ${bpr_emb_dir}/${src}_src.txt\
     --pretrained_target_emb_path ${bpr_emb_dir}/${tar}_tar.txt\
     --Us_save_path ${emcdr_input_dir}/${src}_${tar}_src_tar_Us.pickle\
-    --Vs_save_path ${emcdr_input_dir}/${src}_${tar}_src_tar_Vs.pickle\
+    --Us_id_map_save_path ${emcdr_input_dir}/${src}_${tar}_src_tar_Us_id_map.pickle\
     --Ut_save_path ${emcdr_input_dir}/${src}_${tar}_src_tar_Ut.pickle\
-    --Vt_save_path ${emcdr_input_dir}/${src}_${tar}_src_tar_Vt.pickle\
-    --target_item_list_save_path ${emcdr_input_dir}/${src}_${tar}_src_tar_target_item_list.pickle || exit 1;\
 
     # cold
     python3 preprocess.py \
@@ -31,10 +29,9 @@ do
     --pretrained_source_emb_path ${bpr_emb_dir}/${src}_src.txt\
     --pretrained_target_emb_path ${bpr_emb_dir}/${tar}_ctar.txt\
     --Us_save_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_Us.pickle\
-    --cold_Us_save_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_cold_Us.pickle\
-    --Vs_save_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_Vs.pickle\
+    --Us_id_map_save_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_Us_id_map.pickle\
     --Ut_save_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_Ut.pickle\
-    --Vt_save_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_Vt.pickle\
-    --target_item_list_save_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_target_item_list.pickle || exit 1;\
+    --cold_Us_save_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_cold_Us.pickle\
+    --cold_Us_id_map_save_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_cold_Us_id_map.pickle || exit 1;
 
 done

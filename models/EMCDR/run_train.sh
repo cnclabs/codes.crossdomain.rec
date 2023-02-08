@@ -33,8 +33,9 @@ for d in "${datasets[@]}"; do
 	tar=${domains[1]}
 
    python3 infer_Us.py \
-       --user_to_infer_path ${ncore_data_dir}/${src}_${tar}_src_tar_sample_testing_shared_users.pickle \
+       --user_to_infer_path ${ncore_data_dir}/${src}_${tar}_src_tar_all_shared_users.pickle \
        --Us_path ${emcdr_input_dir}/${src}_${tar}_src_tar_Us.pickle \
+       --Us_id_map_path ${emcdr_input_dir}/${src}_${tar}_src_tar_Us_id_map.pickle \
        --meta_path ${emcdr_emb_dir}/${src}_${tar}_src_tar/mlp.meta \
        --ckpt_path ${emcdr_emb_dir}/${src}_${tar}_src_tar/ \
        --emb_save_path ${emcdr_emb_dir}/${src}_${tar}_src_tar_shared.pickle || exit 1;
@@ -43,8 +44,10 @@ for d in "${datasets[@]}"; do
    python3 infer_Us.py \
        --user_to_infer_path ${ncore_data_dir}/${src}_${tar}_src_tar_sample_testing_cold_users.pickle \
        --Us_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_cold_Us.pickle \
+       --Us_id_map_path ${emcdr_input_dir}/${src}_${tar}_src_ctar_cold_Us_id_map.pickle \
        --meta_path ${emcdr_emb_dir}/${src}_${tar}_src_ctar/mlp.meta \
        --ckpt_path ${emcdr_emb_dir}/${src}_${tar}_src_ctar/ \
        --emb_save_path ${emcdr_emb_dir}/${src}_${tar}_src_ctar_cold.pickle || exit 1;
-   
 done
+
+
