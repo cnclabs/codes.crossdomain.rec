@@ -10,6 +10,7 @@ if __name__ == "__main__":
     parser=argparse.ArgumentParser(description='Infer Us from source domain to target domain')
     parser.add_argument('--user_to_infer_path', type=str, required=True)
     parser.add_argument('--Us_path', type=str, required=True)
+    parser.add_argument('--Us_id_map_path', type=str, required=True)
     parser.add_argument('--meta_path', type=str, help='the meta of the trained model')
     parser.add_argument('--ckpt_path', type=str, help='the ckpt directory of the trained model')
     parser.add_argument('--emb_save_path', type=str, required=True)
@@ -21,6 +22,15 @@ if __name__ == "__main__":
 
     with open(args.user_to_infer_path, 'rb') as pf:
         users_to_infer = pickle.load(pf)
+
+    with open(args.Us_id_map_path, 'rb') as pf:
+        Us_id_map = pickle.load(pf)
+    
+    #_list = []
+    #for k, v in Us_id_map.items():
+    #    _list.append(v)
+
+    #assert list(users_to_infer) == _list
 
     with open(args.Us_path, 'rb') as pf:
         Us = pickle.load(pf)
@@ -52,10 +62,9 @@ if __name__ == "__main__":
         print(concat_output.shape)
     
     users_to_infer_mapped_emb = {}
-    index=0
-    for i in users_to_infer:
-        users_to_infer_mapped_emb[i] = concat_output[index]
-        index += 1
+    for org_id in users_to_infer:
+        remap_id = Us_id_map[org_id]
+        users_to_infer_mapped_emb[org_id] = concat_output[remap_id]
     
     # save
     with open(args.emb_save_path, 'wb') as pf:
