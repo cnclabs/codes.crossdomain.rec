@@ -74,8 +74,7 @@ if __name__ == '__main__':
         
         if args.test_mode == 'shared':
             with open(args.user_emb_path_shared, 'rb') as pf:
-                shared_users_mapped_emb_dict = pickle.load(pf)
-            user_emb = {k:v for k,v in shared_users_mapped_emb_dict.items() if k in testing_users}
+                user_emb = pickle.load(pf)
         
         if args.test_mode == 'cold':
             with open(args.user_emb_path_cold, 'rb') as pf:
