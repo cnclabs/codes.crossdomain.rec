@@ -1,4 +1,4 @@
-# CPR: Item Concept Embedding via Textual Information
+# CPR: Cross-domain Preference Ranking with User Transformation
 Our codes for https://dl.acm.org/doi/abs/10.1007/978-3-031-28238-6_35
 
 ## 0. Environment
@@ -55,3 +55,4 @@ bash run_cpr.sh\
         hk\
         csjj
 ```
+
