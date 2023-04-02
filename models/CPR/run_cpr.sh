@@ -37,7 +37,7 @@ fi
 
 if [[ "$mode" == "eval" || "$mode" == "traineval" ]]
 then
-    python3 ../../rec_and_eval_ncore.py \
+    python3 ../../evaluation/rec_and_eval_ncore.py \
     --ncore_data_dir ${ncore_data_dir} \
     --test_mode target \
     --save_dir ${exp_record_dir} \
@@ -48,7 +48,7 @@ then
     --tar ${tar} \
     --model_name ${model_name} || exit 1
     
-    python3 ../../rec_and_eval_ncore.py \
+    python3 ../../evaluation/rec_and_eval_ncore.py \
     --ncore_data_dir ${ncore_data_dir} \
     --test_mode shared \
     --save_dir ${exp_record_dir} \
@@ -59,7 +59,7 @@ then
     --tar ${tar} \
     --model_name ${model_name} || exit 1
     
-    python3 ../../rec_and_eval_ncore.py \
+    python3 ../../evaluation/rec_and_eval_ncore.py \
     --ncore_data_dir ${ncore_data_dir} \
     --test_mode cold \
     --save_dir ${exp_record_dir} \
