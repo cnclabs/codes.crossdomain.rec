@@ -46,5 +46,5 @@ make
 
 - Usage example
 ```
-bash n_round_pair_cpr.sh {ncore_data_dir} {cpr_input_dir} {emb_save_dir} {score_save_dir} traineval 5
+bash n_round_pair_cpr.sh {ncore_data_dir} {cpr_input_dir} {emb_save_dir} {exp_record_dir} traineval
 ```
