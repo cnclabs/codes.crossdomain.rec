@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 import os
 
-from evaluation.utility import (save_exp_record,
+from utility import (save_exp_record,
         rank_and_score,
         generate_item_graph_df,
         generate_user_emb,
